@@ -1,0 +1,14 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"description": "",
+	"scripts": {
+		"dev-all": "",
+		"install-all": "",
+		"build-all": "tsc -b -v",
+		"start-all": ""
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
