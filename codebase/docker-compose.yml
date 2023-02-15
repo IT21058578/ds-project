@@ -1,0 +1,39 @@
+services:
+  mongo:
+    image: mongo:6
+    ports:
+      - ""
+
+  rabbitmq:
+    image: rabbitmq:3.11.9-alpine
+    ports:
+      - ""
+
+  redis:
+    image: redis:alpine3.17
+    ports:
+      - ""
+
+  auth-service:
+    build: ./backend/auth
+    ports:
+      - ""
+    env_file: ./backend/auth/.env
+    depends_on:
+      - mongo
+      - rabbitmq
+      - redis
+
+  comms-service:
+    build: ./backend/comm
+    ports:
+      - ""
+    env_file: ./backend/comm/.env
+    depends_on:
+      - mongo
+      - rabbitmq
+
+  web-client:
+    build: ./frontend
+    ports:
+      - ""
