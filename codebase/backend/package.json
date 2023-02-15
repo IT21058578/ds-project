@@ -3,12 +3,15 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"dev-all": "",
-		"install-all": "",
-		"build-all": "tsc -b -v",
-		"start-all": ""
+		"d-all": "concurrently \"npm:dev -C auth\" \"npm:dev -C comm\"",
+		"i-all": "(npm i -C auth) && (npm i -C comm)",
+		"b-all": "tsc -b -v",
+		"s-all": ""
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"concurrently": "^7.6.0"
+	}
 }

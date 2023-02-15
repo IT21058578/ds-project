@@ -1,9 +1,9 @@
 {
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
-		"composite": true,
-		"rootDir": "./src" /* Specify the root folder within your source files. */,
-		"outDir": "./dist" /* Specify an output folder for all emitted files. */
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"composite": true
 	},
 	"include": ["./src/**/*"],
 	"exclude": ["node_modules"]
