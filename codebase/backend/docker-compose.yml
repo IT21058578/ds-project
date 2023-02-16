@@ -19,10 +19,10 @@ services:
     restart: always
 
   auth-service:
-    build: ./backend/auth
+    build: ./auth
     ports:
       - "3001:3001"
-    env_file: ./backend/auth/.env
+    env_file: ./auth/.env
     depends_on:
       - mongo
       - rabbitmq
@@ -30,10 +30,10 @@ services:
     restart: always
 
   comms-service:
-    build: ./backend/comm
+    build: /comm
     ports:
       - "3002:3002"
-    env_file: ./backend/comm/.env
+    env_file: ./comm/.env
     depends_on:
       - mongo
       - rabbitmq

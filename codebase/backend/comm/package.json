@@ -10,6 +10,7 @@
 	"license": "ISC",
 	"description": "",
 	"dependencies": {
+		"@sendgrid/mail": "^7.7.0",
 		"amqplib": "^0.10.3",
 		"backend": "file:..",
 		"cookie-parser": "^1.4.6",
@@ -21,20 +22,16 @@
 		"handlebars": "^4.7.7",
 		"helmet": "^6.0.1",
 		"mongoose": "^6.9.1",
-		"nodemailer": "^6.9.1"
+		"twilio": "^4.7.2"
 	},
 	"devDependencies": {
 		"@types/amqplib": "^0.10.1",
 		"@types/cookie-parser": "^1.4.3",
 		"@types/cors": "^2.8.13",
-		"@types/dotenv": "^8.2.0",
 		"@types/express": "^4.17.17",
-		"@types/express-validator": "^3.0.0",
 		"@types/handlebars": "^4.1.0",
 		"@types/jsonwebtoken": "^9.0.1",
-		"@types/mongoose": "^5.11.97",
 		"@types/node": "^18.13.0",
-		"@types/nodemailer": "^6.4.7",
 		"@types/nodemon": "^1.19.2",
 		"nodemon": "^2.0.20",
 		"ts-node": "^10.9.1",
