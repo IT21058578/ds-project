@@ -18,11 +18,15 @@ services:
       - "6379:6379"
     restart: always
 
+  #Microservice images
   auth-service:
     build: ./auth
     ports:
       - "3001:3001"
-    env_file: ./auth/.env
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - RABBITMQ_URI=${RABBITMQ_URI}
+      - REDIS_URI=${REDIS_URI}
     depends_on:
       - mongo
       - rabbitmq
@@ -30,10 +34,12 @@ services:
     restart: always
 
   comms-service:
-    build: /comm
+    build: ./comm
     ports:
       - "3002:3002"
-    env_file: ./comm/.env
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - RABBITMQ_URI=${RABBITMQ_URI}
     depends_on:
       - mongo
       - rabbitmq

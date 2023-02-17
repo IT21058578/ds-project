@@ -6,7 +6,7 @@
 		"d-all": "concurrently \"npm:dev -C auth\" \"npm:dev -C comm\"",
 		"i-all": "(npm i -C auth) && (npm i -C comm)",
 		"b-all": "tsc -b -v",
-		"s-all": ""
+		"s-all": "concurrently \"npm:start -C auth\" \"npm:start -C comm\""
 	},
 	"keywords": [],
 	"author": "",
