@@ -2,7 +2,6 @@ import express, { json, urlencoded } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import Mongoose from "mongoose";
-import amqplib from "amqplib";
 
 dotenv.config();
 
@@ -23,7 +22,6 @@ console.log("Attached routes");
 Mongoose.set("strictQuery", false);
 console.log({ MONGO_URI, RABBITMQ_URI });
 export const mongoose = await Mongoose.connect(MONGO_URI || "");
-export const rabbitmq = await amqplib.connect(RABBITMQ_URI || "");
 console.log("Connected to databases and services");
 
 //Start server

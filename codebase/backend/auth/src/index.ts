@@ -4,14 +4,12 @@ import express, { json, urlencoded } from "express";
 import Redis from "ioredis";
 import helmet from "helmet";
 import Mongoose from "mongoose";
-import amqplib from "amqplib";
 
-import user from "./user-routes";
 import auth from "./routes/auth-routes";
 
 dotenv.config();
 
-const { PORT, SERVICE, REDIS_URI, MONGO_URI, RABBITMQ_URI } = process.env;
+const { PORT, SERVICE, REDIS_URI, MONGO_URI } = process.env;
 const app = express();
 
 //Confguring express erver
@@ -23,14 +21,12 @@ console.log("Configured application");
 
 //Need to attach relevant routes
 app.use("/api/auth", auth);
-app.use("/api/user", user);
 console.log("Attached routes");
 
 //Connect to relevant databases and services
 Mongoose.set("strictQuery", false);
-console.log({ REDIS_URI, MONGO_URI, RABBITMQ_URI });
+console.log({ REDIS_URI, MONGO_URI });
 export const mongoose = await Mongoose.connect(MONGO_URI || "");
-export const rabbitmq = await amqplib.connect(RABBITMQ_URI || "");
 export const redis = new Redis(REDIS_URI || "");
 console.log("Connected to databases and services");
 

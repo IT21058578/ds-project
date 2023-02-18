@@ -5,12 +5,12 @@ services:
       - "27017:27017"
     restart: always
 
-  rabbitmq:
-    image: rabbitmq:3.11.9-alpine
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    restart: always
+  # rabbitmq:
+  #   image: rabbitmq:3.11.9-alpine
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   restart: always
 
   redis:
     image: redis:alpine3.17

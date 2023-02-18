@@ -1,11 +1,18 @@
-import { randomUUID } from "crypto";
 import { redis, mongoose } from "..";
+import { randomUUID } from "crypto";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import { User } from "../models/user-model";
 import { TokenService } from "./token-service";
 
 import { HttpCode, ITokenFamily, IUser, UserErrorMessage } from "../types";
+import axios from "axios";
+import {
+	SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT,
+	SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT,
+	SEND_REGISTER_EMAIL_ENDPOINT,
+} from "../constants";
 
 const loginUser = async (email: string, password: string) => {
 	console.log("Verifying credentials");
@@ -24,6 +31,8 @@ const loginUser = async (email: string, password: string) => {
 	const tokenFamily: ITokenFamily = {
 		latestAccessToken: TokenService.generateAccessToken(),
 		latestRefreshToken: TokenService.generateRefreshToken(),
+		expiredAccessTokens: new Set<string>(),
+		expiredRefreshTokens: new Set<string>(),
 	};
 
 	await redis
@@ -32,7 +41,10 @@ const loginUser = async (email: string, password: string) => {
 			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 		});
 
-	return tokenFamily;
+	return {
+		accessToken: tokenFamily.latestAccessToken,
+		refreshToken: tokenFamily.latestRefreshToken,
+	};
 };
 
 const registerUser = async (user: IUser) => {
@@ -45,50 +57,164 @@ const registerUser = async (user: IUser) => {
 
 	user.authorizationToken = randomUUID();
 	user.password = await bcrypt.hash(user.password, 10);
+	user.isAuthorized = false;
+	user.createdAt = new Date();
 
 	console.log("Requesting comm service to send an email");
-	//TODO: Send Email
+	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch((err) => {
+		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	});
 
 	console.log("Saving new user");
 	const newUser = new User(user);
 	await newUser.save();
 };
 
-const resendRegisterEmail = () => {
-	//Check if user exists? continue : error
-	//Check if user is authorized? error : continue
-	//Resend register email to the user
+const resendRegisterEmail = async (email: string) => {
+	console.log("Verifying credentials");
+	const user = (await User.find({ email }).exec()).at(0);
+
+	if (user === undefined) {
+		throw Error(UserErrorMessage.USER_NOT_FOUND);
+	}
+
+	if (user.isAuthorized === true) {
+		throw Error(UserErrorMessage.USER_CONFLICT);
+	}
+
+	console.log("Requesting comm service to send an email");
+	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch((err) => {
+		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	});
 };
 
-const authorizeUser = () => {
-	//Check if user exists? continue : error
-	//Check if user is authorized? error : continue;
-	//Change the user to authorized
+const authorizeUser = async (authorizationToken: string) => {
+	console.log("Verifying credentials");
+	const user = (await User.find({ authorizationToken }).exec()).at(0);
+
+	if (user === undefined) {
+		throw Error(UserErrorMessage.USER_NOT_FOUND);
+	}
+
+	if (user.isAuthorized === true) {
+		throw Error(UserErrorMessage.USER_CONFLICT);
+	}
+
+	user.isAuthorized = true;
+
+	console.log("Saving updated user");
+	await user.save();
 };
 
-const refreshTokens = () => {
-	//Check if refresh token is old? continue : destroy it
-	//Check if refresh token is current? continue : ignore
-	//Create new refresh token and access token
-	//Add old access tokens to list
-	//Return new access token
+const refreshTokens = async (refreshToken: string) => {
+	console.log("Verifying credentials");
+	const { sub: id } = jwt.verify(refreshToken, "") as jwt.JwtPayload;
+
+	if (id === undefined) {
+		// This should never happen
+		throw Error(UserErrorMessage.USER_NOT_FOUND);
+	}
+
+	const tokenFamily = (await redis.call("JSON.GET", id)) as ITokenFamily;
+
+	console.log(tokenFamily); //TODO: Delete
+
+	if (tokenFamily.expiredRefreshTokens?.has(refreshToken)) {
+		console.error("Old refresh token detected");
+		await redis.call("JSON.DEL", id);
+		throw Error(UserErrorMessage.USER_CONFLICT);
+	}
+
+	if (tokenFamily.latestRefreshToken !== refreshToken) {
+		throw Error(UserErrorMessage.USER_CONFLICT);
+	}
+
+	tokenFamily.expiredAccessTokens.add(tokenFamily.latestAccessToken);
+	tokenFamily.expiredRefreshTokens.add(tokenFamily.latestRefreshToken);
+	tokenFamily.latestAccessToken = TokenService.generateAccessToken();
+	tokenFamily.latestRefreshToken = TokenService.generateRefreshToken();
+
+	console.log("Saving token family in redis");
+	await redis.call("JSON.SET", id, JSON.stringify(tokenFamily)).catch((err) => {
+		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	});
+
+	return {
+		accessToken: tokenFamily.latestAccessToken,
+		refreshToken: tokenFamily.latestRefreshToken,
+	};
 };
 
-const sendForgotPasswordEmail = () => {
-	//Check if user exists? continue : error
-	//Send an email to the user with a reset token
-	//If success ? change the reset token of the user : error
+const sendForgotPasswordEmail = async (email: string) => {
+	console.log("Verifying credentials");
+	const user = (await User.find({ email }).exec()).at(0);
+
+	if (user === undefined) {
+		throw Error(UserErrorMessage.USER_NOT_FOUND);
+	}
+
+	user.resetToken = randomUUID();
+
+	console.log("Requesting comm service to send email");
+	await axios
+		.post(SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT, { user })
+		.catch((err) => {
+			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+		});
+
+	console.log("Saving updated user");
+	user.save();
 };
 
-const resetPassword = () => {
-	//Check if reset token exists within the system? continue : error
-	//Send and email to the user mentioning password change
-	//If success ? Change the users's password to given password and save : error
+const resetPassword = async (resetToken: string, password: string) => {
+	console.log("Verifying credentials");
+	const user = (await User.find({ resetToken }).exec()).at(0);
+
+	if (user === undefined) {
+		throw Error(UserErrorMessage.USER_NOT_FOUND);
+	}
+
+	user.password = await bcrypt.hash(password, 10);
+
+	console.log("Requesting comm service to send email");
+	await axios
+		.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
+		.catch((err) => {
+			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+		});
+
+	console.log("Saving updated user");
+	user.save();
 };
 
-const changepassword = () => {
-	//Check if password is same for logged in user? continue : error
-	//Change password to given password
+const changepassword = async (
+	email: string,
+	oldPassword: string,
+	password: string
+) => {
+	console.log("Verifying credentials");
+	const user = (await User.find({ email }).exec()).at(0);
+
+	if (user === undefined) {
+		throw Error(UserErrorMessage.USER_NOT_FOUND);
+	}
+
+	const encryptedOldPassword = await bcrypt.hash(oldPassword, 10);
+	if (user.password !== encryptedOldPassword) {
+		throw Error(UserErrorMessage.INVALID_CREDENTIALS);
+	}
+
+	user.password = await bcrypt.hash(password, 10);
+
+	console.log("Requesting comm service to send email");
+	await axios
+		.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
+		.catch((err) => {
+			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+		});
+
+	console.log("Saving updated user");
+	user.save();
 };
 
 export const AuthService = {

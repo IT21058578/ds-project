@@ -18,19 +18,21 @@ export enum UserErrorMessage {
 	USER_NOT_FOUND = "User not found",
 	INVALID_CREDENTIALS = "Invalid credentials",
 	INTERNAL_SERVER_ERROR = "Internal server error",
+	USER_CONFLICT = "User detail conflict",
 }
 
 export enum Role {
 	BUYER = "BUYER",
 	SELLER = "SELLER",
 	ADMIN = "ADMIN",
+	SYSTEM = "SYSTEM",
 }
 
 export interface ITokenFamily {
 	latestAccessToken: string;
 	latestRefreshToken: string;
-	expiredAccessTokens?: Set<string>;
-	expiredRefreshTokens?: Set<string>;
+	expiredAccessTokens: Set<string>;
+	expiredRefreshTokens: Set<string>;
 }
 
 export interface IUser {
@@ -44,4 +46,5 @@ export interface IUser {
 	lastLoggedAt?: Date;
 	roles: Role[];
 	isSubscribed: boolean;
+	isAuthorized: boolean;
 }

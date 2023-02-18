@@ -45,15 +45,16 @@ router.post(
 	}),
 	registerUser
 );
+
 router.post("/register/resend", resendRegisterEmail);
 router.patch("/authorize", authorizeUser);
 router.post("/refresh", refreshTokens);
 
 //Routes used in forgot password flow
-router.post("/forgot/sendemail", sendForgotPasswordEmail);
-router.post("/forgot/resetpassword", resetPassword);
+router.patch("/forgot/sendemail", sendForgotPasswordEmail);
+router.patch("/forgot/resetpassword", resetPassword);
 
 //Routes used in change password flow
-router.post("/forgot/changepassword", changepassword);
+router.patch("/forgot/changepassword", changepassword);
 
 export default router;
