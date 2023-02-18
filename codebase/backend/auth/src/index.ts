@@ -7,7 +7,7 @@ import Mongoose from "mongoose";
 import amqplib from "amqplib";
 
 import user from "./user-routes";
-import auth from "./auth-routes";
+import auth from "./routes/auth-routes";
 
 dotenv.config();
 

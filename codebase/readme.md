@@ -43,3 +43,11 @@ If a new service is to be added. Please make a copy of the .template folder in t
 
 1. All file names should use hyphen seperated lowercase names. Eg: Auth Controller.ts -> auth-controller.ts
 2. Do not sub-divide src directory unless necessary. Most services might only have one set of routes, controllers and services which makes dividing it unnecessary.
+3. Prefer writing interfaces over types unless absolutely necessary. All interfaces must be prefixed with I- eg; ITokenFamily
+4. Import order should be
+
+   1. Express or React imports
+   2. 3rd Party Library Imports
+   3. Our custom stuff
+   4. Constants and Types
+   5. Styles if any
