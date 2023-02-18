@@ -1,9 +1,13 @@
-import express, { json, urlencoded } from "express";
 import dotenv from "dotenv";
+import express, { json, urlencoded } from "express";
+
 import Redis from "ioredis";
 import helmet from "helmet";
 import Mongoose from "mongoose";
 import amqplib from "amqplib";
+
+import user from "./user-routes";
+import auth from "./auth-routes";
 
 dotenv.config();
 
@@ -18,6 +22,8 @@ app.disable("x-powered-by");
 console.log("Configured application");
 
 //Need to attach relevant routes
+app.use("/api/auth", auth);
+app.use("/api/user", user);
 console.log("Attached routes");
 
 //Connect to relevant databases and services
