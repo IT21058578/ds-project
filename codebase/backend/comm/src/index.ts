@@ -1,11 +1,13 @@
-import express, { json, urlencoded } from "express";
 import dotenv from "dotenv";
+import express, { json, urlencoded } from "express";
+
 import helmet from "helmet";
 import Mongoose from "mongoose";
 
+import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
+
 dotenv.config();
 
-const { PORT, SERVICE, MONGO_URI, RABBITMQ_URI } = process.env;
 const app = express();
 
 //Confguring express erver
@@ -20,7 +22,7 @@ console.log("Attached routes");
 
 //Connect to relevant databases and services
 Mongoose.set("strictQuery", false);
-console.log({ MONGO_URI, RABBITMQ_URI });
+console.log({ REDIS_URI, MONGO_URI });
 export const mongoose = await Mongoose.connect(MONGO_URI || "");
 console.log("Connected to databases and services");
 

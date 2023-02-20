@@ -1,4 +1,12 @@
 {
-	"references": [{ "path": "./auth" }, { "path": "./comm" }],
+	"references": [
+		{ "path": "./auth" },
+		{ "path": "./comm" },
+		{ "path": "./payment" },
+		{ "path": "./order" },
+		{ "path": "./item" },
+		{ "path": "./review" },
+		{ "path": "./cart"}
+	],
 	"files": []
 }

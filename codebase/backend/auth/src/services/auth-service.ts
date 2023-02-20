@@ -6,8 +6,8 @@ import bcrypt from "bcrypt";
 import { User } from "../models/user-model";
 import { TokenService } from "./token-service";
 
-import { HttpCode, ITokenFamily, IUser, UserErrorMessage } from "../types";
-import axios from "axios";
+import { ITokenFamily, IUser, UserErrorMessage } from "../types";
+import { axios } from "../utils";
 import {
 	SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT,
 	SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT,
@@ -29,8 +29,8 @@ const loginUser = async (email: string, password: string) => {
 
 	console.log("Saving token family in redis");
 	const tokenFamily: ITokenFamily = {
-		latestAccessToken: TokenService.generateAccessToken(),
-		latestRefreshToken: TokenService.generateRefreshToken(),
+		latestAccessToken: TokenService.generateAccessToken(user.roles, user.id),
+		latestRefreshToken: TokenService.generateRefreshToken(user.id),
 		expiredAccessTokens: new Set<string>(),
 		expiredRefreshTokens: new Set<string>(),
 	};
@@ -45,6 +45,13 @@ const loginUser = async (email: string, password: string) => {
 		accessToken: tokenFamily.latestAccessToken,
 		refreshToken: tokenFamily.latestRefreshToken,
 	};
+};
+
+const logoutUser = async (id: string) => {
+	console.log("Deleting token family");
+	await redis.call("JSON.DEL", id).catch((err) => {
+		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	});
 };
 
 const registerUser = async (user: IUser) => {
@@ -111,13 +118,25 @@ const refreshTokens = async (refreshToken: string) => {
 	const { sub: id } = jwt.verify(refreshToken, "") as jwt.JwtPayload;
 
 	if (id === undefined) {
-		// This should never happen
+		console.error("Refresh token with no id received");
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
 	}
 
-	const tokenFamily = (await redis.call("JSON.GET", id)) as ITokenFamily;
+	const tokenFamily = (await redis.call("JSON.GET", id)) as ITokenFamily | null;
 
 	console.log(tokenFamily); //TODO: Delete
+
+	if (tokenFamily === null) {
+		console.error("User tried to refresh when not logged in");
+		throw Error(UserErrorMessage.USER_CONFLICT);
+	}
+
+	const user = await User.findById(id).exec();
+
+	if (user === null) {
+		console.error("Non-existant user tried to refresh");
+		throw Error(UserErrorMessage.USER_CONFLICT);
+	}
 
 	if (tokenFamily.expiredRefreshTokens?.has(refreshToken)) {
 		console.error("Old refresh token detected");
@@ -126,13 +145,17 @@ const refreshTokens = async (refreshToken: string) => {
 	}
 
 	if (tokenFamily.latestRefreshToken !== refreshToken) {
+		console.error("Refresh token does not match any token");
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
 	tokenFamily.expiredAccessTokens.add(tokenFamily.latestAccessToken);
 	tokenFamily.expiredRefreshTokens.add(tokenFamily.latestRefreshToken);
-	tokenFamily.latestAccessToken = TokenService.generateAccessToken();
-	tokenFamily.latestRefreshToken = TokenService.generateRefreshToken();
+	tokenFamily.latestAccessToken = TokenService.generateAccessToken(
+		user.roles,
+		user.id
+	);
+	tokenFamily.latestRefreshToken = TokenService.generateRefreshToken(user.id);
 
 	console.log("Saving token family in redis");
 	await redis.call("JSON.SET", id, JSON.stringify(tokenFamily)).catch((err) => {

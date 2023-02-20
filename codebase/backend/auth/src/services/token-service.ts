@@ -1,11 +1,19 @@
-const generateAccessToken = (): string => {
+import jwt from "jsonwebtoken";
+import { Role } from "../types";
+
+const generateAccessToken = (roles: Role[], id: string): string => {
+	const accessToken = jwt.sign({ roles, id }, "", { expiresIn: "2h" });
+	return accessToken;
+};
+
+const generateRefreshToken = (id: string): string => {
 	//TODO: Implement function
 	return "";
 };
 
-const generateRefreshToken = (): string => {
+const decodeAccessToken = (): jwt.JwtPayload => {
 	//TODO: Implement function
-	return "";
+	return {};
 };
 
 export const TokenService = { generateAccessToken, generateRefreshToken };

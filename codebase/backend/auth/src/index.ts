@@ -7,9 +7,10 @@ import Mongoose from "mongoose";
 
 import auth from "./routes/auth-routes";
 
+import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
+
 dotenv.config();
 
-const { PORT, SERVICE, REDIS_URI, MONGO_URI } = process.env;
 const app = express();
 
 //Confguring express erver
