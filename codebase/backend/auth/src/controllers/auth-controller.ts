@@ -7,7 +7,7 @@ import { AuthService } from "../services/auth-service";
 
 import { IUser, UserErrorMessage } from "../types";
 
-export const loginUser = async (req: Request, res: Response) => {
+const loginUser = async (req: Request, res: Response) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty) {
 		return res
@@ -19,6 +19,7 @@ export const loginUser = async (req: Request, res: Response) => {
 	try {
 		const { email, password } = req.body;
 		await AuthService.loginUser(email, password);
+		return res.status(HttpStatusCode.Ok).send();
 	} catch (error) {
 		if (error instanceof Error) {
 			const msg = error.message as UserErrorMessage;
@@ -35,7 +36,27 @@ export const loginUser = async (req: Request, res: Response) => {
 	}
 };
 
-export const registerUser = async (req: Request, res: Response) => {
+const logoutUser = async (req: Request, res: Response) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty) {
+		return res
+			.json({ errors: errors.array() })
+			.status(HttpStatusCode.BadRequest)
+			.send();
+	}
+
+	try {
+		const { id } = req.body;
+		await AuthService.logoutUser(id);
+		return res.status(HttpStatusCode.Ok).send();
+	} catch (error) {
+		if (error instanceof Error) {
+			const msg = error.message as UserErrorMessage;
+		}
+	}
+};
+
+const registerUser = async (req: Request, res: Response) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty) {
 		return res
@@ -46,6 +67,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 	try {
 		await AuthService.registerUser(req.body as IUser);
+		return res.status(HttpStatusCode.Ok).send();
 	} catch (error) {
 		if (error instanceof Error) {
 			const msg = error.message;
@@ -57,17 +79,134 @@ export const registerUser = async (req: Request, res: Response) => {
 	}
 };
 
-export const resendRegisterEmail = async (req: Request, res: Response) => {};
+const resendRegisterEmail = async (req: Request, res: Response) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty) {
+		return res
+			.json({ errors: errors.array() })
+			.status(HttpStatusCode.BadRequest)
+			.send();
+	}
 
-export const authorizeUser = async (req: Request, res: Response) => {};
+	try {
+		const { email } = req.body;
+		await AuthService.resendRegisterEmail(email);
+		return res.status(HttpStatusCode.Ok).send();
+	} catch (error) {
+		if (error instanceof Error) {
+			const msg = error.message as UserErrorMessage;
+		}
+	}
+};
 
-export const refreshTokens = async (req: Request, res: Response) => {};
+const authorizeUser = async (req: Request, res: Response) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty) {
+		return res
+			.json({ errors: errors.array() })
+			.status(HttpStatusCode.BadRequest)
+			.send();
+	}
 
-export const sendForgotPasswordEmail = async (
-	req: Request,
-	res: Response
-) => {};
+	try {
+		const { authorizationToken } = req.body;
+		await AuthService.authorizeUser(authorizationToken);
+		return res.status(HttpStatusCode.Ok).send();
+	} catch (error) {
+		if (error instanceof Error) {
+			const msg = error.message as UserErrorMessage;
+		}
+	}
+};
 
-export const resetPassword = async (req: Request, res: Response) => {};
+const refreshTokens = async (req: Request, res: Response) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty) {
+		return res
+			.json({ errors: errors.array() })
+			.status(HttpStatusCode.BadRequest)
+			.send();
+	}
 
-export const changepassword = async (req: Request, res: Response) => {};
+	try {
+		const { refreshToken } = req.body;
+		await AuthService.refreshTokens(refreshToken);
+		return res.status(HttpStatusCode.Ok).send();
+	} catch (error) {
+		if (error instanceof Error) {
+			const msg = error.message as UserErrorMessage;
+		}
+	}
+};
+
+const sendForgotPasswordEmail = async (req: Request, res: Response) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty) {
+		return res
+			.json({ errors: errors.array() })
+			.status(HttpStatusCode.BadRequest)
+			.send();
+	}
+
+	try {
+		const { email } = req.body;
+		await AuthService.sendForgotPasswordEmail(email);
+		return res.status(HttpStatusCode.Ok).send();
+	} catch (error) {
+		if (error instanceof Error) {
+			const msg = error.message as UserErrorMessage;
+		}
+	}
+};
+
+const resetPassword = async (req: Request, res: Response) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty) {
+		return res
+			.json({ errors: errors.array() })
+			.status(HttpStatusCode.BadRequest)
+			.send();
+	}
+
+	try {
+		const { password, resetToken } = req.body;
+		await AuthService.resetPassword(resetToken, password);
+		return res.status(HttpStatusCode.Ok).send();
+	} catch (error) {
+		if (error instanceof Error) {
+			const msg = error.message as UserErrorMessage;
+		}
+	}
+};
+
+const changePassword = async (req: Request, res: Response) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty) {
+		return res
+			.json({ errors: errors.array() })
+			.status(HttpStatusCode.BadRequest)
+			.send();
+	}
+
+	try {
+		const { id, password, oldPassword } = req.body;
+		await AuthService.changePassword(id, password, oldPassword);
+		return res.status(HttpStatusCode.Ok).send();
+	} catch (error) {
+		if (error instanceof Error) {
+			const msg = error.message as UserErrorMessage;
+		}
+	}
+};
+
+export const AuthController = {
+	loginUser,
+	logoutUser,
+	registerUser,
+	resendRegisterEmail,
+	authorizeUser,
+	refreshTokens,
+	sendForgotPasswordEmail,
+	resetPassword,
+	changePassword,
+};

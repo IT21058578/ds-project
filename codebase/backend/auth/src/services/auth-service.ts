@@ -215,15 +215,15 @@ const resetPassword = async (resetToken: string, password: string) => {
 	user.save();
 };
 
-const changepassword = async (
-	email: string,
+const changePassword = async (
+	id: string,
 	oldPassword: string,
 	password: string
 ) => {
 	console.log("Verifying credentials");
-	const user = (await User.find({ email }).exec()).at(0);
+	const user = await User.findById(id).exec();
 
-	if (user === undefined) {
+	if (user === null) {
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
 	}
 
@@ -254,5 +254,5 @@ export const AuthService = {
 	refreshTokens,
 	sendForgotPasswordEmail,
 	resetPassword,
-	changepassword,
+	changePassword,
 };

@@ -2,16 +2,7 @@ import { Router } from "express";
 
 import { checkSchema } from "express-validator";
 
-import {
-	authorizeUser,
-	changepassword,
-	loginUser,
-	refreshTokens,
-	registerUser,
-	resendRegisterEmail,
-	resetPassword,
-	sendForgotPasswordEmail,
-} from "../controllers/auth-controller";
+import { AuthController } from "../controllers/auth-controller";
 import { rateLimit } from "../middleware/rate-limit";
 
 const router = Router();
@@ -24,7 +15,7 @@ router.post(
 		ip: { in: ["body"], isIP: true, trim: true },
 	}),
 	rateLimit,
-	loginUser
+	AuthController.loginUser
 );
 
 router.post(
@@ -33,38 +24,75 @@ router.post(
 		email: { in: ["body"], isEmail: true },
 		firstName: {
 			in: ["body"],
-			isString: true,
 			isAlpha: true,
-			normalizeEmail: true,
+			trim: true,
 		},
 		lastName: {
 			in: ["body"],
-			isString: true,
 			isAlpha: true,
-			exists: true,
 			trim: true,
 		},
-		password: { in: ["body"], isString: true, exists: true, trim: true },
+		password: { in: ["body"], isString: true, trim: true },
 		isSubscribed: {
 			in: ["body"],
-			isBoolean: true,
-			exists: true,
-			trim: true,
 			toBoolean: true,
+			default: true,
 		},
 	}),
-	registerUser
+	AuthController.registerUser
 );
 
-router.post("/register/resend", resendRegisterEmail);
-router.patch("/authorize", authorizeUser);
-router.post("/refresh", refreshTokens);
+router.post(
+	"/register/resend",
+	checkSchema({
+		email: { in: ["body"], isEmail: true, trim: true },
+	}),
+	AuthController.resendRegisterEmail
+);
+
+router.patch(
+	"/authorize",
+	checkSchema({
+		authorizationToken: { in: ["body"], isUUID: true, trim: true },
+	}),
+	AuthController.authorizeUser
+);
+
+router.post(
+	"/refresh",
+	checkSchema({
+		refreshToken: { in: ["body"], isJWT: true, exists: true },
+	}),
+	AuthController.refreshTokens
+);
 
 //Routes used in forgot password flow
-router.patch("/forgot/sendemail", sendForgotPasswordEmail);
-router.patch("/forgot/resetpassword", resetPassword);
+router.patch(
+	"/forgot/send-email",
+	checkSchema({
+		email: { in: ["body"], isEmail: true, trim: true },
+	}),
+	AuthController.sendForgotPasswordEmail
+);
+
+router.patch(
+	"/forgot/reset-password",
+	checkSchema({
+		resetToken: { in: ["body"], isUUID: true, trim: true },
+		password: { in: ["body"], isString: true, trim: true },
+	}),
+	AuthController.resetPassword
+);
 
 //Routes used in change password flow
-router.patch("/forgot/changepassword", changepassword);
+router.patch(
+	"/change-password",
+	checkSchema({
+		id: { in: ["body"], isMongoId: true, trim: true },
+		oldPassword: { in: ["body"], isString: true, trim: true },
+		password: { in: ["body"], isString: true, trim: true },
+	}),
+	AuthController.changePassword
+);
 
 export default router;
