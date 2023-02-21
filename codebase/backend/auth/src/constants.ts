@@ -22,3 +22,20 @@ export const SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT = `${COMM_API_URI}/emai
 const { AUTH_PORT, AUTH_HOST } = process.env;
 export const AUTH_API_URI = `http://${AUTH_HOST}:${AUTH_PORT}/api`;
 export const DECODE_ACCCESS_TOKEN_ENDPOINT = `${AUTH_API_URI}/token/decode-access-token`;
+export const DECODE_REFRESH_TOKEN_ENDPOINT = ``;
+export const GENERATE_ACCESS_TOKEN_ENDPOINT = ``;
+export const GENERATE_REFRESH_TOKEN_ENDPOINT = ``;
+
+export const LOGIN_ENDPOINT = ``;
+export const LOGOUT_ENDPOINT = ``;
+export const REGISTER_ENDPOINT = ``;
+export const RESEND_REGISTER_ENDPOINT = ``;
+export const AUTHORIZE_ENDPOINT = ``;
+export const FORGOT_PASSWORD_ENDPOINT = ``;
+export const CHANGE_PASSWORD_ENDPOINT = ``;
+export const RESET_PASSWORD_ENDPOINT = ``;
+
+export const GET_USER_ENDPOINT = ``;
+export const GET_USERS_ENDPOINT = ``;
+export const DELETE_USER_ENDPOINT = ``;
+export const EDIT_USER_ENDPOINT = ``;

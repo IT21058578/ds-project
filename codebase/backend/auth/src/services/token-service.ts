@@ -23,6 +23,13 @@ const generateRefreshToken = async (id: string) => {
 };
 
 const decodeAccessToken = async (token: string) => {
+	const publicKey = await readFile("../../assets/access-public.key");
+	const payload = jwt.verify(token, publicKey);
+	console.log(payload);
+	return payload;
+};
+
+const decodeRefreshToken = async (token: string) => {
 	const publicKey = await readFile("../../assets/refresh-public.key");
 	const payload = jwt.verify(token, publicKey);
 	console.log(payload);
@@ -33,4 +40,5 @@ export const TokenService = {
 	generateAccessToken,
 	generateRefreshToken,
 	decodeAccessToken,
+	decodeRefreshToken,
 };

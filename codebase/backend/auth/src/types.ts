@@ -54,3 +54,11 @@ export interface IUser {
 	isSubscribed: boolean;
 	isAuthorized: boolean;
 }
+
+export interface IUserSearchOptions {
+	pageNum: number;
+	pageSize: number;
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+}

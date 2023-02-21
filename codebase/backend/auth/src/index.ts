@@ -6,6 +6,8 @@ import helmet from "helmet";
 import Mongoose from "mongoose";
 
 import auth from "./routes/auth-routes";
+import token from "./routes/token-routes";
+import user from "./routes/user-routes";
 
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 
@@ -22,6 +24,8 @@ console.log("Configured application");
 
 //Need to attach relevant routes
 app.use("/api/auth", auth);
+app.use("/api/token", token);
+app.use("/api/user", user);
 console.log("Attached routes");
 
 //Connect to relevant databases and services
