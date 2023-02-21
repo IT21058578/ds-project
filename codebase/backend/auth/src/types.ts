@@ -20,13 +20,22 @@ export enum Role {
 }
 
 /**
- * An interface for a family of tokens per user. This is saved to redis when a user logs in and removed when the log out
+ * An interface for a family of tokens per user.
+ * This is saved to redis when a user logs in and removed when the log out
  */
 export interface ITokenFamily {
 	latestAccessToken: string;
 	latestRefreshToken: string;
 	expiredAccessTokens: Set<string>;
 	expiredRefreshTokens: Set<string>;
+}
+
+/**
+ * An interface to manage the blacklist in redis. For each IP an array of {email, count} is kept. This allows to quickly
+ * check the number of times any email or ip has been hit.
+ */
+export interface IBlacklistUnit {
+	emailList: { email: string; count: number }[];
 }
 
 /**

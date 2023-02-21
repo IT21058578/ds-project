@@ -9,7 +9,6 @@ import { IUser, UserErrorMessage } from "../types";
 
 export const loginUser = async (req: Request, res: Response) => {
 	const errors = validationResult(req);
-
 	if (!errors.isEmpty) {
 		return res
 			.json({ errors: errors.array() })
@@ -38,7 +37,6 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const registerUser = async (req: Request, res: Response) => {
 	const errors = validationResult(req);
-
 	if (!errors.isEmpty) {
 		return res
 			.json({ errors: errors.array() })

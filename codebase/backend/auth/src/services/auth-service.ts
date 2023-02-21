@@ -1,13 +1,13 @@
-import { redis, mongoose } from "..";
+import { redis } from "..";
 import { randomUUID } from "crypto";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
+import { axios } from "../utils";
 import { User } from "../models/user-model";
 import { TokenService } from "./token-service";
 
 import { ITokenFamily, IUser, UserErrorMessage } from "../types";
-import { axios } from "../utils";
 import {
 	SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT,
 	SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT,
@@ -29,8 +29,11 @@ const loginUser = async (email: string, password: string) => {
 
 	console.log("Saving token family in redis");
 	const tokenFamily: ITokenFamily = {
-		latestAccessToken: TokenService.generateAccessToken(user.roles, user.id),
-		latestRefreshToken: TokenService.generateRefreshToken(user.id),
+		latestAccessToken: await TokenService.generateAccessToken(
+			user.roles,
+			user.id
+		),
+		latestRefreshToken: await TokenService.generateRefreshToken(user.id),
 		expiredAccessTokens: new Set<string>(),
 		expiredRefreshTokens: new Set<string>(),
 	};
@@ -151,11 +154,13 @@ const refreshTokens = async (refreshToken: string) => {
 
 	tokenFamily.expiredAccessTokens.add(tokenFamily.latestAccessToken);
 	tokenFamily.expiredRefreshTokens.add(tokenFamily.latestRefreshToken);
-	tokenFamily.latestAccessToken = TokenService.generateAccessToken(
+	tokenFamily.latestAccessToken = await TokenService.generateAccessToken(
 		user.roles,
 		user.id
 	);
-	tokenFamily.latestRefreshToken = TokenService.generateRefreshToken(user.id);
+	tokenFamily.latestRefreshToken = await TokenService.generateRefreshToken(
+		user.id
+	);
 
 	console.log("Saving token family in redis");
 	await redis.call("JSON.SET", id, JSON.stringify(tokenFamily)).catch((err) => {
@@ -242,6 +247,7 @@ const changepassword = async (
 
 export const AuthService = {
 	loginUser,
+	logoutUser,
 	registerUser,
 	resendRegisterEmail,
 	authorizeUser,

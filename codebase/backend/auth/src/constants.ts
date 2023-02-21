@@ -1,13 +1,16 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-// ** All API Routes **
 // Essentials
 export const { MONGO_URI, REDIS_URI, PORT, SERVICE } = process.env;
 
 // API Keys
 export const { INTERNAL_API_KEY } = process.env;
 
+export const MAX_IP_LOGIN_ATTEMPTS = 100;
+export const MAX_IP_EMAIL_LOGIN_ATTEMPTS = 10;
+
+// ** All API Routes **
 // Comm Service routes
 const { COMM_PORT, COMM_HOST } = process.env;
 export const COMM_API_URI = `http://${COMM_HOST}:${COMM_PORT}/api`;

@@ -12,10 +12,20 @@ import {
 	resetPassword,
 	sendForgotPasswordEmail,
 } from "../controllers/auth-controller";
+import { rateLimit } from "../middleware/rate-limit";
 
 const router = Router();
 
-router.post("/login", loginUser);
+router.post(
+	"/login",
+	checkSchema({
+		email: { in: ["body"], isEmail: true, trim: true },
+		password: { in: ["body"], isString: true, exists: true, trim: true },
+		ip: { in: ["body"], isIP: true, trim: true },
+	}),
+	rateLimit,
+	loginUser
+);
 
 router.post(
 	"/register",
