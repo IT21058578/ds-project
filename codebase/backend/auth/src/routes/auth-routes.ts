@@ -3,13 +3,14 @@ import { Router } from "express";
 import { checkSchema } from "express-validator";
 
 import { AuthController } from "../controllers/auth-controller";
+import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
 import { rateLimit } from "../middleware/rate-limit";
 
 const router = Router();
 
 router.post(
 	"/login",
-	checkSchema({
+	...checkSchemaAndHandleErrors({
 		email: { in: ["body"], isEmail: true, trim: true },
 		password: { in: ["body"], isString: true, exists: true, trim: true },
 		ip: { in: ["body"], isIP: true, trim: true },

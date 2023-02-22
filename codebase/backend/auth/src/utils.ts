@@ -1,8 +1,9 @@
-import Axios, { HttpStatusCode } from "axios";
 import { Request, Response, NextFunction } from "express";
 
-import { DECODE_ACCCESS_TOKEN_ENDPOINT, INTERNAL_API_KEY } from "./constants";
+import { validationResult } from "express-validator";
+import Axios, { HttpStatusCode } from "axios";
 
+import { DECODE_ACCCESS_TOKEN_ENDPOINT, INTERNAL_API_KEY } from "./constants";
 import { Role, UserErrorMessage } from "./types";
 
 /**

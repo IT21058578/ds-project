@@ -8,14 +8,6 @@ import { AuthService } from "../services/auth-service";
 import { IUser, UserErrorMessage } from "../types";
 
 const loginUser = async (req: Request, res: Response) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty) {
-		return res
-			.json({ errors: errors.array() })
-			.status(HttpStatusCode.BadRequest)
-			.send();
-	}
-
 	try {
 		const { email, password } = req.body;
 		await AuthService.loginUser(email, password);
@@ -37,14 +29,6 @@ const loginUser = async (req: Request, res: Response) => {
 };
 
 const logoutUser = async (req: Request, res: Response) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty) {
-		return res
-			.json({ errors: errors.array() })
-			.status(HttpStatusCode.BadRequest)
-			.send();
-	}
-
 	try {
 		const { id } = req.body;
 		await AuthService.logoutUser(id);
@@ -57,14 +41,6 @@ const logoutUser = async (req: Request, res: Response) => {
 };
 
 const registerUser = async (req: Request, res: Response) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty) {
-		return res
-			.json({ errors: errors.array() })
-			.status(HttpStatusCode.BadRequest)
-			.send();
-	}
-
 	try {
 		await AuthService.registerUser(req.body as IUser);
 		return res.status(HttpStatusCode.Ok).send();
@@ -80,14 +56,6 @@ const registerUser = async (req: Request, res: Response) => {
 };
 
 const resendRegisterEmail = async (req: Request, res: Response) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty) {
-		return res
-			.json({ errors: errors.array() })
-			.status(HttpStatusCode.BadRequest)
-			.send();
-	}
-
 	try {
 		const { email } = req.body;
 		await AuthService.resendRegisterEmail(email);
@@ -100,14 +68,6 @@ const resendRegisterEmail = async (req: Request, res: Response) => {
 };
 
 const authorizeUser = async (req: Request, res: Response) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty) {
-		return res
-			.json({ errors: errors.array() })
-			.status(HttpStatusCode.BadRequest)
-			.send();
-	}
-
 	try {
 		const { authorizationToken } = req.body;
 		await AuthService.authorizeUser(authorizationToken);
@@ -120,14 +80,6 @@ const authorizeUser = async (req: Request, res: Response) => {
 };
 
 const refreshTokens = async (req: Request, res: Response) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty) {
-		return res
-			.json({ errors: errors.array() })
-			.status(HttpStatusCode.BadRequest)
-			.send();
-	}
-
 	try {
 		const { refreshToken } = req.body;
 		await AuthService.refreshTokens(refreshToken);
@@ -140,14 +92,6 @@ const refreshTokens = async (req: Request, res: Response) => {
 };
 
 const sendForgotPasswordEmail = async (req: Request, res: Response) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty) {
-		return res
-			.json({ errors: errors.array() })
-			.status(HttpStatusCode.BadRequest)
-			.send();
-	}
-
 	try {
 		const { email } = req.body;
 		await AuthService.sendForgotPasswordEmail(email);
@@ -160,14 +104,6 @@ const sendForgotPasswordEmail = async (req: Request, res: Response) => {
 };
 
 const resetPassword = async (req: Request, res: Response) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty) {
-		return res
-			.json({ errors: errors.array() })
-			.status(HttpStatusCode.BadRequest)
-			.send();
-	}
-
 	try {
 		const { password, resetToken } = req.body;
 		await AuthService.resetPassword(resetToken, password);
@@ -180,14 +116,6 @@ const resetPassword = async (req: Request, res: Response) => {
 };
 
 const changePassword = async (req: Request, res: Response) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty) {
-		return res
-			.json({ errors: errors.array() })
-			.status(HttpStatusCode.BadRequest)
-			.send();
-	}
-
 	try {
 		const { id, password, oldPassword } = req.body;
 		await AuthService.changePassword(id, password, oldPassword);
