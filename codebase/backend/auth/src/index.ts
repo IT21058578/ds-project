@@ -16,6 +16,8 @@ dotenv.config();
 const app = express();
 
 //Confguring express erver
+let mongoose: typeof Mongoose | undefined;
+
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());
@@ -31,11 +33,13 @@ console.log("Attached routes");
 //Connect to relevant databases and services
 Mongoose.set("strictQuery", false);
 console.log({ REDIS_URI, MONGO_URI });
-export const mongoose = await Mongoose.connect(MONGO_URI || "");
-export const redis = new Redis(REDIS_URI || "");
+Mongoose.connect(MONGO_URI || "").then((client) => (mongoose = client));
+const redis = new Redis(REDIS_URI || "");
 console.log("Connected to databases and services");
 
 //Start server
 app.listen(PORT || 3000, () => {
 	console.log(`Started ${SERVICE} service. Listening to port ${PORT}`);
 });
+
+export { redis, mongoose };

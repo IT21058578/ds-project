@@ -1,8 +1,6 @@
 import { HttpStatusCode } from "axios";
 import { Request, Response } from "express";
 
-import { validationResult } from "express-validator/src/validation-result";
-
 import { AuthService } from "../services/auth-service";
 
 import { IUser, UserErrorMessage } from "../types";

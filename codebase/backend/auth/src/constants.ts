@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { Role } from "./types";
 dotenv.config();
 
 // Essentials
@@ -9,6 +10,7 @@ export const { INTERNAL_API_KEY } = process.env;
 
 export const MAX_IP_LOGIN_ATTEMPTS = 100;
 export const MAX_IP_EMAIL_LOGIN_ATTEMPTS = 10;
+export const API_ROLES = [Role.ADMIN, Role.BUYER, Role.SELLER];
 
 // ** All API Routes **
 // Comm Service routes

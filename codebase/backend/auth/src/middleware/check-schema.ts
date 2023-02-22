@@ -13,13 +13,15 @@ import { Middleware } from "express-validator/src/base";
  */
 export const checkSchemaAndHandleErrors = (schema: Schema) => {
 	const check = checkSchema(schema);
-	const handle = (req: Request, res: Response) => {
+	const handle = (req: Request, res: Response, next: NextFunction) => {
 		const errors = validationResult(req);
-		if (!errors.isEmpty) {
+		if (!errors.isEmpty()) {
 			return res
 				.json({ errors: errors.array() })
 				.status(HttpStatusCode.BadRequest)
 				.send();
+		} else {
+			next();
 		}
 	};
 	return [check, handle];
