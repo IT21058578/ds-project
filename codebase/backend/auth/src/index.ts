@@ -34,7 +34,7 @@ console.log("Attached routes");
 Mongoose.set("strictQuery", false);
 console.log({ REDIS_URI, MONGO_URI });
 Mongoose.connect(MONGO_URI || "").then((client) => (mongoose = client));
-const redis = new Redis(REDIS_URI || "");
+const tokenRedis = new Redis(REDIS_URI || "", { db: 0 });
 console.log("Connected to databases and services");
 
 //Start server
@@ -42,4 +42,4 @@ app.listen(PORT || 3000, () => {
 	console.log(`Started ${SERVICE} service. Listening to port ${PORT}`);
 });
 
-export { redis, mongoose };
+export { tokenRedis, mongoose };

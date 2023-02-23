@@ -17,9 +17,8 @@ export const checkSchemaAndHandleErrors = (schema: Schema) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			return res
-				.json({ errors: errors.array() })
 				.status(HttpStatusCode.BadRequest)
-				.send();
+				.json({ errors: errors.array() });
 		} else {
 			next();
 		}

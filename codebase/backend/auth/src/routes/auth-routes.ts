@@ -1,10 +1,7 @@
 import { Router } from "express";
 
-import { checkSchema } from "express-validator";
-
 import { AuthController } from "../controllers/auth-controller";
 import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
-import { rateLimit } from "../middleware/rate-limit";
 
 const router = Router();
 
@@ -15,13 +12,20 @@ router.post(
 		password: { in: ["body"], isString: true, exists: true, trim: true },
 		ip: { in: ["body"], isIP: true, trim: true },
 	}),
-	rateLimit,
 	AuthController.loginUser
 );
 
 router.post(
+	"/logout",
+	...checkSchemaAndHandleErrors({
+		id: { in: ["body"], isMongoId: true },
+	}),
+	AuthController.logoutUser
+);
+
+router.post(
 	"/register",
-	checkSchema({
+	...checkSchemaAndHandleErrors({
 		email: { in: ["body"], isEmail: true },
 		firstName: {
 			in: ["body"],
@@ -39,13 +43,17 @@ router.post(
 			toBoolean: true,
 			default: true,
 		},
+		mobile: {
+			in: ["body"],
+			isMobilePhone: true,
+		},
 	}),
 	AuthController.registerUser
 );
 
 router.post(
 	"/register/resend",
-	checkSchema({
+	...checkSchemaAndHandleErrors({
 		email: { in: ["body"], isEmail: true, trim: true },
 	}),
 	AuthController.resendRegisterEmail
@@ -53,7 +61,7 @@ router.post(
 
 router.patch(
 	"/authorize",
-	checkSchema({
+	...checkSchemaAndHandleErrors({
 		authorizationToken: { in: ["body"], isUUID: true, trim: true },
 	}),
 	AuthController.authorizeUser
@@ -61,7 +69,7 @@ router.patch(
 
 router.post(
 	"/refresh",
-	checkSchema({
+	...checkSchemaAndHandleErrors({
 		refreshToken: { in: ["body"], isJWT: true, exists: true },
 	}),
 	AuthController.refreshTokens
@@ -70,7 +78,7 @@ router.post(
 //Routes used in forgot password flow
 router.patch(
 	"/forgot/send-email",
-	checkSchema({
+	...checkSchemaAndHandleErrors({
 		email: { in: ["body"], isEmail: true, trim: true },
 	}),
 	AuthController.sendForgotPasswordEmail
@@ -78,22 +86,29 @@ router.patch(
 
 router.patch(
 	"/forgot/reset-password",
-	checkSchema({
+	...checkSchemaAndHandleErrors({
 		resetToken: { in: ["body"], isUUID: true, trim: true },
 		password: { in: ["body"], isString: true, trim: true },
 	}),
 	AuthController.resetPassword
 );
 
-//Routes used in change password flow
 router.patch(
 	"/change-password",
-	checkSchema({
+	...checkSchemaAndHandleErrors({
 		id: { in: ["body"], isMongoId: true, trim: true },
 		oldPassword: { in: ["body"], isString: true, trim: true },
 		password: { in: ["body"], isString: true, trim: true },
 	}),
 	AuthController.changePassword
 );
+
+//Eliminate and add roles
+router.patch("/change-perms");
+
+//Change emails
+router.patch("/change-email");
+
+router.patch("/change-email/resend");
 
 export default router;

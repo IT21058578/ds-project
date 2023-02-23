@@ -6,13 +6,11 @@ import { hasValidRoles } from "../utils";
 
 const router = Router();
 
-// FIXME: Validate roles
-
 router.post(
 	"/generate-access-token",
 	...checkSchemaAndHandleErrors({
-		id: { isMongoId: true },
-		roles: { custom: { options: hasValidRoles } },
+		id: { in: ["body"], isMongoId: true },
+		roles: { in: ["body"], custom: { options: hasValidRoles } },
 	}),
 	TokenController.generateAccessToken
 );
@@ -20,8 +18,8 @@ router.post(
 router.post(
 	"/generate-refresh-token",
 	...checkSchemaAndHandleErrors({
-		id: { isMongoId: true },
-		roles: { custom: { options: hasValidRoles } },
+		id: { in: ["body"], isMongoId: true },
+		roles: { in: ["body"], custom: { options: hasValidRoles } },
 	}),
 	TokenController.generateRefreshToken
 );
@@ -29,7 +27,7 @@ router.post(
 router.post(
 	"/decode-access-token",
 	...checkSchemaAndHandleErrors({
-		accessToken: { isJWT: true },
+		accessToken: { in: ["body"], isJWT: true },
 	}),
 	TokenController.decodeAccessToken
 );
@@ -37,7 +35,7 @@ router.post(
 router.post(
 	"/decode-refresh-token",
 	...checkSchemaAndHandleErrors({
-		refreshToken: { isJWT: true },
+		refreshToken: { in: ["body"], isJWT: true },
 	}),
 	TokenController.decodeRefreshToken
 );

@@ -6,129 +6,129 @@ services:
     restart: always
 
   redis:
-    image: redis:alpine3.17
+    image: redis/redis-stack-server:6.2.6-v4
     ports:
       - "6379:6379"
     restart: always
 
   #Microservice images
-  auth-service:
-    build: ./auth
-    ports:
-      - "3001:3001"
-    environment:
-      - MONGO_URI=${AUTH_MONGO_URI}
-      - REDIS_URI=${REDIS_URI}
-      - AUTH_HOST=${AUTH_HOST}
-      - COMM_HOST=${COMM_HOST}
-      - ITEM_HOST=${ITEM_HOST}
-      - PAYMENT_HOST=${PAYMENT_HOST}
-      - REVIEW_HOST=${REVIEW_HOST}
-      - ORDER_HOST=${ORDER_HOST}
-      - CART_HOST=${CART_HOST}
-    depends_on:
-      - mongo
-      - redis
-    restart: always
+  # auth-service:
+  #   build: ./auth
+  #   ports:
+  #     - "3001:3001"
+  #   environment:
+  #     - MONGO_URI=${AUTH_MONGO_URI}
+  #     - REDIS_URI=${REDIS_URI}
+  #     - AUTH_HOST=${AUTH_HOST}
+  #     - COMM_HOST=${COMM_HOST}
+  #     - ITEM_HOST=${ITEM_HOST}
+  #     - PAYMENT_HOST=${PAYMENT_HOST}
+  #     - REVIEW_HOST=${REVIEW_HOST}
+  #     - ORDER_HOST=${ORDER_HOST}
+  #     - CART_HOST=${CART_HOST}
+  #   depends_on:
+  #     - mongo
+  #     - redis
+  #   restart: always
 
-  comm-service:
-    build: ./comm
-    ports:
-      - "3002:3002"
-    environment:
-      - MONGO_URI=${COMM_MONGO_URI}
-      - AUTH_HOST=${AUTH_HOST}
-      - COMM_HOST=${COMM_HOST}
-      - ITEM_HOST=${ITEM_HOST}
-      - PAYMENT_HOST=${PAYMENT_HOST}
-      - REVIEW_HOST=${REVIEW_HOST}
-      - ORDER_HOST=${ORDER_HOST}
-      - CART_HOST=${CART_HOST}
-    depends_on:
-      - mongo
-    restart: always
+  # comm-service:
+  #   build: ./comm
+  #   ports:
+  #     - "3002:3002"
+  #   environment:
+  #     - MONGO_URI=${COMM_MONGO_URI}
+  #     - AUTH_HOST=${AUTH_HOST}
+  #     - COMM_HOST=${COMM_HOST}
+  #     - ITEM_HOST=${ITEM_HOST}
+  #     - PAYMENT_HOST=${PAYMENT_HOST}
+  #     - REVIEW_HOST=${REVIEW_HOST}
+  #     - ORDER_HOST=${ORDER_HOST}
+  #     - CART_HOST=${CART_HOST}
+  #   depends_on:
+  #     - mongo
+  #   restart: always
 
-  payment-service:
-    build: ./payment
-    ports:
-      - "3003:3003"
-    environment:
-      - MONGO_URI=${PAYMENT_MONGO_URI}
-      - AUTH_HOST=${AUTH_HOST}
-      - COMM_HOST=${COMM_HOST}
-      - ITEM_HOST=${ITEM_HOST}
-      - PAYMENT_HOST=${PAYMENT_HOST}
-      - REVIEW_HOST=${REVIEW_HOST}
-      - ORDER_HOST=${ORDER_HOST}
-      - CART_HOST=${CART_HOST}
-    depends_on:
-      - mongo
-    restart: always
+  # payment-service:
+  #   build: ./payment
+  #   ports:
+  #     - "3003:3003"
+  #   environment:
+  #     - MONGO_URI=${PAYMENT_MONGO_URI}
+  #     - AUTH_HOST=${AUTH_HOST}
+  #     - COMM_HOST=${COMM_HOST}
+  #     - ITEM_HOST=${ITEM_HOST}
+  #     - PAYMENT_HOST=${PAYMENT_HOST}
+  #     - REVIEW_HOST=${REVIEW_HOST}
+  #     - ORDER_HOST=${ORDER_HOST}
+  #     - CART_HOST=${CART_HOST}
+  #   depends_on:
+  #     - mongo
+  #   restart: always
 
-  cart-service:
-    build: ./cart
-    ports:
-      - "3004:3004"
-    environment:
-      - MONGO_URI=${CART_MONGO_URI}
-      - AUTH_HOST=${AUTH_HOST}
-      - COMM_HOST=${COMM_HOST}
-      - ITEM_HOST=${ITEM_HOST}
-      - PAYMENT_HOST=${PAYMENT_HOST}
-      - REVIEW_HOST=${REVIEW_HOST}
-      - ORDER_HOST=${ORDER_HOST}
-      - CART_HOST=${CART_HOST}
-    depends_on:
-      - mongo
-    restart: always
+  # cart-service:
+  #   build: ./cart
+  #   ports:
+  #     - "3004:3004"
+  #   environment:
+  #     - MONGO_URI=${CART_MONGO_URI}
+  #     - AUTH_HOST=${AUTH_HOST}
+  #     - COMM_HOST=${COMM_HOST}
+  #     - ITEM_HOST=${ITEM_HOST}
+  #     - PAYMENT_HOST=${PAYMENT_HOST}
+  #     - REVIEW_HOST=${REVIEW_HOST}
+  #     - ORDER_HOST=${ORDER_HOST}
+  #     - CART_HOST=${CART_HOST}
+  #   depends_on:
+  #     - mongo
+  #   restart: always
 
-  review-service:
-    build: ./review
-    ports:
-      - "3005:3005"
-    environment:
-      - MONGO_URI=${REVIEW_MONGO_URI}
-      - AUTH_HOST=${AUTH_HOST}
-      - COMM_HOST=${COMM_HOST}
-      - ITEM_HOST=${ITEM_HOST}
-      - PAYMENT_HOST=${PAYMENT_HOST}
-      - REVIEW_HOST=${REVIEW_HOST}
-      - ORDER_HOST=${ORDER_HOST}
-      - CART_HOST=${CART_HOST}
-    depends_on:
-      - mongo
-    restart: always
+  # review-service:
+  #   build: ./review
+  #   ports:
+  #     - "3005:3005"
+  #   environment:
+  #     - MONGO_URI=${REVIEW_MONGO_URI}
+  #     - AUTH_HOST=${AUTH_HOST}
+  #     - COMM_HOST=${COMM_HOST}
+  #     - ITEM_HOST=${ITEM_HOST}
+  #     - PAYMENT_HOST=${PAYMENT_HOST}
+  #     - REVIEW_HOST=${REVIEW_HOST}
+  #     - ORDER_HOST=${ORDER_HOST}
+  #     - CART_HOST=${CART_HOST}
+  #   depends_on:
+  #     - mongo
+  #   restart: always
 
-  item-service:
-    build: ./item
-    ports:
-      - "3006:3006"
-    environment:
-      - MONGO_URI=${ITEM_MONGO_URI}
-      - AUTH_HOST=${AUTH_HOST}
-      - COMM_HOST=${COMM_HOST}
-      - ITEM_HOST=${ITEM_HOST}
-      - PAYMENT_HOST=${PAYMENT_HOST}
-      - REVIEW_HOST=${REVIEW_HOST}
-      - ORDER_HOST=${ORDER_HOST}
-      - CART_HOST=${CART_HOST}
-    depends_on:
-      - mongo
-    restart: always
+  # item-service:
+  #   build: ./item
+  #   ports:
+  #     - "3006:3006"
+  #   environment:
+  #     - MONGO_URI=${ITEM_MONGO_URI}
+  #     - AUTH_HOST=${AUTH_HOST}
+  #     - COMM_HOST=${COMM_HOST}
+  #     - ITEM_HOST=${ITEM_HOST}
+  #     - PAYMENT_HOST=${PAYMENT_HOST}
+  #     - REVIEW_HOST=${REVIEW_HOST}
+  #     - ORDER_HOST=${ORDER_HOST}
+  #     - CART_HOST=${CART_HOST}
+  #   depends_on:
+  #     - mongo
+  #   restart: always
 
-  order-service:
-    build: ./order
-    ports:
-      - "3007:3007"
-    environment:
-      - MONGO_URI=${ORDER_MONGO_URI}
-      - AUTH_HOST=${AUTH_HOST}
-      - COMM_HOST=${COMM_HOST}
-      - ITEM_HOST=${ITEM_HOST}
-      - PAYMENT_HOST=${PAYMENT_HOST}
-      - REVIEW_HOST=${REVIEW_HOST}
-      - ORDER_HOST=${ORDER_HOST}
-      - CART_HOST=${CART_HOST}
-    depends_on:
-      - mongo
-    restart: always
+  # order-service:
+  #   build: ./order
+  #   ports:
+  #     - "3007:3007"
+  #   environment:
+  #     - MONGO_URI=${ORDER_MONGO_URI}
+  #     - AUTH_HOST=${AUTH_HOST}
+  #     - COMM_HOST=${COMM_HOST}
+  #     - ITEM_HOST=${ITEM_HOST}
+  #     - PAYMENT_HOST=${PAYMENT_HOST}
+  #     - REVIEW_HOST=${REVIEW_HOST}
+  #     - ORDER_HOST=${ORDER_HOST}
+  #     - CART_HOST=${CART_HOST}
+  #   depends_on:
+  #     - mongo
+  #   restart: always

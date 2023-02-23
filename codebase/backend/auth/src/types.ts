@@ -45,6 +45,7 @@ export interface IUser {
 	firstName: string;
 	lastName: string;
 	resetToken?: string;
+	mobile: string;
 	email: string;
 	password: string;
 	createdAt: Date;

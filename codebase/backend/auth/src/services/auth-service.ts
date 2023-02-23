@@ -1,4 +1,4 @@
-import { redis } from "..";
+import { tokenRedis } from "..";
 import { randomUUID } from "crypto";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -7,8 +7,9 @@ import { axios } from "../utils";
 import { User } from "../models/user-model";
 import { TokenService } from "./token-service";
 
-import { ITokenFamily, IUser, UserErrorMessage } from "../types";
+import { ITokenFamily, IUser, Role, UserErrorMessage } from "../types";
 import {
+	API_ROLES,
 	SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT,
 	SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT,
 	SEND_REGISTER_EMAIL_ENDPOINT,
@@ -22,8 +23,12 @@ const loginUser = async (email: string, password: string) => {
 		throw Error(UserErrorMessage.INVALID_CREDENTIALS);
 	}
 
-	const encryptedPassword = await bcrypt.hash(password, 10);
-	if (user.password !== encryptedPassword) {
+	if (!user.isAuthorized) {
+		throw Error(UserErrorMessage.USER_CONFLICT);
+	}
+
+	const isPasswordCorrect = await bcrypt.compare(password, user.password);
+	if (!isPasswordCorrect) {
 		throw Error(UserErrorMessage.INVALID_CREDENTIALS);
 	}
 
@@ -38,10 +43,10 @@ const loginUser = async (email: string, password: string) => {
 		expiredRefreshTokens: new Set<string>(),
 	};
 
-	await redis
-		.call("JSON.SET", user.id, JSON.stringify(tokenFamily))
+	await tokenRedis
+		.call("JSON.SET", user.id, "$", JSON.stringify(tokenFamily))
 		.catch((err) => {
-			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+			throw err;
 		});
 
 	return {
@@ -52,7 +57,7 @@ const loginUser = async (email: string, password: string) => {
 
 const logoutUser = async (id: string) => {
 	console.log("Deleting token family");
-	await redis.call("JSON.DEL", id).catch((err) => {
+	await tokenRedis.call("JSON.DEL", id).catch(() => {
 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	});
 };
@@ -69,11 +74,13 @@ const registerUser = async (user: IUser) => {
 	user.password = await bcrypt.hash(user.password, 10);
 	user.isAuthorized = false;
 	user.createdAt = new Date();
+	user.roles = Array(Role.BUYER, Role.SELLER);
 
+	// FIXME: Create email endpoints
 	console.log("Requesting comm service to send an email");
-	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch((err) => {
-		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	});
+	// await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch(() => {
+	// 	throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	// });
 
 	console.log("Saving new user");
 	const newUser = new User(user);
@@ -92,10 +99,11 @@ const resendRegisterEmail = async (email: string) => {
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
+	// FIXME: Create email endpoints
 	console.log("Requesting comm service to send an email");
-	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch((err) => {
-		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	});
+	// await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch((err) => {
+	// 	throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	// });
 };
 
 const authorizeUser = async (authorizationToken: string) => {
@@ -118,6 +126,8 @@ const authorizeUser = async (authorizationToken: string) => {
 
 const refreshTokens = async (refreshToken: string) => {
 	console.log("Verifying credentials");
+
+	// TODO: Convert to Api call
 	const { sub: id } = jwt.verify(refreshToken, "") as jwt.JwtPayload;
 
 	if (id === undefined) {
@@ -125,7 +135,10 @@ const refreshTokens = async (refreshToken: string) => {
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
 	}
 
-	const tokenFamily = (await redis.call("JSON.GET", id)) as ITokenFamily | null;
+	const tokenFamily = (await tokenRedis.call(
+		"JSON.GET",
+		id
+	)) as ITokenFamily | null;
 
 	console.log(tokenFamily); //TODO: Delete
 
@@ -143,7 +156,7 @@ const refreshTokens = async (refreshToken: string) => {
 
 	if (tokenFamily.expiredRefreshTokens?.has(refreshToken)) {
 		console.error("Old refresh token detected");
-		await redis.call("JSON.DEL", id);
+		await tokenRedis.call("JSON.DEL", id);
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
@@ -163,9 +176,11 @@ const refreshTokens = async (refreshToken: string) => {
 	);
 
 	console.log("Saving token family in redis");
-	await redis.call("JSON.SET", id, JSON.stringify(tokenFamily)).catch((err) => {
-		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	});
+	await tokenRedis
+		.call("JSON.SET", id, JSON.stringify(tokenFamily))
+		.catch(() => {
+			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+		});
 
 	return {
 		accessToken: tokenFamily.latestAccessToken,
@@ -184,11 +199,12 @@ const sendForgotPasswordEmail = async (email: string) => {
 	user.resetToken = randomUUID();
 
 	console.log("Requesting comm service to send email");
-	await axios
-		.post(SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT, { user })
-		.catch((err) => {
-			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-		});
+	// TODO: Create email endpoints
+	// await axios
+	// 	.post(SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT, { user })
+	// 	.catch((err) => {
+	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	// 	});
 
 	console.log("Saving updated user");
 	user.save();
@@ -202,14 +218,16 @@ const resetPassword = async (resetToken: string, password: string) => {
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
 	}
 
+	user.resetToken = undefined;
 	user.password = await bcrypt.hash(password, 10);
 
 	console.log("Requesting comm service to send email");
-	await axios
-		.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
-		.catch((err) => {
-			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-		});
+	// TODO: Create email endpoints
+	// await axios
+	// 	.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
+	// 	.catch((err) => {
+	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	// 	});
 
 	console.log("Saving updated user");
 	user.save();
@@ -227,19 +245,20 @@ const changePassword = async (
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
 	}
 
-	const encryptedOldPassword = await bcrypt.hash(oldPassword, 10);
-	if (user.password !== encryptedOldPassword) {
+	const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+	if (!isPasswordCorrect) {
 		throw Error(UserErrorMessage.INVALID_CREDENTIALS);
 	}
 
 	user.password = await bcrypt.hash(password, 10);
 
 	console.log("Requesting comm service to send email");
-	await axios
-		.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
-		.catch((err) => {
-			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-		});
+	// TODO: Create email endpoints
+	// await axios
+	// 	.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
+	// 	.catch(() => {
+	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	// 	});
 
 	console.log("Saving updated user");
 	user.save();
