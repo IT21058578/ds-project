@@ -1,6 +1,5 @@
 import { tokenRedis } from "..";
 import { randomUUID } from "crypto";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import { axios } from "../utils";
@@ -10,6 +9,7 @@ import { TokenService } from "./token-service";
 import { ITokenFamily, IUser, Role, UserErrorMessage } from "../types";
 import {
 	API_ROLES,
+	DECODE_REFRESH_TOKEN_ENDPOINT,
 	SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT,
 	SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT,
 	SEND_REGISTER_EMAIL_ENDPOINT,
@@ -39,8 +39,8 @@ const loginUser = async (email: string, password: string) => {
 			user.id
 		),
 		latestRefreshToken: await TokenService.generateRefreshToken(user.id),
-		expiredAccessTokens: new Set<string>(),
-		expiredRefreshTokens: new Set<string>(),
+		expiredAccessTokens: Array(1),
+		expiredRefreshTokens: Array(1),
 	};
 
 	await tokenRedis
@@ -76,11 +76,10 @@ const registerUser = async (user: IUser) => {
 	user.createdAt = new Date();
 	user.roles = Array(Role.BUYER, Role.SELLER);
 
-	// FIXME: Create email endpoints
-	console.log("Requesting comm service to send an email");
-	// await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch(() => {
-	// 	throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	// });
+	console.log("Requesting comm-service to send an email");
+	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { ...user }).catch(() => {
+		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	});
 
 	console.log("Saving new user");
 	const newUser = new User(user);
@@ -99,11 +98,10 @@ const resendRegisterEmail = async (email: string) => {
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
-	// FIXME: Create email endpoints
 	console.log("Requesting comm service to send an email");
-	// await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch((err) => {
-	// 	throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	// });
+	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch(() => {
+		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	});
 };
 
 const authorizeUser = async (authorizationToken: string) => {
@@ -127,20 +125,24 @@ const authorizeUser = async (authorizationToken: string) => {
 const refreshTokens = async (refreshToken: string) => {
 	console.log("Verifying credentials");
 
-	// TODO: Convert to Api call
-	const { id } = jwt.verify(refreshToken, "") as jwt.JwtPayload;
+	const {
+		data: { id },
+	} = await axios
+		.post<{ id: string }>(DECODE_REFRESH_TOKEN_ENDPOINT, {
+			refreshToken,
+		})
+		.catch(() => {
+			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+		});
 
 	if (id === undefined) {
 		console.error("Refresh token with no id received");
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
 	}
 
-	const tokenFamily = (await tokenRedis.call(
-		"JSON.GET",
-		id
-	)) as ITokenFamily | null;
-
-	console.log(tokenFamily); //TODO: Delete
+	const tokenFamily = JSON.parse(
+		(await tokenRedis.call("JSON.GET", id)) as string
+	) as ITokenFamily | null;
 
 	if (tokenFamily === null) {
 		console.error("User tried to refresh when not logged in");
@@ -154,7 +156,7 @@ const refreshTokens = async (refreshToken: string) => {
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
-	if (tokenFamily.expiredRefreshTokens?.has(refreshToken)) {
+	if (tokenFamily.expiredRefreshTokens?.includes(refreshToken)) {
 		console.error("Old refresh token detected");
 		await tokenRedis.call("JSON.DEL", id);
 		throw Error(UserErrorMessage.USER_CONFLICT);
@@ -165,8 +167,8 @@ const refreshTokens = async (refreshToken: string) => {
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
-	tokenFamily.expiredAccessTokens.add(tokenFamily.latestAccessToken);
-	tokenFamily.expiredRefreshTokens.add(tokenFamily.latestRefreshToken);
+	tokenFamily.expiredAccessTokens.push(tokenFamily.latestAccessToken);
+	tokenFamily.expiredRefreshTokens.push(tokenFamily.latestRefreshToken);
 	tokenFamily.latestAccessToken = await TokenService.generateAccessToken(
 		user.roles,
 		user.id
@@ -177,7 +179,7 @@ const refreshTokens = async (refreshToken: string) => {
 
 	console.log("Saving token family in redis");
 	await tokenRedis
-		.call("JSON.SET", id, JSON.stringify(tokenFamily))
+		.call("JSON.SET", user.id, "$", JSON.stringify(tokenFamily))
 		.catch(() => {
 			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 		});

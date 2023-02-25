@@ -26,8 +26,8 @@ export enum Role {
 export interface ITokenFamily {
 	latestAccessToken: string;
 	latestRefreshToken: string;
-	expiredAccessTokens: Set<string>;
-	expiredRefreshTokens: Set<string>;
+	expiredAccessTokens: string[];
+	expiredRefreshTokens: string[];
 }
 
 /**
