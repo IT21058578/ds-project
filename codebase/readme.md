@@ -23,6 +23,12 @@ Keep note that this command does not compile the .ts files to .js, just runs the
 1. `npm b-all` - This command builds all the services
 2. `npm s-all` - This command starts all the previously built services
 
+### Fix for starting error
+
+Remove top level awaits from index.ts by changing its structure.
+In tsconfig set module to commonjs and target to es6.
+Remove types=module from package.json
+
 ### The Containers
 
 All the individual services have identical Dockerfiles in their directories. You can build them individually if required. I advise to build the docker-compose.yml in the codebase directory though as that will give you all the containerized databases and other services. While in this directory, do,
