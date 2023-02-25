@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { CustomValidator } from "express-validator";
 import { TokenController } from "../controllers/token-controller";
 import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
 import { hasValidRoles } from "../utils";

@@ -62,4 +62,24 @@ export interface IUserSearchOptions {
 	firstName?: string;
 	lastName?: string;
 	email?: string;
+	createdAt?: Date;
+	createdBefore?: Date;
+	createdAfter?: Date;
+	lastLoggedAt?: Date;
+	lastLoggedAfter?: Date;
+	lastLoggedBefore?: Date;
+	mobile?: string;
+	isAuthorized?: string;
+	isSubscribed?: string;
+	hasRoles: Role[];
+}
+
+export interface IPage<T> {
+	isLast: boolean;
+	isFirst: boolean;
+	totalPages: number;
+	totalElements: number;
+	pageNum: number;
+	pageSize: number;
+	content: T[];
 }

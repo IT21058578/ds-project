@@ -128,7 +128,7 @@ const refreshTokens = async (refreshToken: string) => {
 	console.log("Verifying credentials");
 
 	// TODO: Convert to Api call
-	const { sub: id } = jwt.verify(refreshToken, "") as jwt.JwtPayload;
+	const { id } = jwt.verify(refreshToken, "") as jwt.JwtPayload;
 
 	if (id === undefined) {
 		console.error("Refresh token with no id received");

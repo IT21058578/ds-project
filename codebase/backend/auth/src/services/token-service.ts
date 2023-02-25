@@ -20,6 +20,7 @@ const generateRefreshToken = async (id: string) => {
 	return refreshToken;
 };
 
+// TODO: Make function verify that the user exists.
 const decodeAccessToken = async (token: string) => {
 	const publicKey = await readFile("assets/access-public.key");
 	const payload = jwt.verify(token, publicKey);
@@ -27,6 +28,7 @@ const decodeAccessToken = async (token: string) => {
 };
 
 // FIXME: This is not working
+// TODO: Make function verify that the user exists.
 const decodeRefreshToken = async (token: string) => {
 	const publicKey = await readFile("assets/refresh-public.key");
 	const payload = jwt.verify(token, publicKey);

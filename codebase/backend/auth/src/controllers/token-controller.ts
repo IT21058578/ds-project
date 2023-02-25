@@ -41,7 +41,7 @@ const decodeAccessToken = async (req: Request, res: Response) => {
 		console.log("Attempting to decode access token");
 		const { accessToken }: { accessToken: string } = req.body;
 		const payload = await TokenService.decodeAccessToken(accessToken);
-		console.log("Successfully generated token");
+		console.log("Successfully decoded token");
 		return res.status(HttpStatusCode.Ok).send({ payload });
 	} catch (err) {
 		console.error("Failed to decode access token", err);
@@ -56,7 +56,7 @@ const decodeRefreshToken = async (req: Request, res: Response) => {
 		console.log("Attempting to decode refresh token");
 		const { refreshToken }: { refreshToken: string } = req.body;
 		const payload = await TokenService.decodeAccessToken(refreshToken);
-		console.log("Successfully generated token");
+		console.log("Successfully decoded token");
 		return res.status(HttpStatusCode.Ok).send({ payload });
 	} catch (err) {
 		console.error("Failed to decode refresh token", err);
