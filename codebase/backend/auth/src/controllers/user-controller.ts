@@ -1,11 +1,11 @@
-import { NextFunction, Response, Request } from "express";
+import { Request, Response } from "express";
 
-export const getUser = (req: Request, res: Response, next: NextFunction) => {
-	//Has to be validated beforehand. Only retrieve non-sensitive information
-};
+const getUser = async (req: Request, res: Response) => {};
 
-export const deleteUser = () => {};
+const getUsers = async (req: Request, res: Response) => {};
 
-export const getUsers = () => {};
+const editUser = async (req: Request, res: Response) => {};
 
-export const editUser = () => {};
+const deleteUser = async (req: Request, res: Response) => {};
+
+export const UserController = { getUser, getUsers, editUser, deleteUser };
