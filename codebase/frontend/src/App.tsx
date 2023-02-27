@@ -9,6 +9,8 @@ import BuyerLayout from "./layouts/BuyerLayout";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayout from "./layouts/RootLayout";
 import ErrorPage from "./pages/ErrorPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 type Props = {};
 
@@ -28,6 +30,7 @@ const App = (props: Props) => {
 		typography: {
 			fontFamily: ["Quicksand", "sans-serif"].join(","),
 			button: { textTransform: "none" },
+			body1: { fontSize: "0.9rem" },
 		},
 	});
 
@@ -39,6 +42,8 @@ const App = (props: Props) => {
 			children: [
 				{ path: "login", element: <LoginPage /> },
 				{ path: "register", element: <RegisterPage /> },
+				{ path: "forgot-password", element: <ForgotPasswordPage /> },
+				{ path: "reset-password", element: <ResetPasswordPage /> },
 			],
 		},
 	]);

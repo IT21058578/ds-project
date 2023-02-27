@@ -24,6 +24,7 @@ const BuyerNavBar = (props: Props) => {
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const [hoveredNavItem, setHoveredNavItem] = useState<string | undefined>();
+
 	return (
 		<AppBar position="relative" elevation={2}>
 			<Toolbar>
@@ -40,8 +41,9 @@ const BuyerNavBar = (props: Props) => {
 					</Typography>
 				</Button>
 				<Box sx={{ flexGrow: 1, textAlign: "center" }}>
-					{navLinks.map((link) => (
+					{navLinks.map((link, idx) => (
 						<Button
+							key={idx}
 							sx={{
 								color: theme.palette.grey[900],
 								fontSize: "1rem",
