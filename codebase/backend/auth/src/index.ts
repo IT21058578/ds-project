@@ -9,6 +9,8 @@ import auth from "./routes/auth-routes";
 import token from "./routes/token-routes";
 import user from "./routes/user-routes";
 
+
+
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 
 dotenv.config();
