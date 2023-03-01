@@ -1,5 +1,6 @@
 import { Box, Stack } from "@mui/material";
 import { Outlet } from "react-router-dom";
+
 import BuyerFooter from "./BuyerLayout/BuyerFooter";
 import BuyerNavBar from "./BuyerLayout/BuyerNavBar";
 

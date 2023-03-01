@@ -17,7 +17,7 @@ import UserLayout from "./UserLayout";
  * Root layout resonsible for rendering all other layouts.
  */
 const RootLayout = () => {
-	const isSellerAdmin = true;
+	const isSellerAdmin = false;
 
 	/**
 	 * Variable for defining all routing relevant to buyers and guests
