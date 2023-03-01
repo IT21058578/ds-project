@@ -3,6 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import { Schema, checkSchema, validationResult } from "express-validator";
 import { HttpStatusCode } from "axios";
 
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
+
 /**
  * An extension of the express-validator checkSchema function.
  * This function checks the given schema, then does appropriate common error handling before

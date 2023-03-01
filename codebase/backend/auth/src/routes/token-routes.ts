@@ -3,6 +3,10 @@ import { TokenController } from "../controllers/token-controller";
 import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
 import { hasValidRoles } from "../utils";
 
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
+
 const router = Router();
 
 router.post(

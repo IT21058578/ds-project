@@ -3,29 +3,30 @@ import { Outlet } from "react-router-dom";
 import BuyerFooter from "./BuyerLayout/BuyerFooter";
 import BuyerNavBar from "./BuyerLayout/BuyerNavBar";
 
-type Props = {};
+type Props = { children?: React.ReactNode };
 
-const BuyerLayout = (props: Props) => {
+const BuyerLayout = ({ children }: Props) => {
 	return (
-		<>
-			<Stack
-				justifyContent="space-between"
-				direction="column"
-				alignItems="center"
-				sx={{ minHeight: "100vh" }}
+		<Stack
+			justifyContent="space-between"
+			direction="column"
+			alignItems="center"
+			sx={{ height: "100vh" }}
+		>
+			<BuyerNavBar />
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					minHeight: "92vh",
+				}}
 			>
-				<BuyerNavBar />
-				<Box
-					sx={{
-						marginY: "4rem",
-						justifyContent: "center",
-					}}
-				>
-					<Outlet />
-				</Box>
-				<BuyerFooter />
-			</Stack>
-		</>
+				{children}
+				<Outlet />
+			</Box>
+			<BuyerFooter />
+		</Stack>
 	);
 };
 

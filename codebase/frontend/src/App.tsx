@@ -11,6 +11,7 @@ import RootLayout from "./layouts/RootLayout";
 import ErrorPage from "./pages/ErrorPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import SellerLayout from "./layouts/SellerLayout";
 
 type Props = {};
 
@@ -22,6 +23,7 @@ const App = (props: Props) => {
 			mode: "light",
 			primary: {
 				main: "#84d044",
+				"100": "#dbf1c8",
 			},
 			secondary: {
 				main: "#4483d0",
@@ -34,24 +36,10 @@ const App = (props: Props) => {
 		},
 	});
 
-	const browserRouter = createBrowserRouter([
-		{
-			path: "/",
-			element: <BuyerLayout />,
-			errorElement: <ErrorPage />,
-			children: [
-				{ path: "login", element: <LoginPage /> },
-				{ path: "register", element: <RegisterPage /> },
-				{ path: "forgot-password", element: <ForgotPasswordPage /> },
-				{ path: "reset-password", element: <ResetPasswordPage /> },
-			],
-		},
-	]);
-
 	return (
 		<ThemeProvider theme={customTheme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
-				<RouterProvider router={browserRouter} />
+				<RootLayout />
 			</LocalizationProvider>
 		</ThemeProvider>
 	);

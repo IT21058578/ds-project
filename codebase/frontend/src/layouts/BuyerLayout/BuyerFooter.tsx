@@ -17,6 +17,8 @@ type BuyerFooterSectionProps = {
 	width: string;
 };
 
+// TODO: Fix issues on lower screen widths
+
 const BuyerFooterSection = ({
 	title,
 	items,
@@ -34,15 +36,14 @@ const BuyerFooterSection = ({
 			}}
 		>
 			<Grid container>
-				<Grid item xs={12} marginBottom="1rem" direction="column">
+				<Grid item xs={12} marginBottom="1rem">
 					<Typography color={theme.palette.grey[200]} fontWeight={600}>
 						{title}
 					</Typography>
 				</Grid>
 				{items.map((item, idx) => (
-					<Grid item xs={6} marginY="0.25rem">
+					<Grid item key={idx} xs={6} marginY="0.25rem">
 						<Link
-							key={idx}
 							onClick={() => navigate(item.link || "")}
 							fontFamily={theme.typography.fontFamily}
 							component="button"
@@ -84,7 +85,8 @@ const BuyerFooter = () => {
 	];
 
 	return (
-		<Box
+		<Stack
+			direction="row"
 			sx={{
 				backgroundColor: theme.palette.grey[900],
 				height: "16rem",
@@ -93,81 +95,75 @@ const BuyerFooter = () => {
 				fontSize: "0.85rem",
 			}}
 		>
-			<Stack direction="row">
-				<Box
+			<Box
+				sx={{
+					width: "25%",
+					height: "16rem",
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				<Typography
 					sx={{
-						width: "25%",
-						height: "16rem",
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
+						height: "fit-content",
+						color: theme.palette.primary.main,
+						fontSize: "4rem",
+						fontWeight: "600",
+						fontFamily: "Righteous",
 					}}
 				>
-					<Typography
-						sx={{
-							height: "fit-content",
-							color: theme.palette.primary.light,
-							fontSize: "4rem",
-							fontWeight: "600",
-							fontFamily: "Righteous",
-						}}
-					>
-						Sages
-					</Typography>
-				</Box>
-				<BuyerFooterSection
-					title="Shop with Us"
-					items={shopWithUsLinks}
-					width="50%"
-				/>
-				<BuyerFooterSection
-					title="Company"
-					items={companyLinks}
-					width="12.5%"
-				/>
-				<Box
-					sx={{
-						width: "12.5%",
-						height: "12rem",
-						paddingY: "2rem",
-						paddingX: "4rem",
-					}}
-				>
-					<Grid container>
-						<Grid item xs={12} marginBottom="1rem">
-							<Stack direction="row" justifyContent="flex-end">
-								{[<Facebook />, <Instagram />, <Twitter />, <YouTube />].map(
-									(icon, idx) => (
-										<IconButton
-											key={idx}
-											size="large"
-											sx={{ color: theme.palette.grey[400] }}
-											onClick={() => navigate("/")}
-										>
-											{icon}
-										</IconButton>
-									)
-								)}
-							</Stack>
-						</Grid>
-						<Grid item xs={12}>
-							<Typography fontSize="0.85rem" align="right">
-								17th Floor, One Galle Face Mall
-								<br />
-								Kelaniya, Colombo
-								<br />
-								Western Province, Sri Lanka
-							</Typography>
-						</Grid>
-						<Grid item xs={12} marginTop="1rem">
-							<Typography fontSize="0.85rem" align="right">
-								Copyright © Sage INC 2023
-							</Typography>
-						</Grid>
+					Sages
+				</Typography>
+			</Box>
+			<BuyerFooterSection
+				title="Shop with Us"
+				items={shopWithUsLinks}
+				width="50%"
+			/>
+			<BuyerFooterSection title="Company" items={companyLinks} width="25%" />
+			<Box
+				sx={{
+					width: "12.5%",
+					height: "12rem",
+					paddingY: "2rem",
+					paddingX: "4rem",
+				}}
+			>
+				<Grid container>
+					<Grid item xs={12} marginBottom="1rem">
+						<Stack direction="row" justifyContent="flex-end">
+							{[<Facebook />, <Instagram />, <Twitter />, <YouTube />].map(
+								(icon, idx) => (
+									<IconButton
+										key={idx}
+										size="large"
+										sx={{ color: theme.palette.grey[400] }}
+										onClick={() => navigate("/")}
+									>
+										{icon}
+									</IconButton>
+								)
+							)}
+						</Stack>
 					</Grid>
-				</Box>
-			</Stack>
-		</Box>
+					<Grid item xs={12}>
+						<Typography fontSize="0.85rem" align="right">
+							17th Floor, One Galle Face Mall
+							<br />
+							Kelaniya, Colombo
+							<br />
+							Western Province, Sri Lanka
+						</Typography>
+					</Grid>
+					<Grid item xs={12} marginTop="1rem">
+						<Typography fontSize="0.85rem" align="right">
+							Copyright © Sages INC 2023
+						</Typography>
+					</Grid>
+				</Grid>
+			</Box>
+		</Stack>
 	);
 };
 

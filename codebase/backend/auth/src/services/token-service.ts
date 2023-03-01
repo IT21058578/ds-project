@@ -2,6 +2,10 @@ import { readFile } from "fs/promises";
 import jwt from "jsonwebtoken";
 import { Role } from "../types";
 
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
+
 const generateAccessToken = async (roles: Role[], id: string) => {
 	const privateKey = await readFile("assets/access-private.key");
 	const accessToken = jwt.sign({ roles, id }, privateKey, {

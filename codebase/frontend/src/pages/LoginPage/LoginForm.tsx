@@ -19,6 +19,9 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
+import SubmitButton from "../../components/SubmitButton";
+import FormTextField from "../../components/FormTextField";
+import PasswordFormTextField from "../../components/PasswordFormTextField";
 
 type Props = {};
 
@@ -37,7 +40,6 @@ const LoginForm = (props: Props) => {
 		formState: { errors, isSubmitting },
 		handleSubmit,
 	} = useForm({ resolver: yupResolver(loginSchema) });
-	const [isPasswordVisisble, setIsPasswordVisible] = useState<boolean>(false);
 	const [isRequestLoading, setIsRequestLoading] = useState<boolean>(false);
 
 	const onSubmit = (data: FieldValues) => {
@@ -48,42 +50,18 @@ const LoginForm = (props: Props) => {
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Grid item xs={12} textAlign="center" marginBottom="1rem">
-					<TextField
-						{...register("email", { required: "true" })}
-						label="Email"
-						variant="outlined"
-						error={!!errors.email}
-						disabled={isSubmitting || isRequestLoading}
-						helperText={!!errors.email && errors.email.message?.toString()}
-						fullWidth
+					<FormTextField
+						{...register("email")}
+						error={errors.email}
+						isLoading={isSubmitting || isRequestLoading}
 					/>
 				</Grid>
 				<Grid item xs={12} textAlign="center" marginBottom="0.25rem">
-					<FormControl fullWidth variant="outlined">
-						<InputLabel>Password</InputLabel>
-						<OutlinedInput
-							fullWidth
-							type={isPasswordVisisble ? "text" : "password"}
-							error={!!errors.password}
-							disabled={isSubmitting || isRequestLoading}
-							{...register("password", { required: "true" })}
-							endAdornment={
-								<InputAdornment position="end">
-									<IconButton
-										aria-label="toggle password visibility"
-										edge="end"
-										onClick={() => setIsPasswordVisible((prev) => !prev)}
-									>
-										{isPasswordVisisble ? <VisibilityOff /> : <Visibility />}
-									</IconButton>
-								</InputAdornment>
-							}
-							label="Password"
-						/>
-						<FormHelperText error>
-							{!!errors.password && errors.password.message?.toString()}
-						</FormHelperText>
-					</FormControl>
+					<PasswordFormTextField
+						{...register("password")}
+						error={errors.password}
+						isLoading={isSubmitting || isRequestLoading}
+					/>
 				</Grid>
 				<Grid item xs={12} textAlign="end" marginBottom="2rem">
 					<Link
@@ -95,22 +73,11 @@ const LoginForm = (props: Props) => {
 					</Link>
 				</Grid>
 				<Grid item xs={12} marginBottom="0.5rem" textAlign="center">
-					<Button
-						disabled={isSubmitting || isRequestLoading}
-						variant="contained"
-						size="large"
-						type="submit"
-						endIcon={
-							isSubmitting ||
-							(isRequestLoading && (
-								<>
-									<CircularProgress size="1rem" color="inherit" />
-								</>
-							))
-						}
-					>
-						{isSubmitting || isRequestLoading ? "Logging in..." : "Login"}
-					</Button>
+					<SubmitButton
+						isLoading={isSubmitting || isRequestLoading}
+						normalText={"Login"}
+						loadingText={"Logging in..."}
+					/>
 				</Grid>
 				<Grid item xs={12} textAlign="center">
 					<Typography variant="caption">Don't have an account yet? </Typography>

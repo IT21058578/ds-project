@@ -3,11 +3,15 @@ import { Router } from "express";
 import { UserController } from "../controllers/user-controller";
 import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
 
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
+
 const router = Router();
 
 router.get(
-	"/:id",
-	...checkSchemaAndHandleErrors({ id: { in: ["params"], isMongoId: true } }),
+	"/",
+	...checkSchemaAndHandleErrors({ id: { in: ["query"], isMongoId: true } }),
 	UserController.getUser
 );
 

@@ -15,8 +15,12 @@ import {
 	SEND_REGISTER_EMAIL_ENDPOINT,
 } from "../constants";
 
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
+
 const loginUser = async (email: string, password: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ email }).exec()).at(0);
 
 	if (user === undefined) {
@@ -32,7 +36,7 @@ const loginUser = async (email: string, password: string) => {
 		throw Error(UserErrorMessage.INVALID_CREDENTIALS);
 	}
 
-	console.log("Saving token family in redis");
+	log.info("Saving token family in redis");
 	const tokenFamily: ITokenFamily = {
 		latestAccessToken: await TokenService.generateAccessToken(
 			user.roles,
@@ -56,14 +60,14 @@ const loginUser = async (email: string, password: string) => {
 };
 
 const logoutUser = async (id: string) => {
-	console.log("Deleting token family");
+	log.info("Deleting token family");
 	await tokenRedis.call("JSON.DEL", id).catch(() => {
 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	});
 };
 
 const registerUser = async (user: IUser) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const existingUser = (await User.find({ email: user.email }).exec()).at(0);
 
 	if (existingUser !== undefined) {
@@ -76,18 +80,18 @@ const registerUser = async (user: IUser) => {
 	user.createdAt = new Date();
 	user.roles = Array(Role.BUYER, Role.SELLER);
 
-	console.log("Requesting comm-service to send an email");
+	log.info("Requesting comm-service to send an email");
 	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { ...user }).catch(() => {
 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	});
 
-	console.log("Saving new user");
+	log.info("Saving new user");
 	const newUser = new User(user);
 	await newUser.save();
 };
 
 const resendRegisterEmail = async (email: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ email }).exec()).at(0);
 
 	if (user === undefined) {
@@ -98,14 +102,14 @@ const resendRegisterEmail = async (email: string) => {
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
-	console.log("Requesting comm service to send an email");
+	log.info("Requesting comm service to send an email");
 	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch(() => {
 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	});
 };
 
 const authorizeUser = async (authorizationToken: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ authorizationToken }).exec()).at(0);
 
 	if (user === undefined) {
@@ -118,12 +122,12 @@ const authorizeUser = async (authorizationToken: string) => {
 
 	user.isAuthorized = true;
 
-	console.log("Saving updated user");
+	log.info("Saving updated user");
 	await user.save();
 };
 
 const refreshTokens = async (refreshToken: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 
 	const {
 		data: { id },
@@ -177,7 +181,7 @@ const refreshTokens = async (refreshToken: string) => {
 		user.id
 	);
 
-	console.log("Saving token family in redis");
+	log.info("Saving token family in redis");
 	await tokenRedis
 		.call("JSON.SET", user.id, "$", JSON.stringify(tokenFamily))
 		.catch(() => {
@@ -191,7 +195,7 @@ const refreshTokens = async (refreshToken: string) => {
 };
 
 const sendForgotPasswordEmail = async (email: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ email }).exec()).at(0);
 
 	if (user === undefined) {
@@ -200,7 +204,7 @@ const sendForgotPasswordEmail = async (email: string) => {
 
 	user.resetToken = randomUUID();
 
-	console.log("Requesting comm service to send email");
+	log.info("Requesting comm service to send email");
 	// TODO: Create email endpoints
 	// await axios
 	// 	.post(SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT, { user })
@@ -208,12 +212,12 @@ const sendForgotPasswordEmail = async (email: string) => {
 	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	// 	});
 
-	console.log("Saving updated user");
+	log.info("Saving updated user");
 	user.save();
 };
 
 const resetPassword = async (resetToken: string, password: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ resetToken }).exec()).at(0);
 
 	if (user === undefined) {
@@ -223,7 +227,7 @@ const resetPassword = async (resetToken: string, password: string) => {
 	user.resetToken = undefined;
 	user.password = await bcrypt.hash(password, 10);
 
-	console.log("Requesting comm service to send email");
+	log.info("Requesting comm service to send email");
 	// TODO: Create email endpoints
 	// await axios
 	// 	.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
@@ -231,7 +235,7 @@ const resetPassword = async (resetToken: string, password: string) => {
 	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	// 	});
 
-	console.log("Saving updated user");
+	log.info("Saving updated user");
 	user.save();
 };
 
@@ -240,7 +244,7 @@ const changePassword = async (
 	oldPassword: string,
 	password: string
 ) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = await User.findById(id).exec();
 
 	if (user === null) {
@@ -254,7 +258,7 @@ const changePassword = async (
 
 	user.password = await bcrypt.hash(password, 10);
 
-	console.log("Requesting comm service to send email");
+	log.info("Requesting comm service to send email");
 	// TODO: Create email endpoints
 	// await axios
 	// 	.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
@@ -262,7 +266,7 @@ const changePassword = async (
 	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	// 	});
 
-	console.log("Saving updated user");
+	log.info("Saving updated user");
 	user.save();
 };
 

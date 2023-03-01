@@ -25,6 +25,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useNavigate } from "react-router-dom";
+import SubmitButton from "../../components/SubmitButton";
+import FormTextField from "../../components/FormTextField";
+import {
+	RegisterOptions,
+	UseFormRegisterReturn,
+} from "react-hook-form/dist/types";
+import PasswordFormTextField from "../../components/PasswordFormTextField";
 
 type Props = {};
 
@@ -40,7 +47,11 @@ const registerSchema = yup.object({
 	matchPassword: yup.string().required("Please re-enter your password"),
 	dateOfBirth: yup.date().required("Please enter your date of birth"),
 	hasSubscribed: yup.boolean().required(),
-	hasReadTos: yup.boolean().isTrue().required(),
+	hasReadTos: yup
+		.boolean()
+		.default(false)
+		.isTrue("Please read the privacy policy and Terms of Service to register")
+		.required(),
 });
 
 // TODO: Organize imports
@@ -54,7 +65,6 @@ const RegisterForm = (props: Props) => {
 		handleSubmit,
 		control,
 	} = useForm({ resolver: yupResolver(registerSchema) });
-	const [isPasswordVisisble, setIsPasswordVisible] = useState<boolean>(false);
 	const [isRequestLoading, setIsRequestLoading] = useState<boolean>(false);
 
 	const onSubmit = (data: FieldValues) => {
@@ -62,44 +72,32 @@ const RegisterForm = (props: Props) => {
 		setIsRequestLoading(true);
 	};
 
+	const onSubmitError = (data: FieldValues) => {
+		console.log(data);
+	};
+
 	return (
 		<>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<form onSubmit={handleSubmit(onSubmit, onSubmitError)}>
 				<Grid item xs={12} textAlign="center" marginBottom="1rem">
 					<Stack direction={"row"} spacing={2}>
-						<TextField
+						<FormTextField
+							error={errors.firstName}
+							isLoading={isSubmitting || isRequestLoading}
 							{...register("firstName")}
-							label="First Name"
-							variant="outlined"
-							error={!!errors.firstName}
-							disabled={isSubmitting || isRequestLoading}
-							helperText={
-								!!errors.firstName && errors.firstName.message?.toString()
-							}
-							fullWidth
 						/>
-						<TextField
+						<FormTextField
+							error={errors.lastName}
+							isLoading={isSubmitting || isRequestLoading}
 							{...register("lastName")}
-							label="Last Name"
-							variant="outlined"
-							error={!!errors.lastName}
-							disabled={isSubmitting || isRequestLoading}
-							helperText={
-								!!errors.lastName && errors.lastName.message?.toString()
-							}
-							fullWidth
 						/>
 					</Stack>
 				</Grid>
 				<Grid item xs={12} textAlign="center" marginBottom="1rem">
-					<TextField
+					<FormTextField
+						error={errors.email}
+						isLoading={isSubmitting || isRequestLoading}
 						{...register("email")}
-						label="Email"
-						variant="outlined"
-						error={!!errors.email}
-						disabled={isSubmitting || isRequestLoading}
-						helperText={!!errors.email && errors.email.message?.toString()}
-						fullWidth
 					/>
 				</Grid>
 				<Grid item xs={12} textAlign="end" marginBottom="1rem">
@@ -112,8 +110,10 @@ const RegisterForm = (props: Props) => {
 									onChange={onChange}
 									ref={ref}
 									value={value}
+									label="Date of Birth"
 									renderInput={(params) => (
 										<TextField
+											color="error"
 											error={!!errors.dateOfBirth}
 											helperText={
 												!!errors.dateOfBirth &&
@@ -123,87 +123,69 @@ const RegisterForm = (props: Props) => {
 											{...params}
 										/>
 									)}
-									label="Date of Birth"
 								/>
 							)}
 						/>
-						<TextField
+						<FormTextField
+							error={errors.mobile}
+							isLoading={isSubmitting || isRequestLoading}
 							{...register("mobile")}
-							label="Mobile"
-							variant="outlined"
-							error={!!errors.mobile}
-							disabled={isSubmitting || isRequestLoading}
-							helperText={!!errors.mobile && errors.mobile.message?.toString()}
-							fullWidth
 						/>
 					</Stack>
 				</Grid>
 				<Grid item xs={12} textAlign="end" marginBottom="1rem">
 					<Stack direction={"row"} spacing={2}>
-						<FormControl fullWidth variant="outlined">
-							<InputLabel>Password</InputLabel>
-							<OutlinedInput
-								fullWidth
-								type={isPasswordVisisble ? "text" : "password"}
-								error={!!errors.password}
-								disabled={isSubmitting || isRequestLoading}
-								{...register("password", { required: "true" })}
-								endAdornment={
-									<InputAdornment position="end">
-										<IconButton
-											aria-label="toggle password visibility"
-											edge="end"
-											onClick={() => setIsPasswordVisible((prev) => !prev)}
-										>
-											{isPasswordVisisble ? <VisibilityOff /> : <Visibility />}
-										</IconButton>
-									</InputAdornment>
-								}
-								label="Password"
-							/>
-							<FormHelperText error>
-								{!!errors.password && errors.password.message?.toString()}
-							</FormHelperText>
-						</FormControl>
-						<TextField
+						<PasswordFormTextField
+							error={errors.password}
+							isLoading={isSubmitting || isRequestLoading}
+							{...register("password")}
+						/>
+						<FormTextField
+							error={errors.matchPassword}
+							isLoading={isSubmitting || isRequestLoading}
 							{...register("matchPassword")}
-							label="Match Password"
-							variant="outlined"
-							error={!!errors.matchPassword}
-							disabled={isSubmitting || isRequestLoading}
-							helperText={
-								!!errors.matchPassword &&
-								errors.matchPassword.message?.toString()
-							}
-							fullWidth
-							type="password"
 						/>
 					</Stack>
 				</Grid>
 				<Divider />
 				<Grid item xs={12} textAlign="center" marginY="1rem">
-					<Stack direction={"column"} spacing={2}>
-						<FormGroup>
-							<FormControlLabel
-								control={<Checkbox />}
-								label={
-									<>
-										I have read and agreed to the{" "}
-										<Link onClick={() => navigate("/terms-of-service")}>
-											Terms of Service
-										</Link>{" "}
-										and{" "}
-										<Link onClick={() => navigate("/privacy-policy")}>
-											Privacy Policy
-										</Link>
-									</>
-								}
-							/>
-							<FormControlLabel
-								control={<Checkbox defaultChecked />}
-								label="I want to receive marketting emails, newsletters and updates about the platorm"
-							/>
-						</FormGroup>
+					<Stack direction={"column"}>
+						<FormControl margin="dense" error={!!errors.hasReadTos}>
+							<FormGroup>
+								<FormControlLabel
+									{...register("hasReadTos")}
+									control={
+										<Checkbox
+											color={!!errors.hasReadTos ? "error" : "primary"}
+										/>
+									}
+									label={
+										<>
+											I have read and agreed to the{" "}
+											<Link onClick={() => navigate("/terms-of-service")}>
+												Terms of Service
+											</Link>{" "}
+											and{" "}
+											<Link onClick={() => navigate("/privacy-policy")}>
+												Privacy Policy
+											</Link>
+										</>
+									}
+								/>
+							</FormGroup>
+							<FormHelperText>
+								{!!errors.hasReadTos && errors.hasReadTos.message?.toString()}
+							</FormHelperText>
+						</FormControl>
+						<FormControl>
+							<FormGroup>
+								<FormControlLabel
+									{...register("hasSubscribed")}
+									control={<Checkbox defaultChecked />}
+									label="I want to receive marketting emails, newsletters and updates about the platorm"
+								/>
+							</FormGroup>
+						</FormControl>
 					</Stack>
 				</Grid>
 				<Divider />
@@ -214,22 +196,11 @@ const RegisterForm = (props: Props) => {
 					marginTop="2rem"
 					textAlign="center"
 				>
-					<Button
-						disabled={isSubmitting || isRequestLoading}
-						variant="contained"
-						size="large"
-						type="submit"
-						endIcon={
-							isSubmitting ||
-							(isRequestLoading && (
-								<>
-									<CircularProgress size="1rem" color="inherit" />
-								</>
-							))
-						}
-					>
-						{isSubmitting || isRequestLoading ? "Registering..." : "Register"}
-					</Button>
+					<SubmitButton
+						isLoading={isSubmitting || isRequestLoading}
+						normalText={"Register"}
+						loadingText={"Registering..."}
+					/>
 				</Grid>
 				<Grid item xs={12} textAlign="center">
 					<Typography variant="caption">Already have an account? </Typography>
