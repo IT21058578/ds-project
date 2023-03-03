@@ -1,5 +1,5 @@
 import { Model, Document } from "mongoose";
-import { ProductDocument } from "./";
+// import { ProductDocument } from "./";
 
 /**
  * Represents an order item
@@ -9,7 +9,7 @@ export interface OrderItems {
   qty: number;
   image: string;
   price: number;
-  product: ProductDocument;
+  // product: ProductDocument;
 }
 
 /**
