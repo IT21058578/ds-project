@@ -1,5 +1,4 @@
 import asyncHandler from "express-async-handler";
-import products from "../data/products";
 import { Product } from "../models/";
 import { Response, Request, Review } from "../types/";
 
