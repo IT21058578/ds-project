@@ -20,13 +20,22 @@ export enum Role {
 }
 
 /**
- * An interface for a family of tokens per user. This is saved to redis when a user logs in and removed when the log out
+ * An interface for a family of tokens per user.
+ * This is saved to redis when a user logs in and removed when the log out
  */
 export interface ITokenFamily {
 	latestAccessToken: string;
 	latestRefreshToken: string;
-	expiredAccessTokens: Set<string>;
-	expiredRefreshTokens: Set<string>;
+	expiredAccessTokens: string[];
+	expiredRefreshTokens: string[];
+}
+
+/**
+ * An interface to manage the blacklist in redis. For each IP an array of {email, count} is kept. This allows to quickly
+ * check the number of times any email or ip has been hit.
+ */
+export interface IBlacklistUnit {
+	emailList: { email: string; count: number }[];
 }
 
 /**
@@ -36,6 +45,7 @@ export interface IUser {
 	firstName: string;
 	lastName: string;
 	resetToken?: string;
+	mobile: string;
 	email: string;
 	password: string;
 	createdAt: Date;
@@ -44,4 +54,32 @@ export interface IUser {
 	roles: Role[];
 	isSubscribed: boolean;
 	isAuthorized: boolean;
+}
+
+export interface IUserSearchOptions {
+	pageNum: number;
+	pageSize: number;
+	firstName?: string;
+	lastName?: string;
+	email?: string;
+	createdAt?: Date;
+	createdBefore?: Date;
+	createdAfter?: Date;
+	lastLoggedAt?: Date;
+	lastLoggedAfter?: Date;
+	lastLoggedBefore?: Date;
+	mobile?: string;
+	isAuthorized?: string;
+	isSubscribed?: string;
+	hasRoles: Role[];
+}
+
+export interface IPage<T> {
+	isLast: boolean;
+	isFirst: boolean;
+	totalPages: number;
+	totalElements: number;
+	pageNum: number;
+	pageSize: number;
+	content: T[];
 }
