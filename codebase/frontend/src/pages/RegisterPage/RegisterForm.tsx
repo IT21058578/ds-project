@@ -1,40 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { VisibilityOff, Visibility } from "@mui/icons-material";
 import {
-	Button,
 	FormControl,
 	Grid,
-	IconButton,
-	InputAdornment,
-	InputLabel,
 	Link,
-	OutlinedInput,
 	TextField,
 	Typography,
 	Divider,
 	FormGroup,
 	FormControlLabel,
 	Checkbox,
+	useTheme,
 } from "@mui/material";
 import { FieldValues, useForm, Controller } from "react-hook-form";
 import FormHelperText from "@mui/material/FormHelperText";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useNavigate } from "react-router-dom";
+
 import SubmitButton from "../../components/SubmitButton";
 import FormTextField from "../../components/FormTextField";
-import {
-	RegisterOptions,
-	UseFormRegisterReturn,
-} from "react-hook-form/dist/types";
 import PasswordFormTextField from "../../components/PasswordFormTextField";
+import { useUserRegisterMutation } from "../../store/apis/auth-api-slice";
 
-type Props = {};
+import { IRegisterRequest } from "../../types";
 
+type Props = { setIsRegisterSuccessful: (arg0: boolean) => void };
+
+// TODO: Validation for ToS checkbox
 const registerSchema = yup.object({
 	email: yup
 		.string()
@@ -54,41 +49,58 @@ const registerSchema = yup.object({
 		.required(),
 });
 
-// TODO: Organize imports
-// TODO: Validation for ToS checkbox
-
-const RegisterForm = (props: Props) => {
+const RegisterForm = ({ setIsRegisterSuccessful }: Props) => {
 	const navigate = useNavigate();
+	const theme = useTheme();
 	const {
 		register,
 		formState: { errors, isSubmitting },
 		handleSubmit,
 		control,
 	} = useForm({ resolver: yupResolver(registerSchema) });
-	const [isRequestLoading, setIsRequestLoading] = useState<boolean>(false);
+	const [serverErrorMessage, setServerErrorMessage] = useState<
+		string | undefined
+	>();
+	const [registerUser, { isLoading, isSuccess, isError, reset }] =
+		useUserRegisterMutation();
 
-	const onSubmit = (data: FieldValues) => {
-		console.log(data);
-		setIsRequestLoading(true);
+	const onSubmit = async (formData: FieldValues) => {
+		try {
+			const response = await registerUser({
+				...(formData as IRegisterRequest),
+			}).unwrap();
+		} catch (error) {
+			if ((error as any).status === 409) {
+				setServerErrorMessage("This email is already in use");
+			} else {
+				setServerErrorMessage("An error occurred. Please try again later");
+			}
+		}
+		reset();
 	};
 
-	const onSubmitError = (data: FieldValues) => {
-		console.log(data);
-	};
+	useEffect(() => {
+		if (isSuccess) {
+			setIsRegisterSuccessful(true);
+		} else if (isError) {
+			setIsRegisterSuccessful(false);
+		}
+		reset();
+	}, [isSuccess, isError]);
 
 	return (
 		<>
-			<form onSubmit={handleSubmit(onSubmit, onSubmitError)}>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<Grid item xs={12} textAlign="center" marginBottom="1rem">
 					<Stack direction={"row"} spacing={2}>
 						<FormTextField
 							error={errors.firstName}
-							isLoading={isSubmitting || isRequestLoading}
+							isLoading={isSubmitting || isLoading}
 							{...register("firstName")}
 						/>
 						<FormTextField
 							error={errors.lastName}
-							isLoading={isSubmitting || isRequestLoading}
+							isLoading={isSubmitting || isLoading}
 							{...register("lastName")}
 						/>
 					</Stack>
@@ -96,7 +108,7 @@ const RegisterForm = (props: Props) => {
 				<Grid item xs={12} textAlign="center" marginBottom="1rem">
 					<FormTextField
 						error={errors.email}
-						isLoading={isSubmitting || isRequestLoading}
+						isLoading={isSubmitting || isLoading}
 						{...register("email")}
 					/>
 				</Grid>
@@ -128,7 +140,7 @@ const RegisterForm = (props: Props) => {
 						/>
 						<FormTextField
 							error={errors.mobile}
-							isLoading={isSubmitting || isRequestLoading}
+							isLoading={isSubmitting || isLoading}
 							{...register("mobile")}
 						/>
 					</Stack>
@@ -137,12 +149,12 @@ const RegisterForm = (props: Props) => {
 					<Stack direction={"row"} spacing={2}>
 						<PasswordFormTextField
 							error={errors.password}
-							isLoading={isSubmitting || isRequestLoading}
+							isLoading={isSubmitting || isLoading}
 							{...register("password")}
 						/>
 						<FormTextField
 							error={errors.matchPassword}
-							isLoading={isSubmitting || isRequestLoading}
+							isLoading={isSubmitting || isLoading}
 							{...register("matchPassword")}
 						/>
 					</Stack>
@@ -189,15 +201,23 @@ const RegisterForm = (props: Props) => {
 					</Stack>
 				</Grid>
 				<Divider />
+				<Grid item xs={12} marginBottom="0.5rem" marginTop="1rem">
+					<Typography
+						color={theme.palette.error.light}
+						sx={{ textAlign: "center" }}
+					>
+						{serverErrorMessage}
+					</Typography>
+				</Grid>
 				<Grid
 					item
 					xs={12}
 					marginBottom="0.5rem"
-					marginTop="2rem"
+					marginTop="1rem"
 					textAlign="center"
 				>
 					<SubmitButton
-						isLoading={isSubmitting || isRequestLoading}
+						isLoading={isSubmitting || isLoading}
 						normalText={"Register"}
 						loadingText={"Registering..."}
 					/>

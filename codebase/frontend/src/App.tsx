@@ -1,23 +1,15 @@
+import { Provider } from "react-redux";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import LoginPage from "./pages/LoginPage";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type {} from "@mui/x-date-pickers/themeAugmentation";
-import "./global.css";
-import RegisterPage from "./pages/RegisterPage";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import BuyerLayout from "./layouts/BuyerLayout";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import RootLayout from "./layouts/RootLayout";
-import ErrorPage from "./pages/ErrorPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
-import SellerLayout from "./layouts/SellerLayout";
+import { store } from "./store/store";
 
-type Props = {};
+import "./global.css";
 
-// TODO: Routing
-
-const App = (props: Props) => {
+const App = () => {
 	const customTheme = createTheme({
 		palette: {
 			mode: "light",
@@ -39,7 +31,9 @@ const App = (props: Props) => {
 	return (
 		<ThemeProvider theme={customTheme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
-				<RootLayout />
+				<Provider store={store}>
+					<RootLayout />
+				</Provider>
 			</LocalizationProvider>
 		</ThemeProvider>
 	);

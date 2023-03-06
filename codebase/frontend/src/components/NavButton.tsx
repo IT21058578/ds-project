@@ -1,7 +1,7 @@
 import { Box, ButtonBase, Icon, useTheme } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { NavLinkItemWithIcon } from "../constants/types";
+import { NavLinkItemWithIcon } from "../types";
 
 type Props = {
 	navLinkItem: NavLinkItemWithIcon;

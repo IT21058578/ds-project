@@ -45,7 +45,25 @@ If a new service is to be added. Please make a copy of the .template folder in t
 
 # Frontend
 
-You know how
+## Setting Up Development Environment
+
+## Technologies Used
+
+This section serves as brief, yet thorough documentation on the key libraries we use in the frontend that needs mentioning along with how we intend to use it.
+
+### Redux, Redux Toolkit and Redux Toolkit Query
+
+These 3 combine to form our state management and data fetching solution in the frontend. We have a single api defined using the `createApi()` function in src/store/base-api.ts . This is the only slice that exists for dealing with our backend. We extend this api slice for our specific needs by making a xxx-api-slice.ts file and using the `injectEndpoints()` function to extend it. This is in accordance with the method mentioned here https://redux-toolkit.js.org/rtk-query/usage/code-splitting for code-splitting.
+
+We are not making use of the `baseQuery` variable and instead importing and injecting the url from the environment variables in the speciic api-slice.ts files. This is because our microservice architecture in the backend makes it so that each API has a different port
+
+Further we are also declaring a map in each of these files for the collection of endpoints. We reference this when writing our apiSlices. This helps keep the code a bit cleaner and concise.
+
+## Handling Certain Errors
+
+### 504 Gateway Error
+
+- Go into node_modules and delete the .vite folder
 
 # VCS Guidelines
 

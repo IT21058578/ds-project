@@ -11,6 +11,7 @@ import user from "./routes/user-routes";
 
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 import initializeLogger from "./logger";
+import cors from "cors";
 
 const log = initializeLogger(__filename.split("\\").pop() || "");
 
@@ -24,6 +25,7 @@ let mongoose: typeof Mongoose | undefined;
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());
+app.use(cors());
 app.disable("x-powered-by");
 log.info("Configured application");
 

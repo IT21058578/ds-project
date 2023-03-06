@@ -13,8 +13,8 @@ const log = initializeLogger(__filename.split("\\").pop() || "");
 const generateAccessToken = async (req: Request, res: Response) => {
 	try {
 		log.info("Attempting to generate access token");
-		const { roles, id }: { roles: Role[]; id: string } = req.body;
-		const accessToken = await TokenService.generateAccessToken(roles, id);
+		const { id }: { id: string } = req.body;
+		const accessToken = await TokenService.generateAccessToken(id);
 		log.info("Successfully generated token");
 		return res.status(HttpStatusCode.Ok).send({ accessToken });
 	} catch (err) {

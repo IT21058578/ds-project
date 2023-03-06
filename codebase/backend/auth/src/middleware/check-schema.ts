@@ -19,10 +19,12 @@ export const checkSchemaAndHandleErrors = (schema: Schema) => {
 	const handle = (req: Request, res: Response, next: NextFunction) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
+			log.info(`Request to ${req.url} rejected due to being a bad request`);
 			return res
 				.status(HttpStatusCode.BadRequest)
 				.json({ errors: errors.array() });
 		} else {
+			log.info(`Request to ${req.url} has a valid schema`);
 			next();
 		}
 	};

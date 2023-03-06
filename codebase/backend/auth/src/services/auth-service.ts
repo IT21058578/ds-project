@@ -37,11 +37,9 @@ const loginUser = async (email: string, password: string) => {
 	}
 
 	log.info("Saving token family in redis");
+	// TODO: Convert to api calls
 	const tokenFamily: ITokenFamily = {
-		latestAccessToken: await TokenService.generateAccessToken(
-			user.roles,
-			user.id
-		),
+		latestAccessToken: await TokenService.generateAccessToken(user.id),
 		latestRefreshToken: await TokenService.generateRefreshToken(user.id),
 		expiredAccessTokens: Array(1),
 		expiredRefreshTokens: Array(1),
@@ -78,7 +76,7 @@ const registerUser = async (user: IUser) => {
 	user.password = await bcrypt.hash(user.password, 10);
 	user.isAuthorized = false;
 	user.createdAt = new Date();
-	user.roles = Array(Role.BUYER, Role.SELLER);
+	user.roles = Array(Role.BUYER);
 
 	log.info("Requesting comm-service to send an email");
 	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { ...user }).catch(() => {
@@ -174,7 +172,6 @@ const refreshTokens = async (refreshToken: string) => {
 	tokenFamily.expiredAccessTokens.push(tokenFamily.latestAccessToken);
 	tokenFamily.expiredRefreshTokens.push(tokenFamily.latestRefreshToken);
 	tokenFamily.latestAccessToken = await TokenService.generateAccessToken(
-		user.roles,
 		user.id
 	);
 	tokenFamily.latestRefreshToken = await TokenService.generateRefreshToken(

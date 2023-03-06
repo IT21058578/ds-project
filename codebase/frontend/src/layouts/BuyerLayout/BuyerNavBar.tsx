@@ -11,19 +11,23 @@ import {
 	Drawer,
 } from "@mui/material";
 import Typography from "@mui/material/Typography/Typography";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { ShoppingCart, AccountCircle, Logout } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-import { NavLinkItem } from "../../constants/types";
+import { NavLinkItem } from "../../types";
+import { useAppSelector } from "../../store/hooks";
+import LogoutDialog from "../../components/LogoutDialog";
 
-type Props = {};
-const BuyerNavBar = (props: Props) => {
+const BuyerNavBar = () => {
 	const navigate = useNavigate();
 	const {
 		palette: { grey },
 	} = useTheme();
+
 	const [hoveredNavItem, setHoveredNavItem] = useState<string | undefined>();
+	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState<boolean>(false);
+
+	const user = useAppSelector((state) => state.auth.user);
 
 	const drawerItems: (NavLinkItem & { content?: React.ReactNode })[] = [
 		{ label: "Products", content: "Products bruh moment" },
@@ -65,32 +69,44 @@ const BuyerNavBar = (props: Props) => {
 						))}
 					</Box>
 					<Box sx={{ textAlign: "end" }}>
-						<IconButton
-							size="large"
-							sx={{ color: grey[900] }}
-							onClick={() => navigate("/cart")}
-						>
-							<ShoppingCartIcon />
-						</IconButton>
-						<IconButton
-							size="large"
-							sx={{ color: grey[900] }}
-							onClick={() => navigate("/user")}
-						>
-							<AccountCircleIcon />
-						</IconButton>
-						<Button
-							onClick={() => navigate("login")}
-							sx={{
-								color: grey[900],
-								fontSize: "1rem",
-								fontWeight: "600",
-								height: "4rem",
-								paddingX: "1rem",
-							}}
-						>
-							Login
-						</Button>
+						{!!user ? (
+							<>
+								<IconButton
+									size="large"
+									sx={{ color: grey[900] }}
+									onClick={() => navigate("/cart")}
+								>
+									<ShoppingCart />
+								</IconButton>
+								<IconButton
+									size="large"
+									sx={{ color: grey[900] }}
+									onClick={() => navigate("/user")}
+								>
+									<AccountCircle />
+								</IconButton>
+								<IconButton
+									size="large"
+									sx={{ color: grey[900] }}
+									onClick={() => setIsLogoutDialogOpen(true)}
+								>
+									<Logout />
+								</IconButton>
+							</>
+						) : (
+							<Button
+								onClick={() => navigate("login")}
+								sx={{
+									color: grey[900],
+									fontSize: "1rem",
+									fontWeight: "600",
+									height: "4rem",
+									paddingX: "1rem",
+								}}
+							>
+								Login
+							</Button>
+						)}
 					</Box>
 				</Toolbar>
 			</AppBar>
@@ -107,6 +123,10 @@ const BuyerNavBar = (props: Props) => {
 					</Box>
 				</Paper>
 			</Drawer>
+			<LogoutDialog
+				open={isLogoutDialogOpen}
+				onClose={() => setIsLogoutDialogOpen(false)}
+			/>
 		</>
 	);
 };

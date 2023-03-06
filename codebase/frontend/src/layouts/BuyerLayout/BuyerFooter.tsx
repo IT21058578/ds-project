@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Facebook, YouTube, Twitter, Instagram } from "@mui/icons-material";
-import { NavLinkItem } from "../../constants/types";
+import { NavLinkItem } from "../../types";
 
 type BuyerFooterSectionProps = {
 	title: string;

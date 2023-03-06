@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
 	createBrowserRouter,
 	createRoutesFromElements,
@@ -9,6 +10,7 @@ import ErrorPage from "../pages/ErrorPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
+import { useAppSelector } from "../store/hooks";
 import BuyerLayout from "./BuyerLayout";
 import SellerLayout from "./SellerLayout";
 import UserLayout from "./UserLayout";
@@ -17,7 +19,17 @@ import UserLayout from "./UserLayout";
  * Root layout resonsible for rendering all other layouts.
  */
 const RootLayout = () => {
-	const isSellerAdmin = false;
+	const user = useAppSelector((state) => state.auth.user);
+	const [isUserSellerAdmin, setIsUserSellerAdmin] = useState<boolean>();
+
+	useEffect(() => {
+		if (!!user) {
+			if (user.roles.some((role) => ["SELLER", "ADMIN"].includes(role))) {
+				return setIsUserSellerAdmin(true);
+			}
+		}
+		return setIsUserSellerAdmin(false);
+	}, [user]);
 
 	/**
 	 * Variable for defining all routing relevant to buyers and guests
@@ -43,7 +55,7 @@ const RootLayout = () => {
 
 	const router = createBrowserRouter(
 		createRoutesFromElements(
-			!isSellerAdmin ? buyerRouteConfiguration : sellerRouteConfiguration
+			!isUserSellerAdmin ? buyerRouteConfiguration : sellerRouteConfiguration
 		)
 	);
 

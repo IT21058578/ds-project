@@ -1,6 +1,6 @@
 import { Box, Divider, Paper, Stack, useTheme } from "@mui/material";
 import { useLocation } from "react-router-dom";
-import { NavLinkItemWithIcon } from "../../constants/types";
+import { NavLinkItemWithIcon } from "../../types";
 import { LocalShipping, Person, Reviews } from "@mui/icons-material";
 import NavButton from "../../components/NavButton";
 

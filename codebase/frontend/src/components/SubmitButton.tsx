@@ -1,19 +1,25 @@
 import { Button, CircularProgress } from "@mui/material";
-import React from "react";
 
 type Props = {
 	isLoading: boolean;
 	loadingText: string;
 	normalText: string;
+	onClick?: () => {};
 };
 
-const SubmitButton = ({ isLoading, normalText, loadingText }: Props) => {
+const SubmitButton = ({
+	isLoading,
+	normalText,
+	loadingText,
+	onClick,
+}: Props) => {
 	return (
 		<Button
 			disabled={isLoading}
 			variant="contained"
 			size="large"
-			type="submit"
+			type={onClick ? "button" : "submit"}
+			onClick={onClick}
 			endIcon={
 				isLoading && (
 					<>

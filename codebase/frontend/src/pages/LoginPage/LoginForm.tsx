@@ -1,27 +1,21 @@
-import { useState } from "react";
-
-import { VisibilityOff, Visibility } from "@mui/icons-material";
-import {
-	Button,
-	FormControl,
-	Grid,
-	IconButton,
-	InputAdornment,
-	InputLabel,
-	Link,
-	OutlinedInput,
-	TextField,
-	Typography,
-} from "@mui/material";
+import * as jose from "jose";
+import { Grid, Link, Typography } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
-import FormHelperText from "@mui/material/FormHelperText";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
+
 import SubmitButton from "../../components/SubmitButton";
 import FormTextField from "../../components/FormTextField";
 import PasswordFormTextField from "../../components/PasswordFormTextField";
+import { useUserLoginMutation } from "../../store/apis/auth-api-slice";
+
+import { ILoginRequest, ILoginResponse, IUser } from "../../types";
+import { useAppDispatch } from "../../store/hooks";
+import { useLazyGetUserQuery } from "../../store/apis/user-api-slice";
+import { useEffect, useState } from "react";
+import { publicAccessTokenKey } from "../../constants/auth-constants";
+import { setAuth } from "../../store/slices/auth-slice";
 
 type Props = {};
 
@@ -40,10 +34,59 @@ const LoginForm = (props: Props) => {
 		formState: { errors, isSubmitting },
 		handleSubmit,
 	} = useForm({ resolver: yupResolver(loginSchema) });
-	const [isRequestLoading, setIsRequestLoading] = useState<boolean>(false);
+	const [loginUser, { isLoading: isLoginLoading }] = useUserLoginMutation();
+	const [getUser, { isLoading: isUserLoading }] = useLazyGetUserQuery();
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const dispatch = useAppDispatch();
 
-	const onSubmit = (data: FieldValues) => {
-		setIsRequestLoading(true);
+	useEffect(() => {
+		if (isSubmitting || isLoginLoading || isUserLoading) setIsLoading(true);
+		else setIsLoading(false);
+	}, [isSubmitting, isLoginLoading, isUserLoading]);
+
+	/**
+	 * This method does a few things and places our user in the redux state.
+	 * 1. Makes a request to get tokens
+	 * 2. Decrcypts tokens to get id
+	 * 3. Makes a request to get user data from id
+	 * 4. Transform user object to desired form
+	 * 5. Makes a dispatch containing all the data to set auth
+	 * 6. Navigate to the root
+	 * @param {FieldValues} data - An object containing an email and a password
+	 */
+	const onSubmit = async (data: FieldValues) => {
+		const { email, password } = data as ILoginRequest;
+		try {
+			const { accessToken, refreshToken }: ILoginResponse = await loginUser({
+				email,
+				password,
+			}).unwrap();
+
+			const secret = await jose.importSPKI(publicAccessTokenKey, "RS256");
+			const {
+				payload: { id },
+			} = (await jose.jwtVerify(accessToken, secret)) as {} as {
+				payload: { id: string };
+			};
+
+			const { data } = await getUser(id as string);
+			if (!data) throw Error("This should not happen");
+
+			const user: IUser = {
+				id,
+				email: data.email,
+				firstName: data.firstName,
+				isAuthorized: data.isAuthorized,
+				isSubscribed: data.isSubscribed,
+				lastName: data.lastName,
+				mobile: data.mobile,
+				roles: data.roles,
+			};
+			dispatch(setAuth({ user, accessToken, refreshToken }));
+			navigate("/");
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	return (
@@ -53,14 +96,14 @@ const LoginForm = (props: Props) => {
 					<FormTextField
 						{...register("email")}
 						error={errors.email}
-						isLoading={isSubmitting || isRequestLoading}
+						isLoading={isLoading}
 					/>
 				</Grid>
 				<Grid item xs={12} textAlign="center" marginBottom="0.25rem">
 					<PasswordFormTextField
 						{...register("password")}
 						error={errors.password}
-						isLoading={isSubmitting || isRequestLoading}
+						isLoading={isLoading}
 					/>
 				</Grid>
 				<Grid item xs={12} textAlign="end" marginBottom="2rem">
@@ -74,7 +117,7 @@ const LoginForm = (props: Props) => {
 				</Grid>
 				<Grid item xs={12} marginBottom="0.5rem" textAlign="center">
 					<SubmitButton
-						isLoading={isSubmitting || isRequestLoading}
+						isLoading={isLoading}
 						normalText={"Login"}
 						loadingText={"Logging in..."}
 					/>

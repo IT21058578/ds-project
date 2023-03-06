@@ -16,7 +16,6 @@ router.post(
 	...checkSchemaAndHandleErrors({
 		email: { in: ["body"], isEmail: true, trim: true },
 		password: { in: ["body"], isString: true, exists: true, trim: true },
-		ip: { in: ["body"], isIP: true, trim: true },
 	}),
 	AuthController.loginUser
 );
