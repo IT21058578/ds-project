@@ -6,6 +6,10 @@ import {
 } from "../constants";
 import { IBlacklistUnit } from "../types";
 
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
+
 /**
  * A middleware function made specifically for the login endpoint. This function blacklists and IP
  * based on the number of times they have signed in. IP and email data is taken from the request.

@@ -1,36 +1,24 @@
 import { User } from "../models/user-model";
 import { IUser, IUserSearchOptions, UserErrorMessage } from "../types";
 
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
+
 const getUser = async (id: string) => {
-	console.log("Finding user");
+	log.info("Finding user", id);
 	const user = await User.findById(id).exec();
 
 	if (user === null) {
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
 	}
 
-	// TODO: Create way to control information retrieved
+	//Removing sensitive information
+	user.password = "";
+	user.authorizationToken = "";
+	user.resetToken = "";
 
-	const {
-		firstName,
-		lastName,
-		email,
-		_id,
-		mobile,
-		isSubscribed,
-		isAuthorized,
-		createdAt,
-	} = user;
-	return {
-		firstName,
-		lastName,
-		email,
-		_id,
-		mobile,
-		isSubscribed,
-		isAuthorized,
-		createdAt,
-	};
+	return user.toObject();
 };
 
 const getUsers = async (userSearchOptions: IUserSearchOptions) => {};

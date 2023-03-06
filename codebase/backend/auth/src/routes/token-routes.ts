@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { TokenController } from "../controllers/token-controller";
 import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
-import { hasValidRoles } from "../utils";
+
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
 
 const router = Router();
 
@@ -9,7 +12,6 @@ router.post(
 	"/generate-access-token",
 	...checkSchemaAndHandleErrors({
 		id: { in: ["body"], isMongoId: true },
-		roles: { in: ["body"], custom: { options: hasValidRoles } },
 	}),
 	TokenController.generateAccessToken
 );
@@ -18,7 +20,6 @@ router.post(
 	"/generate-refresh-token",
 	...checkSchemaAndHandleErrors({
 		id: { in: ["body"], isMongoId: true },
-		roles: { in: ["body"], custom: { options: hasValidRoles } },
 	}),
 	TokenController.generateRefreshToken
 );

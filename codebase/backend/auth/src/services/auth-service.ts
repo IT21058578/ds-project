@@ -1,6 +1,5 @@
 import { tokenRedis } from "..";
 import { randomUUID } from "crypto";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import { axios } from "../utils";
@@ -10,13 +9,18 @@ import { TokenService } from "./token-service";
 import { ITokenFamily, IUser, Role, UserErrorMessage } from "../types";
 import {
 	API_ROLES,
+	DECODE_REFRESH_TOKEN_ENDPOINT,
 	SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT,
 	SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT,
 	SEND_REGISTER_EMAIL_ENDPOINT,
 } from "../constants";
 
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
+
 const loginUser = async (email: string, password: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ email }).exec()).at(0);
 
 	if (user === undefined) {
@@ -32,15 +36,13 @@ const loginUser = async (email: string, password: string) => {
 		throw Error(UserErrorMessage.INVALID_CREDENTIALS);
 	}
 
-	console.log("Saving token family in redis");
+	log.info("Saving token family in redis");
+	// TODO: Convert to api calls
 	const tokenFamily: ITokenFamily = {
-		latestAccessToken: await TokenService.generateAccessToken(
-			user.roles,
-			user.id
-		),
+		latestAccessToken: await TokenService.generateAccessToken(user.id),
 		latestRefreshToken: await TokenService.generateRefreshToken(user.id),
-		expiredAccessTokens: new Set<string>(),
-		expiredRefreshTokens: new Set<string>(),
+		expiredAccessTokens: Array(1),
+		expiredRefreshTokens: Array(1),
 	};
 
 	await tokenRedis
@@ -56,14 +58,14 @@ const loginUser = async (email: string, password: string) => {
 };
 
 const logoutUser = async (id: string) => {
-	console.log("Deleting token family");
+	log.info("Deleting token family");
 	await tokenRedis.call("JSON.DEL", id).catch(() => {
 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	});
 };
 
 const registerUser = async (user: IUser) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const existingUser = (await User.find({ email: user.email }).exec()).at(0);
 
 	if (existingUser !== undefined) {
@@ -74,21 +76,20 @@ const registerUser = async (user: IUser) => {
 	user.password = await bcrypt.hash(user.password, 10);
 	user.isAuthorized = false;
 	user.createdAt = new Date();
-	user.roles = Array(Role.BUYER, Role.SELLER);
+	user.roles = Array(Role.BUYER);
 
-	// FIXME: Create email endpoints
-	console.log("Requesting comm service to send an email");
-	// await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch(() => {
-	// 	throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	// });
+	log.info("Requesting comm-service to send an email");
+	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { ...user }).catch(() => {
+		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	});
 
-	console.log("Saving new user");
+	log.info("Saving new user");
 	const newUser = new User(user);
 	await newUser.save();
 };
 
 const resendRegisterEmail = async (email: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ email }).exec()).at(0);
 
 	if (user === undefined) {
@@ -99,15 +100,14 @@ const resendRegisterEmail = async (email: string) => {
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
-	// FIXME: Create email endpoints
-	console.log("Requesting comm service to send an email");
-	// await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch((err) => {
-	// 	throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	// });
+	log.info("Requesting comm service to send an email");
+	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch(() => {
+		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+	});
 };
 
 const authorizeUser = async (authorizationToken: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ authorizationToken }).exec()).at(0);
 
 	if (user === undefined) {
@@ -120,27 +120,31 @@ const authorizeUser = async (authorizationToken: string) => {
 
 	user.isAuthorized = true;
 
-	console.log("Saving updated user");
+	log.info("Saving updated user");
 	await user.save();
 };
 
 const refreshTokens = async (refreshToken: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 
-	// TODO: Convert to Api call
-	const { id } = jwt.verify(refreshToken, "") as jwt.JwtPayload;
+	const {
+		data: { id },
+	} = await axios
+		.post<{ id: string }>(DECODE_REFRESH_TOKEN_ENDPOINT, {
+			refreshToken,
+		})
+		.catch(() => {
+			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+		});
 
 	if (id === undefined) {
 		console.error("Refresh token with no id received");
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
 	}
 
-	const tokenFamily = (await tokenRedis.call(
-		"JSON.GET",
-		id
-	)) as ITokenFamily | null;
-
-	console.log(tokenFamily); //TODO: Delete
+	const tokenFamily = JSON.parse(
+		(await tokenRedis.call("JSON.GET", id)) as string
+	) as ITokenFamily | null;
 
 	if (tokenFamily === null) {
 		console.error("User tried to refresh when not logged in");
@@ -154,7 +158,7 @@ const refreshTokens = async (refreshToken: string) => {
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
-	if (tokenFamily.expiredRefreshTokens?.has(refreshToken)) {
+	if (tokenFamily.expiredRefreshTokens?.includes(refreshToken)) {
 		console.error("Old refresh token detected");
 		await tokenRedis.call("JSON.DEL", id);
 		throw Error(UserErrorMessage.USER_CONFLICT);
@@ -165,19 +169,18 @@ const refreshTokens = async (refreshToken: string) => {
 		throw Error(UserErrorMessage.USER_CONFLICT);
 	}
 
-	tokenFamily.expiredAccessTokens.add(tokenFamily.latestAccessToken);
-	tokenFamily.expiredRefreshTokens.add(tokenFamily.latestRefreshToken);
+	tokenFamily.expiredAccessTokens.push(tokenFamily.latestAccessToken);
+	tokenFamily.expiredRefreshTokens.push(tokenFamily.latestRefreshToken);
 	tokenFamily.latestAccessToken = await TokenService.generateAccessToken(
-		user.roles,
 		user.id
 	);
 	tokenFamily.latestRefreshToken = await TokenService.generateRefreshToken(
 		user.id
 	);
 
-	console.log("Saving token family in redis");
+	log.info("Saving token family in redis");
 	await tokenRedis
-		.call("JSON.SET", id, JSON.stringify(tokenFamily))
+		.call("JSON.SET", user.id, "$", JSON.stringify(tokenFamily))
 		.catch(() => {
 			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 		});
@@ -189,7 +192,7 @@ const refreshTokens = async (refreshToken: string) => {
 };
 
 const sendForgotPasswordEmail = async (email: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ email }).exec()).at(0);
 
 	if (user === undefined) {
@@ -198,7 +201,7 @@ const sendForgotPasswordEmail = async (email: string) => {
 
 	user.resetToken = randomUUID();
 
-	console.log("Requesting comm service to send email");
+	log.info("Requesting comm service to send email");
 	// TODO: Create email endpoints
 	// await axios
 	// 	.post(SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT, { user })
@@ -206,12 +209,12 @@ const sendForgotPasswordEmail = async (email: string) => {
 	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	// 	});
 
-	console.log("Saving updated user");
+	log.info("Saving updated user");
 	user.save();
 };
 
 const resetPassword = async (resetToken: string, password: string) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = (await User.find({ resetToken }).exec()).at(0);
 
 	if (user === undefined) {
@@ -221,7 +224,7 @@ const resetPassword = async (resetToken: string, password: string) => {
 	user.resetToken = undefined;
 	user.password = await bcrypt.hash(password, 10);
 
-	console.log("Requesting comm service to send email");
+	log.info("Requesting comm service to send email");
 	// TODO: Create email endpoints
 	// await axios
 	// 	.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
@@ -229,7 +232,7 @@ const resetPassword = async (resetToken: string, password: string) => {
 	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	// 	});
 
-	console.log("Saving updated user");
+	log.info("Saving updated user");
 	user.save();
 };
 
@@ -238,7 +241,7 @@ const changePassword = async (
 	oldPassword: string,
 	password: string
 ) => {
-	console.log("Verifying credentials");
+	log.info("Verifying credentials");
 	const user = await User.findById(id).exec();
 
 	if (user === null) {
@@ -252,7 +255,7 @@ const changePassword = async (
 
 	user.password = await bcrypt.hash(password, 10);
 
-	console.log("Requesting comm service to send email");
+	log.info("Requesting comm service to send email");
 	// TODO: Create email endpoints
 	// await axios
 	// 	.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
@@ -260,7 +263,7 @@ const changePassword = async (
 	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
 	// 	});
 
-	console.log("Saving updated user");
+	log.info("Saving updated user");
 	user.save();
 };
 

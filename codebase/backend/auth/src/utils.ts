@@ -1,14 +1,11 @@
-import { Request, Response, NextFunction } from "express";
-
-import { CustomValidator, validationResult } from "express-validator";
-import Axios, { HttpStatusCode } from "axios";
+import { CustomValidator } from "express-validator";
+import Axios from "axios";
 
 import {
 	API_ROLES,
-	DECODE_ACCCESS_TOKEN_ENDPOINT,
 	INTERNAL_API_KEY,
 } from "./constants";
-import { Role, UserErrorMessage } from "./types";
+import { Role } from "./types";
 
 /**
  * The instance of axios that should be used for calling internal apis. Already has the api key configured.
