@@ -4,6 +4,7 @@ dotenv.config();
 
 // Essentials
 export const { MONGO_URI, REDIS_URI, PORT, SERVICE } = process.env;
+export const { SMTP_USER, SMTP_PASS } = process.env;
 
 // API Keys
 export const { INTERNAL_API_KEY } = process.env;
@@ -13,8 +14,6 @@ export const API_ROLES = [Role.ADMIN, Role.BUYER, Role.SELLER];
 
 //Other constants
 export const VERIFIED_SENDER = "gunasekera.development@gmail.com";
-
-
 
 // ** All API Routes **
 // Comm Service routes

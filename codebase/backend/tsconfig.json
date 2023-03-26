@@ -6,7 +6,8 @@
 		{ "path": "./order" },
 		{ "path": "./item" },
 		{ "path": "./review" },
-		{ "path": "./cart"}
+		{ "path": "./cart" },
+		{ "path": "./gateway" }
 	],
 	"files": []
 }

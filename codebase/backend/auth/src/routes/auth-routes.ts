@@ -1,13 +1,7 @@
 import { Router } from "express";
 
 import { AuthController } from "../controllers/auth-controller";
-import { authorizeRequest } from "../middleware/authorize-request";
 import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
-import { Role } from "../types";
-
-import initializeLogger from "../logger";
-
-const log = initializeLogger(__filename.split("\\").pop() || "");
 
 const router = Router();
 
@@ -82,7 +76,7 @@ router.post(
 
 //Routes used in forgot password flow
 router.patch(
-	"/forgot/send-email",
+	"/forgot-password",
 	...checkSchemaAndHandleErrors({
 		email: { in: ["body"], isEmail: true, trim: true },
 	}),
@@ -90,7 +84,7 @@ router.patch(
 );
 
 router.patch(
-	"/forgot/reset-password",
+	"/reset-password",
 	...checkSchemaAndHandleErrors({
 		resetToken: { in: ["body"], isUUID: true, trim: true },
 		password: { in: ["body"], isString: true, trim: true },
@@ -100,7 +94,6 @@ router.patch(
 
 router.patch(
 	"/change-password",
-	authorizeRequest([Role.SELLER, Role.BUYER, Role.ADMIN]),
 	...checkSchemaAndHandleErrors({
 		id: { in: ["body"], isMongoId: true, trim: true },
 		oldPassword: { in: ["body"], isString: true, trim: true },

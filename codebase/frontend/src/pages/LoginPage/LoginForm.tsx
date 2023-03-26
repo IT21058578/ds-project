@@ -1,5 +1,5 @@
 import * as jose from "jose";
-import { Grid, Link, Typography } from "@mui/material";
+import { Grid, Link, Typography, useTheme } from "@mui/material";
 import { FieldValues, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -14,10 +14,8 @@ import { ILoginRequest, ILoginResponse, IUser } from "../../types";
 import { useAppDispatch } from "../../store/hooks";
 import { useLazyGetUserQuery } from "../../store/apis/user-api-slice";
 import { useEffect, useState } from "react";
-import { publicAccessTokenKey } from "../../constants/auth-constants";
+import { publicAccessTokenKey } from "../../constants/constants";
 import { setAuth } from "../../store/slices/auth-slice";
-
-type Props = {};
 
 const loginSchema = yup.object({
 	email: yup
@@ -27,7 +25,8 @@ const loginSchema = yup.object({
 	password: yup.string().required("Please enter your password"),
 });
 
-const LoginForm = (props: Props) => {
+const LoginForm = () => {
+	const theme = useTheme();
 	const navigate = useNavigate();
 	const {
 		register,
@@ -37,6 +36,9 @@ const LoginForm = (props: Props) => {
 	const [loginUser, { isLoading: isLoginLoading }] = useUserLoginMutation();
 	const [getUser, { isLoading: isUserLoading }] = useLazyGetUserQuery();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [serverErrorMessage, setServerErrorMessage] = useState<
+		string | undefined
+	>();
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
@@ -85,7 +87,11 @@ const LoginForm = (props: Props) => {
 			dispatch(setAuth({ user, accessToken, refreshToken }));
 			navigate("/");
 		} catch (error) {
-			console.error(error);
+			if ((error as any).status === 401) {
+				setServerErrorMessage("Invalid password or email");
+			} else {
+				setServerErrorMessage("An error occured. Please try again later.");
+			}
 		}
 	};
 
@@ -114,6 +120,14 @@ const LoginForm = (props: Props) => {
 					>
 						Forgot your password?
 					</Link>
+				</Grid>
+				<Grid item xs={12} marginBottom="0.5rem" marginTop="1rem">
+					<Typography
+						color={theme.palette.error.light}
+						sx={{ textAlign: "center" }}
+					>
+						{serverErrorMessage}
+					</Typography>
 				</Grid>
 				<Grid item xs={12} marginBottom="0.5rem" textAlign="center">
 					<SubmitButton

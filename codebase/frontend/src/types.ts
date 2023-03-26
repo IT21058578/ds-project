@@ -52,3 +52,12 @@ export interface ILoginRequest {
 	email: string;
 	password: string;
 }
+
+export interface IForgotPasswordRequest {
+	email: string;
+}
+
+export interface IResetPasswordRequest {
+	resetToken: string;
+	password: string;
+}
