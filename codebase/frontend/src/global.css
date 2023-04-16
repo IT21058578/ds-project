@@ -8,4 +8,5 @@ body {
 	opacity: 1;
 	background-image: radial-gradient(#9ec784 2px, #ededed 2px);
 	background-size: 40px 40px;
+	font-family: "Quicksand", "sans-serif";
 }
