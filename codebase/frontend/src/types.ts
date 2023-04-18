@@ -1,11 +1,12 @@
 import {
   CustomerListTableColumns,
   EDeliveryStatusOptions,
+  EPaymentStatusOptions,
   OrderTableColumns,
   ProductsListTableColumns,
   ReviewListTableColumns,
   SellerListTableColumns,
-} from "./constants/admin-constants";
+} from "./constants/constants";
 import { store } from "./store/store";
 
 /* UI */
@@ -61,12 +62,66 @@ export interface ILoginRequest {
   password: string;
 }
 
+export interface IOrder {
+  orderId: string;
+  userId: string;
+  date: string;
+  deliveryFee: number;
+  payment: string;
+  total: number;
+  deliveryStatus: string;
+  history: {
+    image: string;
+    productName: string;
+    amount: number;
+    price: number;
+  }[];
+}
+
 export interface IPageRequest {
   pageSize?: number;
   pageNum?: number;
   sortDir?: "asc" | "desc";
   sortCol?: string;
   search?: string;
+}
+
+export interface IReview {
+  userId: string;
+  productName: string;
+  review: string;
+  rating: number;
+}
+
+export interface IShippingAddress {
+  firstName: string;
+  lastName: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  state: string;
+  postalCode: number;
+  country: string;
+}
+
+export interface ICard {
+  name: string;
+  cardNumber: number;
+  expDate: string;
+  cvv: number;
+}
+
+export interface IProduct {
+  productId: string;
+  productName: string;
+  productDescription: string;
+  image: string[];
+  price: number;
+  rating: number;
+  review: string;
+  countInStock: number;
+  brand: string;
+  category: string;
 }
 
 export type OrderTableColumn =
@@ -106,3 +161,6 @@ export type ReviewListTableItem = {
 
 export type DeliverStatusOptionsKeyType =
   typeof EDeliveryStatusOptions[keyof typeof EDeliveryStatusOptions]["value"];
+
+export type PaymentStatusOptionsKeyType =
+  typeof EPaymentStatusOptions[keyof typeof EPaymentStatusOptions]["value"];

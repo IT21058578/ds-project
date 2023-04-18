@@ -21,7 +21,7 @@ import {
 import { camelToNormal } from "../utils/string-utils";
 import NormalTable from "../components/NormalTable";
 import Tag from "../components/Tag";
-import { EDeliveryStatusOptions } from "../constants/admin-constants";
+import { EDeliveryStatusOptions } from "../constants/constants";
 import { DeliverStatusOptionsKeyType } from "../types";
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 

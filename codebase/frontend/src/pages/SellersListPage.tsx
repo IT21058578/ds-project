@@ -16,18 +16,12 @@ import {
   Typography,
 } from "@mui/material";
 
-import {
-  CustomerListTableColumns,
-  SellerListTableColumns,
-} from "../constants/admin-constants";
+import { SellerListTableColumns } from "../constants/constants";
 import InfiniteTable from "../components/InfiniteTable";
 
 import { textEllipsis } from "../utils/string-utils";
-import { CustomerListTableItem, SellerListTableItem } from "../types";
-import {
-  useGetCustomersMutation,
-  useGetSellersMutation,
-} from "../store/apis/user-api-slice";
+import { SellerListTableItem } from "../types";
+import { useGetSellersMutation } from "../store/apis/user-api-slice";
 
 const SellersListPage = () => {
   const [search, setSearch] = useState<string>("");

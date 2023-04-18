@@ -1,36 +1,67 @@
-import { API_URI } from "../../constants/admin-constants";
-import {
-  DeliverStatusOptionsKeyType,
-  IPageRequest,
-  OrderTableItem,
-} from "../../types";
+import { API_URI } from "../../constants/constants";
 import { baseApi } from "./base-api";
+import {
+  IDeleteOrderRequestData,
+  IGetAllUserOrdersRequestData,
+  IGetOrderRequestData,
+  ISearchOrdersRequestData,
+  IUpdateOrderDeliveryStatusRequestData,
+} from "./types/request-types";
+import {
+  IDeleteOrderResponseData,
+  IGetAllUserOrdersResponseData,
+  IGetOrderResponseData,
+  ISearchOrdersResponseData,
+  IUpdateOrderDeliveryStatusResponseData,
+} from "./types/response-types";
 
 export const orderApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getOrders: build.mutation<OrderTableItem[], IPageRequest>({
+    searchOrders: build.mutation<
+      ISearchOrdersResponseData,
+      ISearchOrdersRequestData
+    >({
       query: (body) => ({
         url: `${API_URI}/orders/search`,
         method: "POST",
         body,
       }),
     }),
-    updateOrderStatus: build.mutation<
-      OrderTableItem[],
-      { id: string; status: DeliverStatusOptionsKeyType }
+    getOrder: build.query<IGetOrderResponseData, IGetOrderRequestData>({
+      query: ({ orderId }) => `${API_URI}/orders/${orderId}`,
+    }),
+    getAllUserOrders: build.query<
+      IGetAllUserOrdersResponseData,
+      IGetAllUserOrdersRequestData
     >({
-      query: (body) => ({
-        url: `${API_URI}/orders/status`,
+      query: ({ userId }) => `${API_URI}/orders/users/${userId}`,
+    }),
+    updateOrderPaymentStatus: build.mutation<
+      IUpdateOrderDeliveryStatusResponseData,
+      IUpdateOrderDeliveryStatusRequestData
+    >({
+      query: ({ orderId, ...body }) => ({
+        url: `${API_URI}/orders/${orderId}/payment-status`,
         method: "PUT",
         body,
       }),
     }),
-    getOrder: build.query<any, { id: string }>({
-      query: ({ id }) => `${API_URI}/orders/${id}`,
+    updateOrderDeliveryStatus: build.mutation<
+      IUpdateOrderDeliveryStatusResponseData,
+      IUpdateOrderDeliveryStatusRequestData
+    >({
+      query: ({ orderId, ...body }) => ({
+        url: `${API_URI}/orders/${orderId}/delivery-status`,
+        method: "PUT",
+        body,
+      }),
     }),
-    deleteOrder: build.mutation<any, { id: string }>({
-      query: ({ id }) => ({
-        url: `${API_URI}/orders/${id}`,
+    deleteOrder: build.mutation<
+      IDeleteOrderResponseData,
+      IDeleteOrderRequestData
+    >({
+      query: ({ orderId }) => ({
+        url: `${API_URI}/orders/${orderId}`,
         method: "DELETE",
       }),
     }),
@@ -38,8 +69,10 @@ export const orderApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetOrdersMutation,
-  useLazyGetOrderQuery,
+  useSearchOrdersMutation,
   useDeleteOrderMutation,
-  useUpdateOrderStatusMutation,
+  useLazyGetOrderQuery,
+  useLazyGetAllUserOrdersQuery,
+  useUpdateOrderPaymentStatusMutation,
+  useUpdateOrderDeliveryStatusMutation,
 } = orderApi;

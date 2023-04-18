@@ -18,7 +18,7 @@ import {
 
 import Tag from "../components/Tag";
 
-import { OrderTableColumns } from "../constants/admin-constants";
+import { OrderTableColumns } from "../constants/constants";
 import { useGetOrdersMutation } from "../store/apis/order-api-slice";
 import InfiniteTable from "../components/InfiniteTable";
 

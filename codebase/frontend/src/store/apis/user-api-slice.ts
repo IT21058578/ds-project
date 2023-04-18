@@ -1,40 +1,46 @@
-import { API_URI } from "../../constants/admin-constants";
-import {
-  CustomerListTableItem,
-  IPageRequest,
-  SellerListTableItem,
-} from "../../types";
+import { API_URI } from "../../constants/constants";
 import { baseApi } from "./base-api";
+import {
+  IDeleteUserRequestData,
+  IEditUserRequestData,
+  IGetUserRequestData,
+  ISearchUsersRequestData,
+} from "./types/request-types";
+import {
+  IDeleteUserResponseData,
+  IEditUserResponseData,
+  IGetUserResponseData,
+  ISearchUsersResponseData,
+} from "./types/response-types";
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getUser: build.query({
-      query: (id: string) => `${API_URI}/users/${id}`,
+    getUser: build.query<IGetUserResponseData, IGetUserRequestData>({
+      query: ({ userId }) => `${API_URI}/users/${userId}`,
     }),
-    getCustomerUser: build.query<any, { id: string }>({
-      query: ({ id }) => `${API_URI}/users/customers/${id}`,
-    }),
-    getSellerUser: build.query<any, { id: string }>({
-      query: ({ id }) => `${API_URI}/users/sellers/${id}`,
-    }),
-    getCustomers: build.mutation<CustomerListTableItem[], IPageRequest>({
+    searchUsers: build.mutation<
+      ISearchUsersResponseData,
+      ISearchUsersRequestData
+    >({
       query: (body) => ({
-        url: `${API_URI}/users/buyers/search`,
+        url: `${API_URI}/users/search`,
         method: "POST",
         body,
       }),
     }),
-    getSellers: build.mutation<SellerListTableItem[], IPageRequest>({
-      query: (body) => ({
-        url: `${API_URI}/users/sellers/search`,
-        method: "POST",
+    deleteUser: build.mutation<IDeleteUserResponseData, IDeleteUserRequestData>(
+      {
+        query: ({ userId }) => ({
+          url: `${API_URI}/users/${userId}`,
+          method: "DELETE",
+        }),
+      }
+    ),
+    editUser: build.mutation<IEditUserResponseData, IEditUserRequestData>({
+      query: ({ userId, ...body }) => ({
+        url: `${API_URI}/users/${userId}`,
+        method: "PUT",
         body,
-      }),
-    }),
-    deleteUser: build.mutation<any, { id: string }>({
-      query: ({ id }) => ({
-        url: `${API_URI}/users/${id}`,
-        method: "DELETE",
       }),
     }),
   }),
@@ -42,9 +48,7 @@ export const userApi = baseApi.injectEndpoints({
 
 export const {
   useLazyGetUserQuery,
-  useGetCustomersMutation,
-  useLazyGetSellerUserQuery,
-  useGetSellersMutation,
-  useLazyGetCustomerUserQuery,
+  useEditUserMutation,
+  useSearchUsersMutation,
   useDeleteUserMutation,
 } = userApi;

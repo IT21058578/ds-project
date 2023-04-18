@@ -1,22 +1,69 @@
-import { API_URI } from "../../constants/admin-constants";
-import { IPageRequest, ReviewListTableItem } from "../../types";
+import { API_URI } from "../../constants/constants";
 import { baseApi } from "./base-api";
+import {
+  ICreateReviewRequestData,
+  IDeleteReviewRequestData,
+  IGetAllUserReviewsRequestData,
+  IGetReviewRequestData,
+  ISearchReviewsRequestData,
+  IUpdateReviewRequestData,
+} from "./types/request-types";
+import {
+  ICreateReviewResponseData,
+  IDeleteReviewResponseData,
+  IGetAllUserReviewsResponseData,
+  IGetReviewResponseData,
+  ISearchReviewsResponseData,
+  IUpdateReviewResponseData,
+} from "./types/response-types";
 
 export const reviewApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getReviews: build.mutation<ReviewListTableItem[], IPageRequest>({
+    searchReviews: build.mutation<
+      ISearchReviewsResponseData,
+      ISearchReviewsRequestData
+    >({
       query: (body) => ({
         url: `${API_URI}/reviews/search`,
         method: "POST",
         body,
       }),
     }),
-    getReview: build.query<any, { id: string }>({
-      query: ({ id }) => `${API_URI}/reviews/${id}`,
+    getAllUserReviews: build.query<
+      IGetAllUserReviewsResponseData,
+      IGetAllUserReviewsRequestData
+    >({
+      query: ({ userId }) => `${API_URI}/reviews/users/${userId}`,
     }),
-    deleteReview: build.mutation<any, { id: string }>({
-      query: ({ id }) => ({
-        url: `${API_URI}/reviews/${id}`,
+    createReview: build.mutation<
+      ICreateReviewResponseData,
+      ICreateReviewRequestData
+    >({
+      query: ({ productId, ...body }) => ({
+        url: `${API_URI}/products/${productId}/reviews`,
+        method: "POST",
+        body,
+      }),
+    }),
+    editReview: build.mutation<
+      IUpdateReviewResponseData,
+      IUpdateReviewRequestData
+    >({
+      query: ({ reviewId, ...body }) => ({
+        url: `${API_URI}/reviews/${reviewId}`,
+        method: "PUT",
+        body,
+      }),
+    }),
+    getReview: build.query<IGetReviewResponseData, IGetReviewRequestData>({
+      query: ({ reviewId }) => `${API_URI}/reviews/${reviewId}`,
+    }),
+    deleteReview: build.mutation<
+      IDeleteReviewResponseData,
+      IDeleteReviewRequestData
+    >({
+      query: ({ reviewId }) => ({
+        url: `${API_URI}/reviews/${reviewId}`,
         method: "DELETE",
       }),
     }),
@@ -24,7 +71,10 @@ export const reviewApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetReviewsMutation,
+  useSearchReviewsMutation,
   useDeleteReviewMutation,
+  useEditReviewMutation,
+  useCreateReviewMutation,
   useLazyGetReviewQuery,
+  useLazyGetAllUserReviewsQuery,
 } = reviewApi;

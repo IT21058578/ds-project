@@ -42,3 +42,9 @@ export const EDeliveryStatusOptions = {
   IN_PROGRESS: { value: "IN_PROGRESS", label: "In Progress" },
   FINISHED: { value: "FINISHED", label: "Finished" },
 } as const;
+
+export const EPaymentStatusOptions = {
+  PAID: { value: "PAID", label: "Paid" },
+  UNPAID: { value: "UNPAID", label: "Unpaid"}
+}
+

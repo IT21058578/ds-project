@@ -1,28 +1,47 @@
-import { API_URI } from "../../constants/admin-constants";
-import { IPageRequest, ProductListTableItem } from "../../types";
+import { API_URI } from "../../constants/constants";
 import { baseApi } from "./base-api";
+import {
+  ICreateProductRequestData,
+  IDeleteProductRequestData,
+  IGetProductRequestData,
+  ISearchProductsRequestData,
+  IUpdateProductRequestData,
+} from "./types/request-types";
+import {
+  ICreateProductResponseData,
+  IDeleteProductResponseData,
+  IGetProductResponseData,
+  ISearchProductsResponseData,
+  IUpdateProductResponseData,
+} from "./types/response-types";
 
 export const productApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getProducts: build.mutation<ProductListTableItem[], IPageRequest>({
+    searchProducts: build.mutation<
+      ISearchProductsResponseData,
+      ISearchProductsRequestData
+    >({
       query: (body) => ({
         url: `${API_URI}/products/search`,
         method: "POST",
         body,
       }),
     }),
-    getProduct: build.query<any, { id: string }>({
-      query: ({ id }) => `${API_URI}/products/${id}`,
+    getProduct: build.query<IGetProductResponseData, IGetProductRequestData>({
+      query: ({ productId }) => `${API_URI}/products/${productId}`,
     }),
-    deleteProducts: build.mutation<any, { id: string }>({
-      query: ({ id }) => ({
-        url: `${API_URI}/products/${id}`,
+    deleteProducts: build.mutation<
+      IDeleteProductResponseData,
+      IDeleteProductRequestData
+    >({
+      query: ({ productId }) => ({
+        url: `${API_URI}/products/${productId}`,
         method: "DELETE",
       }),
     }),
     createProduct: build.mutation<
-      any,
-      { name?: string; price?: string; imageUrl?: number; description?: string }
+      ICreateProductResponseData,
+      ICreateProductRequestData
     >({
       query: (body) => ({
         url: `${API_URI}/products`,
@@ -31,17 +50,11 @@ export const productApi = baseApi.injectEndpoints({
       }),
     }),
     editProduct: build.mutation<
-      any,
-      {
-        id: string;
-        name?: string;
-        price?: string;
-        imageUrl?: number;
-        description?: string;
-      }
+      IUpdateProductResponseData,
+      IUpdateProductRequestData
     >({
-      query: (body) => ({
-        url: `${API_URI}/products`,
+      query: ({ productId, ...body }) => ({
+        url: `${API_URI}/products/${productId}`,
         method: "PUT",
         body,
       }),
@@ -50,7 +63,7 @@ export const productApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetProductsMutation,
+  useSearchProductsMutation,
   useLazyGetProductQuery,
   useDeleteProductsMutation,
   useCreateProductMutation,

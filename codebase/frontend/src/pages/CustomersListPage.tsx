@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { CustomerListTableColumns } from "../constants/admin-constants";
+import { CustomerListTableColumns } from "../constants/constants";
 import InfiniteTable from "../components/InfiniteTable";
 
 import { textEllipsis } from "../utils/string-utils";

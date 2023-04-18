@@ -16,15 +16,11 @@ import {
   Typography,
 } from "@mui/material";
 
-import {
-  ProductsListTableColumns,
-  ReviewListTableColumns,
-} from "../constants/admin-constants";
+import { ReviewListTableColumns } from "../constants/constants";
 import InfiniteTable from "../components/InfiniteTable";
 
 import { textEllipsis } from "../utils/string-utils";
-import { ProductListTableItem, ReviewListTableItem } from "../types";
-import { useGetProductsMutation } from "../store/apis/products-api-slice";
+import { ReviewListTableItem } from "../types";
 import { useGetReviewsMutation } from "../store/apis/review-api-slice";
 
 const ReviewsListPage = () => {
