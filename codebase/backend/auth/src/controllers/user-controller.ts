@@ -78,16 +78,29 @@ const editUser = async (req: Request, res: Response) => {
 			brandName,
 			profileImageUrl,
 		});
-		log.info("Created list of users");
+		log.info("Edited user");
 		return res.status(HttpStatusCode.Ok).send(user);
 	} catch (err) {
-		console.error("Failed to search users", err);
+		console.error("Failed to edit user", err);
 		if (err instanceof Error) {
 			return res.status(HttpStatusCode.InternalServerError).send();
 		}
 	}
 };
 
-const deleteUser = async (req: Request, res: Response) => {};
+const deleteUser = async (req: Request, res: Response) => {
+	try {
+		log.info("Attempting to delete user");
+		const { id } = req.params as { id: string };
+		await UserService.deleteUser(id);
+		log.info("Deleted user");
+		return res.status(HttpStatusCode.Ok).send();
+	} catch (err) {
+		console.error("Failed to delete user", err);
+		if (err instanceof Error) {
+			return res.status(HttpStatusCode.InternalServerError).send();
+		}
+	}
+};
 
 export const UserController = { getUser, searchUsers, editUser, deleteUser };

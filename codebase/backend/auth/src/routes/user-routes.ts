@@ -5,8 +5,6 @@ import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
 
 import initializeLogger from "../logger";
 
-const log = initializeLogger(__filename.split("\\").pop() || "");
-
 const router = Router();
 
 router.get(
