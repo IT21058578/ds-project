@@ -26,36 +26,6 @@ export interface ShippingAddress {
   country: string;
 }
 
-/**
- * Represents a payment result for an order
- */
-// export interface PaymentResult {
-//   id: string;
-//   status: string;
-//   update_time: string;
-//   email_address: string;
-// }
-
-/**
- * Represents an order
- */
-// export interface Order {
-//   user: string;
-//   orderItems: OrderItems[];
-//   shippingAddress: ShippingAddress;
-//   paymentMethod: string;
-//   paymentResult: PaymentResult;
-//   itemsPrice: number;
-//   taxPrice: number;
-//   shippingPrice: number;
-//   totalPrice: number;
-//   isPaid: boolean;
-//   paidAt: number;
-//   isDelivered: boolean;
-//   deliveredAt: number;
-// }
-
-
 export interface Order {
   userID: string;
   date: Date;
