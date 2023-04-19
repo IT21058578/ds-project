@@ -44,6 +44,7 @@ export interface IBlacklistUnit {
 export interface IUser {
 	firstName: string;
 	lastName: string;
+	brandName?: string;
 	resetToken?: string;
 	mobile: string;
 	email: string;
@@ -59,19 +60,9 @@ export interface IUser {
 export interface IUserSearchOptions {
 	pageNum: number;
 	pageSize: number;
-	firstName?: string;
-	lastName?: string;
-	email?: string;
-	createdAt?: Date;
-	createdBefore?: Date;
-	createdAfter?: Date;
-	lastLoggedAt?: Date;
-	lastLoggedAfter?: Date;
-	lastLoggedBefore?: Date;
-	mobile?: string;
-	isAuthorized?: string;
-	isSubscribed?: string;
-	hasRoles: Role[];
+	sortCol: string;
+	sortDir: "asc" | "desc";
+	search?: string;
 }
 
 export interface IPage<T> {

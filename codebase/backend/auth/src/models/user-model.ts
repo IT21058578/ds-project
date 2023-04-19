@@ -7,13 +7,14 @@ const userSchema = new Schema<IUser>({
 	email: { type: String, required: true },
 	firstName: { type: String, required: true },
 	lastName: { type: String, required: true },
+	brandName: { tyoe: String },
 	mobile: { type: String, required: true },
 	isSubscribed: { type: Boolean, required: true },
 	password: { type: String, required: true },
 	isAuthorized: Boolean,
 	authorizationToken: String,
 	resetToken: String,
-	roles: [String], // TODO: Find way to make an array of enums
+	roles: [String],
 	createdAt: Date,
 	lastLoggedAt: Date,
 });

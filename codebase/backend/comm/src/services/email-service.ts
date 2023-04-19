@@ -14,8 +14,6 @@ let transporter: Transporter<SMTPTransport.SentMessageInfo> =
 		},
 	});
 
-// TODO: Implement email templates
-
 const sendRegisterEmail = async (
 	firstName: string,
 	email: string,
