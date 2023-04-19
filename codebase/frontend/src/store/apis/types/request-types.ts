@@ -1,170 +1,168 @@
 // Order - Checkout requests
 //* POST
 export interface ICreateOrderRequestData {
-  userId: string;
-  date: string;
-  deliveryStatus: "IN_PROGRESS" | "NOT_STARTED" | "FINISHED";
-  paymentStatus: "PAID" | "UNPAID";
-  shippingDetails: {
-    firstName: string;
-    lastName: string;
-    address: {
-      firstLine: string;
-      secondLine: string;
-    };
-    city: string;
-    state: string;
-    postalCode: number;
-    country: string;
-  };
-  paymentDetails: {
-    name: string;
-    cardNumber: number;
-    expDate: string;
-    cvv: number;
-  };
+	userId: string;
+	date: string;
+	deliveryStatus: "IN_PROGRESS" | "NOT_STARTED" | "FINISHED";
+	paymentStatus: "PAID" | "UNPAID";
+	shippingDetails: {
+		firstName: string;
+		lastName: string;
+		address: {
+			firstLine: string;
+			secondLine: string;
+		};
+		city: string;
+		state: string;
+		postalCode: number;
+		country: string;
+	};
+	paymentDetails: {
+		name: string;
+		cardNumber: number;
+		expDate: string;
+		cvv: number;
+	};
 }
 
 export interface ISearchOrdersRequestData {
-  pageNum: number;
-  pageSize: number;
-  sortCol: string;
-  sortDir: "asc" | "desc";
-  search?: string;
+	pageNum: number;
+	pageSize: number;
+	sortCol: string;
+	sortDir: "asc" | "desc";
+	search?: string;
 }
 
 //* GET
 export interface IGetAllUserOrdersRequestData {
-  userId: string;
+	userId: string;
 }
 
 export interface IGetOrderRequestData {
-  orderId: string;
+	orderId: string;
 }
 
 //* PUT
 export interface IUpdateOrderDeliveryStatusRequestData {
-  orderId: string;
-  deliveryStatus: "IN_PROGRESS" | "NOT_STARTED" | "FINISHED";
+	orderId: string;
+	deliveryStatus: "IN_PROGRESS" | "NOT_STARTED" | "FINISHED";
 }
 
 export interface IUpdateOrderPaymentStatusRequestData {
-  orderId: string;
-  paymentStatus: "PAID" | "UNPAID";
+	orderId: string;
+	paymentStatus: "PAID" | "UNPAID";
 }
 
 //* DELETE
 export interface IDeleteOrderRequestData {
-  orderId: string;
+	orderId: string;
 }
 
 // Product - Review requests
 //* POST
 export interface ICreateProductRequestData {
-  brandId: string;
-  brandName: string;
-  name: string;
-  price: number;
-  imageUrl: string[];
-  description: string;
-  countInStock: number;
-  category: string;
+	brandId: string;
+	brandName: string;
+	name: string;
+	price: number;
+	imageUrl: string[];
+	description: string;
+	countInStock: number;
+	category: string;
 }
 
 export interface ICreateReviewRequestData {
-  userId: string;
-  productId: string;
-  productName: string;
-  review: string;
-  rating: number;
+	userId: string;
+	productId: string;
+	productName: string;
+	review: string;
+	rating: number;
 }
 
 export interface ISearchReviewsRequestData {
-  pageNum: number;
-  pageSize: number;
-  sortCol: string;
-  sortDir: "asc" | "desc";
-  search?: string;
+	pageNum: number;
+	pageSize: number;
+	sortCol: string;
+	sortDir: "asc" | "desc";
+	search?: string;
 }
 
 export interface ISearchProductsRequestData {
-  pageNum: number;
-  pageSize: number;
-  sortCol: string;
-  sortDir: "asc" | "desc";
-  search?: string;
+	pageNum: number;
+	pageSize: number;
+	sortCol: string;
+	sortDir: "asc" | "desc";
+	search?: string;
 }
 
 //* GET
 export interface IGetAllUserReviewsRequestData {
-  userId: string;
+	userId: string;
 }
 
 export interface IGetReviewRequestData {
-  reviewId: string;
+	reviewId: string;
 }
 
 export interface IGetAllSellerProductsRequestData {
-  userId: string;
+	userId: string;
 }
 
 export interface IGetProductRequestData {
-  productId: string;
+	productId: string;
 }
 
 //* PUT
 export interface IUpdateReviewRequestData {
-  reviewId: string;
-  rating?: number;
-  review?: string;
+	reviewId: string;
+	rating?: number;
+	review?: string;
 }
 
 export interface IUpdateProductRequestData {
-  productId: string;
-  name?: string;
-  price?: number;
-  imageUrl?: string[];
-  description?: string;
-  countInStock?: number;
-  category?: string;
+	productId: string;
+	name?: string;
+	price?: number;
+	imageUrl?: string[];
+	description?: string;
+	countInStock?: number;
+	category?: string;
 }
 
 //* DELETE
 export interface IDeleteReviewRequestData {
-  reviewId: string;
+	reviewId: string;
 }
 
 export interface IDeleteProductRequestData {
-  productId: string;
+	productId: string;
 }
 
 // User Requests
 //* POST
 export interface ISearchUsersRequestData {
-  pageNum: number;
-  pageSize: number;
-  sortCol: string;
-  sortDir: "asc" | "desc";
-  search?: string;
+	pageNum: number;
+	pageSize: number;
+	sortCol: string;
+	sortDir: "asc" | "desc";
+	search?: string;
 }
 
 //* GET
 export interface IGetUserRequestData {
-  userId: string;
+	userId: string;
 }
 
 //* PUT
 export interface IEditUserRequestData {
-  userId: string;
-  addressLine1?: string;
-  addressLine2?: string;
-  firstName?: string;
-  lastName?: string;
-  brandName?: string;
-  profileImageUrl?: string;
+	userId: string;
+	firstName?: string;
+	lastName?: string;
+	brandName?: string;
+	profileImageUrl?: string;
 }
 
 //* DELETE
 export interface IDeleteUserRequestData {
-  userId: string;
+	userId: string;
 }

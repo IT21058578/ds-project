@@ -7,6 +7,7 @@ const userSchema = new Schema<IUser>({
 	email: { type: String, required: true },
 	firstName: { type: String, required: true },
 	lastName: { type: String, required: true },
+	profileImageUrl: { type: String, required: true },
 	brandName: { tyoe: String },
 	mobile: { type: String, required: true },
 	isSubscribed: { type: Boolean, required: true },
@@ -17,6 +18,7 @@ const userSchema = new Schema<IUser>({
 	roles: [String],
 	createdAt: Date,
 	lastLoggedAt: Date,
+	lastEditedAt: Date,
 });
 
 const User = model<IUser>("User", userSchema);

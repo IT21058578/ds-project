@@ -15,7 +15,7 @@ router.get(
 	UserController.getUser
 );
 
-router.get("/", UserController.getUsers);
+router.post("/search", UserController.searchUsers);
 
 router.patch(
 	"/:id",

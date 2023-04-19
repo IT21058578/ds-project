@@ -20,7 +20,7 @@ const getUser = async (id: string) => {
 	return user.toObject();
 };
 
-const getUsers = async (userSearchOptions: IUserSearchOptions) => {
+const searchUsers = async (userSearchOptions: IUserSearchOptions) => {
 	const { pageSize, pageNum, sortCol, sortDir, search } = userSearchOptions;
 
 	const users = await User.find({
@@ -36,11 +36,39 @@ const getUsers = async (userSearchOptions: IUserSearchOptions) => {
 	return usersDto;
 };
 
-const editUser = async (editedUser: IUser) => {};
+const editUser = async ({
+	id,
+	brandName,
+	firstName,
+	lastName,
+	profileImageUrl,
+}: {
+	id: string;
+	firstName?: string;
+	lastName?: string;
+	brandName?: string;
+	profileImageUrl?: string;
+}) => {
+	const user = await User.findById(id).exec();
+
+	if (user === null) {
+		throw Error(UserErrorMessage.USER_NOT_FOUND);
+	}
+
+	user.firstName = firstName || user.firstName;
+	user.lastName = lastName || user.lastName;
+	user.brandName = brandName || user.brandName;
+	user.profileImageUrl = profileImageUrl || user.profileImageUrl;
+	user.lastEditedAt = new Date();
+
+	const editedUser = await user.save();
+
+	return editedUser.toObject();
+};
 
 const deleteUser = async (id: string) => {
 	await User.findByIdAndDelete(id).exec();
 	return;
 };
 
-export const UserService = { getUser, getUsers, editUser, deleteUser };
+export const UserService = { getUser, searchUsers, editUser, deleteUser };

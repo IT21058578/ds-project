@@ -32,7 +32,7 @@ log.info("Configured application");
 //Need to attach relevant routes
 app.use("/api/auth", auth);
 app.use("/api/token", token);
-app.use("/api/user", user);
+app.use("/api/users", user);
 log.info("Attached routes");
 
 //Connect to relevant databases and services

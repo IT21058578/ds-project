@@ -52,9 +52,11 @@ export interface IUser {
 	createdAt: Date;
 	authorizationToken?: string;
 	lastLoggedAt?: Date;
+	lastEditedAt: Date;
 	roles: Role[];
 	isSubscribed: boolean;
 	isAuthorized: boolean;
+	profileImageUrl: string;
 }
 
 export interface IUserSearchOptions {
