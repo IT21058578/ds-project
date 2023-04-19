@@ -4,15 +4,15 @@ import { Model, Document } from "mongoose";
  * Represents a product
  */
 export interface Product {
-  name: string;
-  image: string;
-  description: string;
-  brand: string;
-  category: string;
+  productName: string;
+  productDescription: string;
+  image: string[];
   price: number;
-  countInStock: number;
   rating: number;
-  numReviews: number;
+  review: string;
+  countInStock: number;
+  brand: string;
+  categery: string;
 }
 
 /**
@@ -20,9 +20,9 @@ export interface Product {
  */
 export interface Review {
   user: string;
-  name: string;
+  productName: string;
   rating: number;
-  comment: string;
+  review: string;
 }
 
 /**
