@@ -1,0 +1,11 @@
+@import url(https://fonts.googleapis.com/css?family=Righteous);
+@import url(https://fonts.googleapis.com/css?family=Quicksand:500);
+
+/* Something somewhere is adding an 8px margin to the body */
+body {
+	margin: 0 !important;
+	background-color: rgba(246, 246, 246, 0.5);
+	opacity: 1;
+	/* background-image: radial-gradient(#9ec784 2px, #ededed 2px); */
+	background-size: 40px 40px;
+}

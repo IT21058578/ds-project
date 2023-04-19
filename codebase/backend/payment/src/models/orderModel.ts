@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 import { OrderDocument } from "../types/";
 
+
 const orderSchema = new Schema(
   {
     user: {
@@ -34,11 +35,27 @@ const orderSchema = new Schema(
       },
     ],
     shippingAddress: {
-      address: {
+      firstName: {
+        type: String,
+        required: true,
+      },
+      lastName: {
+        type: String,
+        required: true,
+      },
+      addressLine1: {
+        type: String,
+        required: true,
+      },
+      addressLine2: {
         type: String,
         required: true,
       },
       city: {
+        type: String,
+        required: true,
+      },
+      state: {
         type: String,
         required: true,
       },
@@ -51,59 +68,26 @@ const orderSchema = new Schema(
         required: true,
       },
     },
-    paymentMethod: {
+    date: {
+        type: Date,
+      },
+    deliveryfee: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    payment: {
       type: String,
       required: true,
     },
-    paymentResult: {
-      id: {
-        type: String,
-      },
-      status: {
-        type: String,
-      },
-      update_time: {
-        type: String,
-      },
-      email_address: {
-        type: String,
-      },
-    },
-    itemsPrice: {
+    total: {
       type: Number,
       required: true,
       default: 0.0,
     },
-    taxPrice: {
-      type: Number,
+    deliverystatus: {
+      type: String,
       required: true,
-      default: 0.0,
-    },
-    shippingPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-      default: 0.0,
-    },
-    isPaid: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    paidAt: {
-      type: Date,
-    },
-    isDelivered: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    deliveredAt: {
-      type: Date,
     },
   },
   {

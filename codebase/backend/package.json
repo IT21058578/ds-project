@@ -12,7 +12,8 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"concurrently": "^7.6.0"
+		"concurrently": "^7.6.0",
+		"uuid": "^9.0.0"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.4.0",

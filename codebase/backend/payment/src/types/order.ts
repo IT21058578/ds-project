@@ -16,8 +16,12 @@ export interface OrderItems {
  * Represents a shipping address for a user
  */
 export interface ShippingAddress {
-  address: string;
-  city: string;
+	firstName: string;
+	lastName: string;
+	addressLine1: string;
+	addressLine2: string;
+	city: string;
+	state: string;
   postalCode: string;
   country: string;
 }
@@ -25,31 +29,44 @@ export interface ShippingAddress {
 /**
  * Represents a payment result for an order
  */
-export interface PaymentResult {
-  id: string;
-  status: string;
-  update_time: string;
-  email_address: string;
-}
+// export interface PaymentResult {
+//   id: string;
+//   status: string;
+//   update_time: string;
+//   email_address: string;
+// }
 
 /**
  * Represents an order
  */
+// export interface Order {
+//   user: string;
+//   orderItems: OrderItems[];
+//   shippingAddress: ShippingAddress;
+//   paymentMethod: string;
+//   paymentResult: PaymentResult;
+//   itemsPrice: number;
+//   taxPrice: number;
+//   shippingPrice: number;
+//   totalPrice: number;
+//   isPaid: boolean;
+//   paidAt: number;
+//   isDelivered: boolean;
+//   deliveredAt: number;
+// }
+
+
 export interface Order {
-  user: string;
-  orderItems: OrderItems[];
+  userID: string;
+  date: Date;
+  deliveryfee: number;
+  payment: string;
+  total: number;
+  deliverystatus: string;
   shippingAddress: ShippingAddress;
-  paymentMethod: string;
-  paymentResult: PaymentResult;
-  itemsPrice: number;
-  taxPrice: number;
-  shippingPrice: number;
-  totalPrice: number;
-  isPaid: boolean;
-  paidAt: number;
-  isDelivered: boolean;
-  deliveredAt: number;
+  orderItems: OrderItems[];
 }
+
 
 export interface OrderDocument extends Order, Document {}
 
