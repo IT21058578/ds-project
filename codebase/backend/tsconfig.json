@@ -2,8 +2,8 @@
 	"references": [
 		{ "path": "./auth" },
 		{ "path": "./comm" },
-		{ "path": "./Order&Payment" },
-		{ "path": "./Items&Review" },
+		{ "path": "./order_payment" },
+		{ "path": "./item_review" },
 		{ "path": "./cart"}
 	],
 	"files": []
