@@ -15,7 +15,7 @@ const getUser = async (req: Request, res: Response) => {
 		log.info("Successfully found user");
 		return res.status(HttpStatusCode.Ok).send({ ...user });
 	} catch (err) {
-		console.error("Failed to find user", err);
+		log.error("Failed to find user", err);
 		if (err instanceof Error) {
 			return res.status(HttpStatusCode.InternalServerError).send();
 		}
@@ -48,7 +48,7 @@ const searchUsers = async (req: Request, res: Response) => {
 		log.info("Created list of users");
 		return res.status(HttpStatusCode.Ok).send(users);
 	} catch (err) {
-		console.error("Failed to search users", err);
+		log.error("Failed to search users", err);
 		if (err instanceof Error) {
 			return res.status(HttpStatusCode.InternalServerError).send();
 		}
@@ -81,7 +81,7 @@ const editUser = async (req: Request, res: Response) => {
 		log.info("Edited user");
 		return res.status(HttpStatusCode.Ok).send(user);
 	} catch (err) {
-		console.error("Failed to edit user", err);
+		log.error("Failed to edit user", err);
 		if (err instanceof Error) {
 			return res.status(HttpStatusCode.InternalServerError).send();
 		}
@@ -96,7 +96,7 @@ const deleteUser = async (req: Request, res: Response) => {
 		log.info("Deleted user");
 		return res.status(HttpStatusCode.Ok).send();
 	} catch (err) {
-		console.error("Failed to delete user", err);
+		log.error("Failed to delete user", err);
 		if (err instanceof Error) {
 			return res.status(HttpStatusCode.InternalServerError).send();
 		}

@@ -8,6 +8,8 @@ export const { MONGO_URI, REDIS_URI, PORT, SERVICE } = process.env;
 // API Keys
 export const { INTERNAL_API_KEY } = process.env;
 export const { SENDGRID_API_KEY } = process.env;
+export const VERIFIED_SENDER = "gunasekera.development@gmail.com";
+export const { SMTP_USER, SMTP_PASS } = process.env;
 
 export const MAX_IP_LOGIN_ATTEMPTS = 100;
 export const MAX_IP_EMAIL_LOGIN_ATTEMPTS = 10;

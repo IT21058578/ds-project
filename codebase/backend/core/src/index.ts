@@ -8,6 +8,7 @@ import Mongoose from "mongoose";
 import auth from "./routes/auth-routes";
 import token from "./routes/token-routes";
 import user from "./routes/user-routes";
+import email from "./routes/email-routes";
 
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 import initializeLogger from "./logger";
@@ -33,6 +34,7 @@ log.info("Configured application");
 app.use("/api/auth", auth);
 app.use("/api/token", token);
 app.use("/api/users", user);
+app.use("/api/emails", email);
 log.info("Attached routes");
 
 //Connect to relevant databases and services

@@ -1,7 +1,6 @@
 {
 	"references": [
-		{ "path": "./auth" },
-		{ "path": "./comm" },
+		{ "path": "./core" },
 		{ "path": "./payment" },
 		{ "path": "./order" },
 		{ "path": "./item" },

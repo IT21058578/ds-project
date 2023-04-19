@@ -2,20 +2,15 @@ import { tokenRedis } from "..";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
 
-import { axios } from "../utils";
 import { User } from "../models/user-model";
 import { TokenService } from "./token-service";
+import { EmailService } from "./email-service";
 
 import { ITokenFamily, IUser, Role, UserErrorMessage } from "../types";
-import {
-	API_ROLES,
-	DECODE_REFRESH_TOKEN_ENDPOINT,
-	SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT,
-	SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT,
-	SEND_REGISTER_EMAIL_ENDPOINT,
-} from "../constants";
+import { DECODE_REFRESH_TOKEN_ENDPOINT } from "../constants";
 
 import initializeLogger from "../logger";
+import axios from "axios";
 
 const log = initializeLogger(__filename.split("\\").pop() || "");
 
@@ -78,10 +73,11 @@ const registerUser = async (user: IUser) => {
 	user.createdAt = new Date();
 	user.roles = Array(Role.BUYER);
 
-	log.info("Requesting comm-service to send an email");
-	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { ...user }).catch(() => {
-		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	});
+	EmailService.sendRegisterEmail(
+		user.firstName,
+		user.email,
+		user.authorizationToken
+	);
 
 	log.info("Saving new user");
 	const newUser = new User(user);
@@ -101,9 +97,11 @@ const resendRegisterEmail = async (email: string) => {
 	}
 
 	log.info("Requesting comm service to send an email");
-	await axios.post(SEND_REGISTER_EMAIL_ENDPOINT, { user }).catch(() => {
-		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	});
+	EmailService.sendRegisterEmail(
+		user.firstName,
+		user.email,
+		user.authorizationToken || ""
+	);
 };
 
 const authorizeUser = async (authorizationToken: string) => {
@@ -201,13 +199,11 @@ const sendForgotPasswordEmail = async (email: string) => {
 
 	user.resetToken = randomUUID();
 
-	log.info("Requesting comm service to send email");
-	// TODO: Create email endpoints
-	// await axios
-	// 	.post(SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT, { user })
-	// 	.catch((err) => {
-	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	// 	});
+	EmailService.sendPasswordResetEmail(
+		user.firstName,
+		user.email,
+		user.resetToken
+	);
 
 	log.info("Saving updated user");
 	user.save();
@@ -223,14 +219,6 @@ const resetPassword = async (resetToken: string, password: string) => {
 
 	user.resetToken = undefined;
 	user.password = await bcrypt.hash(password, 10);
-
-	log.info("Requesting comm service to send email");
-	// TODO: Create email endpoints
-	// await axios
-	// 	.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
-	// 	.catch((err) => {
-	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	// 	});
 
 	log.info("Saving updated user");
 	user.save();
@@ -255,13 +243,7 @@ const changePassword = async (
 
 	user.password = await bcrypt.hash(password, 10);
 
-	log.info("Requesting comm service to send email");
-	// TODO: Create email endpoints
-	// await axios
-	// 	.post(SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT, { user })
-	// 	.catch(() => {
-	// 		throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-	// 	});
+	EmailService.sendPasswordChangedEmail(user.firstName, user.email);
 
 	log.info("Saving updated user");
 	user.save();
