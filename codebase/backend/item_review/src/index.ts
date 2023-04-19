@@ -6,6 +6,12 @@ import Mongoose from "mongoose";
 
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 
+// New Edit
+import { notFound, errorHandler } from "./middleware/errorMiddleware";
+
+//Routes
+import productRouts from "./routes/productRoutes";
+
 dotenv.config();
 
 const app = express();
@@ -27,6 +33,12 @@ Mongoose.set("strictQuery", false);
 console.log({ REDIS_URI, MONGO_URI });
 Mongoose.connect(MONGO_URI || "").then((client) => (mongoose = client));
 console.log("Connected to databases and services");
+
+app.use("/api/products/", productRouts);
+
+// Use Middleware
+app.use(notFound);
+app.use(errorHandler);
 
 //Start server
 app.listen(PORT || 3000, () => {
