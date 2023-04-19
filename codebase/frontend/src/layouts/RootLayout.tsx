@@ -10,10 +10,26 @@ import ErrorPage from "../pages/ErrorPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
+<<<<<<< HEAD
 import { useAppSelector } from "../store/hooks";
 import BuyerLayout from "./BuyerLayout";
 import SellerLayout from "./SellerLayout";
 import UserLayout from "./UserLayout";
+=======
+import Checkout from "../pages/OrderPage/Checkout"
+import { useAppSelector } from "../store/hooks";
+import BuyerLayout from "./BuyerLayout";
+import ProductHome from "../pages/ProductPage/product"
+import SellerLayout from "./SellerLayout";
+import UserLayout from "./UserLayout";
+import ProductView from "../pages/ProductPage/DetailViewer";
+import Cart from "../pages/CartPage/CartView"
+import AntDesignGrid from "../pages/OrderPage/OderDetail"
+import ReviewTable from "../pages/ReviewPage/UserReviewDetails"
+import ProfilePage from "../pages/ProfilePage/profile"
+
+
+>>>>>>> origin/DevDisira
 
 /**
  * Root layout resonsible for rendering all other layouts.
@@ -40,6 +56,16 @@ const RootLayout = () => {
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/register" element={<RegisterPage />} />
 			<Route path="/forgot-password" element={<ForgotPasswordPage />} />
+<<<<<<< HEAD
+=======
+			<Route path="/cart" element={<Cart/>}/>
+			<Route path="/placeOrder" element={<Checkout/>} />
+			<Route path="/home" element={<ProductHome/>} />
+			<Route path="/productdetails" element={<ProductView/>} />
+			<Route path="/antdesigngrid" element={<AntDesignGrid/>} />
+			<Route path="/reviewtable" element={<ReviewTable/>} />
+			<Route path="/profilepage" element={<ProfilePage/>} />
+>>>>>>> origin/DevDisira
 			<Route path="/*" element={<ErrorPage />} />
 		</Route>
 	);

@@ -4,8 +4,14 @@
 /* Something somewhere is adding an 8px margin to the body */
 body {
 	margin: 0 !important;
+<<<<<<< HEAD
 	background-color: #ededed;
 	opacity: 1;
 	background-image: radial-gradient(#9ec784 2px, #ededed 2px);
+=======
+	background-color: rgba(246, 246, 246, 0.5);
+	opacity: 1;
+	/* background-image: radial-gradient(#9ec784 2px, #ededed 2px); */
+>>>>>>> origin/DevDisira
 	background-size: 40px 40px;
 }

@@ -19,7 +19,11 @@ export interface IAuthState {
 export interface IUser {
 	firstName: string;
 	lastName: string;
+<<<<<<< HEAD
 	roles: ApiRole[];
+=======
+	roles: ApiRole[]; 
+>>>>>>> origin/DevDisira
 	email: string;
 	mobile: string;
 	id: string;
@@ -27,6 +31,10 @@ export interface IUser {
 	isAuthorized: boolean;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/DevDisira
 export interface IEndpoint {
 	url: string;
 	method: "post" | "delete" | "put" | "get" | "patch";
@@ -46,9 +54,84 @@ export interface IRegisterRequest {
 	mobile: string;
 	dateOfBirth: string;
 	isSubscribed: boolean;
+<<<<<<< HEAD
 }
+=======
+}  
+>>>>>>> origin/DevDisira
 
 export interface ILoginRequest {
 	email: string;
 	password: string;
+<<<<<<< HEAD
 }
+=======
+  }
+
+//products types
+export interface Iproduct {
+	productID: string;
+	productName: string;
+	productDescription: string;
+	image: string[];
+	price: number;
+	rating: number;
+	review: string;
+	countInStock: number;
+	brand: string;
+	categery: string;
+  }
+
+//product initial state
+export interface productState {
+    products?: Iproduct[];
+	product?: Iproduct | null;
+  }
+
+//cart state
+
+export interface CartItem extends Iproduct {
+	quantity: number;
+  }
+
+export interface cartState {
+	items: CartItem[];
+	totalPrice: number;
+    totalCount: number;
+  }
+
+//no result
+
+export interface INoResultsImg {
+	imgUrl: string;
+	title: string;
+  }
+
+//reviews
+
+export interface IReview {
+	userID:string;
+	productName: string;
+	review: string;
+	rating: number;
+  }
+
+export interface IShippingAddress {
+	firstName: string;
+	lastName: string;
+	addressLine1: string;
+	addressLine2: string;
+	city: string;
+	state: string;
+	postalCode: number;
+	country: string;
+}
+
+export interface ICard {
+	name: string;
+	cardNumber: number;
+	expDate: string;
+	cvv: number;
+}
+
+>>>>>>> origin/DevDisira
