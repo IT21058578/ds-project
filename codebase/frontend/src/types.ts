@@ -1,3 +1,12 @@
+import {
+	CustomerListTableColumns,
+	EDeliveryStatusOptions,
+	EPaymentStatusOptions,
+	OrderTableColumns,
+	ProductsListTableColumns,
+	ReviewListTableColumns,
+	SellerListTableColumns,
+} from "./constants/constants";
 import { store } from "./store/store";
 
 /* UI */
@@ -61,3 +70,105 @@ export interface IResetPasswordRequest {
 	resetToken: string;
 	password: string;
 }
+export interface IOrder {
+	orderId: string;
+	userId: string;
+	date: string;
+	deliveryFee: number;
+	payment: string;
+	total: number;
+	deliveryStatus: string;
+	history: {
+		image: string;
+		productName: string;
+		amount: number;
+		price: number;
+	}[];
+}
+
+export interface IPageRequest {
+	pageSize?: number;
+	pageNum?: number;
+	sortDir?: "asc" | "desc";
+	sortCol?: string;
+	search?: string;
+}
+
+export interface IReview {
+	userId: string;
+	productName: string;
+	review: string;
+	rating: number;
+}
+
+export interface IShippingAddress {
+	firstName: string;
+	lastName: string;
+	addressLine1: string;
+	addressLine2: string;
+	city: string;
+	state: string;
+	postalCode: number;
+	country: string;
+}
+
+export interface ICard {
+	name: string;
+	cardNumber: number;
+	expDate: string;
+	cvv: number;
+}
+
+export interface IProduct {
+	productId: string;
+	productName: string;
+	productDescription: string;
+	image: string[];
+	price: number;
+	rating: number;
+	review: string;
+	countInStock: number;
+	brand: string;
+	category: string;
+}
+
+export type OrderTableColumn =
+	typeof OrderTableColumns[keyof typeof OrderTableColumns];
+
+export type ProductListTableColumn =
+	typeof ProductsListTableColumns[keyof typeof ProductsListTableColumns];
+
+export type CustomerListTableColumn =
+	typeof CustomerListTableColumns[keyof typeof CustomerListTableColumns];
+
+export type SellerListTableColumn =
+	typeof SellerListTableColumns[keyof typeof SellerListTableColumns];
+
+export type ReviewListTableColumn =
+	typeof ReviewListTableColumns[keyof typeof ReviewListTableColumns];
+
+export type OrderTableItem = {
+	[K in OrderTableColumn]: string;
+} & { deliveryStatus: DeliverStatusOptionsKeyType };
+
+export type ProductListTableItem = {
+	[K in ProductListTableColumn]: string;
+};
+
+export type CustomerListTableItem = {
+	[K in CustomerListTableColumn]: string;
+};
+
+export type SellerListTableItem = {
+	[K in SellerListTableColumn]: string;
+};
+
+export type ReviewListTableItem = {
+	[K in ReviewListTableColumn]: string;
+};
+
+export type DeliverStatusOptionsKeyType =
+	typeof EDeliveryStatusOptions[keyof typeof EDeliveryStatusOptions]["value"];
+
+export type PaymentStatusOptionsKeyType =
+	typeof EPaymentStatusOptions[keyof typeof EPaymentStatusOptions]["value"];
