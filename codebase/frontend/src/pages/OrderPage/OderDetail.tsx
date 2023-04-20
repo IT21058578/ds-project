@@ -20,26 +20,10 @@ import { Grid } from '@mui/material';
 import ReviewPopup from '../ReviewPage/ReviewPopup';
 import { CartItem } from '../../types';
 import Avatar from '@mui/material/Avatar';
+import { IOrder } from '../../types';
 
-
-interface IOrder {
-  orderId: string;
-  userID: string;
-  date: string;
-  deliveryfee: number;
-  payment: string;
-  total: number;
-  deliverystatus: string;
-  history: Array<{
-    image: string;
-    productName: string;
-    amount: number;
-    price: number;
-  }>;
-}
 
 function createData(
-  orderId: string,
   userID: string,
   date: string,
   deliveryfee: number,
@@ -54,20 +38,41 @@ function createData(
     payment,
     total,
     deliverystatus,
-    orderId,
-    history: [
+    shippingAddress: {
+      firstName: "tharidu",
+      lastName: "Sampath",
+      addressLine1: "Kottawa",
+      addressLine2: "SLIIT",
+      city: "KAlaniya",
+      state:"western",
+      postalCode: 10188,
+      country: "Sri lanka"
+    },
+    orderItems: [
       {
-        image: 'https://cdn.shopify.com/s/files/1/1833/6907/products/HerbalLineGlutaSaffronNaturalFairnessDayCream50g_grande.jpg?v=1644917585',
-        productName: 'Kottamalli',
-        amount: 3,
-        price: 23,
-      },
-      {
-        image: 'https://img.freepik.com/free-photo/beautiful-still-life-with-herbal-medicine_23-2149292041.jpg',
-        productName: 'Kottamalli',
-        amount: 3,
-        price: 23,
-      },
+      productID: "1",
+      productName: "Product 1",
+      productDescription: "This is product 1",
+      price: 10.99,
+      image: ["https://www.nicepng.com/png/detail/394-3948184_hemp-skincare-cbd-skincare-sativa-product-range-skin.png","https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png"],
+      rating: 4.5,
+      countInStock: 2,
+      review: 'good',
+      brand: 'link',
+      categery: 'Category 1',
+    },
+    {
+      productID: "1",
+      productName: "Product 2",
+      productDescription: "This is product 1",
+      price: 10.99,
+      image: ["https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png"],
+      rating: 4.5,
+      countInStock: 2,
+      review: 'good',
+      brand: 'link',
+      categery: 'Category 2',
+    },
     ],
   };
 }
@@ -118,7 +123,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
+                  {row.orderItems.map((historyRow) => (
                     <TableRow key={historyRow.image}>
                       <TableCell component="th" scope="row">
                       <Avatar alt={historyRow.productName} src={historyRow.image} />  
@@ -149,7 +154,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 }
 
 const rows = [
-  createData('ddg','user1','2023-03-15', 159, 'Payed', 324,'In progress'),
+  createData('user1','2023-03-15', 159, 'Payed', 324,'In progress'),
   createData('ddg','user1','2023-03-15', 237, 'Payed', 337,'shipped'),
   createData('ddg','user1','2023-03-15', 262, 'Unpayed', 424,'Dispatched'),
   createData('ddg','user1','2023-03-15', 305, 'Payed', 667,'shipped'),
