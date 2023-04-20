@@ -1,19 +1,27 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query';
-// import { Product } from '../slices/cart-slice';
-// import { baseApi } from "./base-api";
+import { baseApi } from "./base-api";
+import { API_URI } from "../../constants/constants";
 
 
-// const UserEndpoints = {
-// 	getProduct: {
-// 		url: "",
-// 	},
-// };
+export const cartApi = baseApi.injectEndpoints({
+	endpoints: (build) => ({
+		getCart: build.query({
+            query: ({id}) => `${API_URI}/carts/${id}`
+        }),
+        editCart: build.mutation({
+            query: ({id, ...body}) => ({
+                url: `${API_URI}/carts/${id}`,
+                method: 'PUT',
+                body
+            })
+        }),
+        deleteCart: build.mutation({
+            query: ({id}) => ({
+                url: `${API_URI}/carts/${id}`,
+                method: 'DELETE',
+            })
+        })
+	}),
+});
 
-// export const cartApi = baseApi.injectEndpoints({
-// 	endpoints: (build) => ({
-// 		getProductById: build.query<Product, string>({
-// 			query: (id: string) => `${UserEndpoints.getProduct.url}api/products/?id=${id}`,
-// 		}),
-// 	}),
-// });
+export const {useDeleteCartMutation,useEditCartMutation,useLazyGetCartQuery} = cartApi;
 

@@ -166,3 +166,10 @@ export interface IEditUserRequestData {
 export interface IDeleteUserRequestData {
 	userId: string;
 }
+
+// Cart Requests
+//* GET
+
+//* PUT
+
+//* DELETE

@@ -155,3 +155,10 @@ export interface IEditUserResponseData extends IUserDTO {}
 export interface IDeleteUserResponseData {
   // Response is empty
 }
+
+// Cart Requests
+//* GET
+
+//* PUT
+
+//* DELETE
