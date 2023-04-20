@@ -1,16 +1,15 @@
 import { tokenRedis } from "..";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
+import { JwtPayload } from "jsonwebtoken";
 
 import { User } from "../models/user-model";
 import { TokenService } from "./token-service";
 import { EmailService } from "./email-service";
 
 import { ITokenFamily, IUser, Role, UserErrorMessage } from "../types";
-import { DECODE_REFRESH_TOKEN_ENDPOINT } from "../constants";
 
 import initializeLogger from "../logger";
-import axios from "axios";
 
 const log = initializeLogger(__filename.split("\\").pop() || "");
 
@@ -71,7 +70,12 @@ const registerUser = async (user: IUser) => {
 	user.password = await bcrypt.hash(user.password, 10);
 	user.isAuthorized = false;
 	user.createdAt = new Date();
-	user.roles = Array(Role.BUYER);
+
+	if (user.brandName) {
+		user.roles = Array(Role.SELLER);
+	} else {
+		user.roles = Array(Role.BUYER);
+	}
 
 	EmailService.sendRegisterEmail(
 		user.firstName,
@@ -125,15 +129,9 @@ const authorizeUser = async (authorizationToken: string) => {
 const refreshTokens = async (refreshToken: string) => {
 	log.info("Verifying credentials");
 
-	const {
-		data: { id },
-	} = await axios
-		.post<{ id: string }>(DECODE_REFRESH_TOKEN_ENDPOINT, {
-			refreshToken,
-		})
-		.catch(() => {
-			throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
-		});
+	const { id } = (await TokenService.decodeRefreshToken(
+		refreshToken
+	)) as JwtPayload & { id?: string };
 
 	if (id === undefined) {
 		console.error("Refresh token with no id received");

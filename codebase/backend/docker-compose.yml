@@ -13,14 +13,13 @@ services:
 
   #Microservice images
   # auth-service:
-  #   build: ./auth
+  #   build: ./core
   #   ports:
   #     - "3001:3001"
   #   environment:
   #     - MONGO_URI=${AUTH_MONGO_URI}
   #     - REDIS_URI=${REDIS_URI}
   #     - AUTH_HOST=${AUTH_HOST}
-  #     - COMM_HOST=${COMM_HOST}
   #     - ITEM_HOST=${ITEM_HOST}
   #     - PAYMENT_HOST=${PAYMENT_HOST}
   #     - REVIEW_HOST=${REVIEW_HOST}
@@ -31,23 +30,6 @@ services:
   #     - redis
   #   restart: always
 
-  # comm-service:
-  #   build: ./comm
-  #   ports:
-  #     - "3002:3002"
-  #   environment:
-  #     - MONGO_URI=${COMM_MONGO_URI}
-  #     - AUTH_HOST=${AUTH_HOST}
-  #     - COMM_HOST=${COMM_HOST}
-  #     - ITEM_HOST=${ITEM_HOST}
-  #     - PAYMENT_HOST=${PAYMENT_HOST}
-  #     - REVIEW_HOST=${REVIEW_HOST}
-  #     - ORDER_HOST=${ORDER_HOST}
-  #     - CART_HOST=${CART_HOST}
-  #   depends_on:
-  #     - mongo
-  #   restart: always
-
   # payment-service:
   #   build: ./payment
   #   ports:
@@ -55,7 +37,6 @@ services:
   #   environment:
   #     - MONGO_URI=${PAYMENT_MONGO_URI}
   #     - AUTH_HOST=${AUTH_HOST}
-  #     - COMM_HOST=${COMM_HOST}
   #     - ITEM_HOST=${ITEM_HOST}
   #     - PAYMENT_HOST=${PAYMENT_HOST}
   #     - REVIEW_HOST=${REVIEW_HOST}
@@ -72,7 +53,6 @@ services:
   #   environment:
   #     - MONGO_URI=${CART_MONGO_URI}
   #     - AUTH_HOST=${AUTH_HOST}
-  #     - COMM_HOST=${COMM_HOST}
   #     - ITEM_HOST=${ITEM_HOST}
   #     - PAYMENT_HOST=${PAYMENT_HOST}
   #     - REVIEW_HOST=${REVIEW_HOST}
@@ -89,7 +69,6 @@ services:
   #   environment:
   #     - MONGO_URI=${REVIEW_MONGO_URI}
   #     - AUTH_HOST=${AUTH_HOST}
-  #     - COMM_HOST=${COMM_HOST}
   #     - ITEM_HOST=${ITEM_HOST}
   #     - PAYMENT_HOST=${PAYMENT_HOST}
   #     - REVIEW_HOST=${REVIEW_HOST}
@@ -106,7 +85,6 @@ services:
   #   environment:
   #     - MONGO_URI=${ITEM_MONGO_URI}
   #     - AUTH_HOST=${AUTH_HOST}
-  #     - COMM_HOST=${COMM_HOST}
   #     - ITEM_HOST=${ITEM_HOST}
   #     - PAYMENT_HOST=${PAYMENT_HOST}
   #     - REVIEW_HOST=${REVIEW_HOST}
@@ -123,7 +101,6 @@ services:
   #   environment:
   #     - MONGO_URI=${ORDER_MONGO_URI}
   #     - AUTH_HOST=${AUTH_HOST}
-  #     - COMM_HOST=${COMM_HOST}
   #     - ITEM_HOST=${ITEM_HOST}
   #     - PAYMENT_HOST=${PAYMENT_HOST}
   #     - REVIEW_HOST=${REVIEW_HOST}
