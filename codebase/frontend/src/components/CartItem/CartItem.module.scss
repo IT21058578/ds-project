@@ -1,0 +1,48 @@
+.cartItem {
+    @apply grid gap-2 items-center justify-items-center border-b py-3;
+    grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+    .titles {
+      @apply flex flex-col gap-1 justify-center pl-3 w-full text-base;
+      .title {
+        @apply text-left;
+      }
+      .subtitle {
+        @apply text-slate-600 text-sm;
+      }
+    }
+    .count {
+      @apply flex justify-center items-center;
+      button {
+        @apply px-2 text-xl;
+      }
+    }
+    .price {
+    }
+    .delete {
+      @apply text-xl text-slate-500;
+      &:hover {
+        @apply text-black;
+      }
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .cartItem {
+      @apply text-sm;
+      grid-template-columns: 15vw 25vw 20vw 10vw 1fr;
+      .titles {
+        @apply pl-0 text-sm;
+        .subtitle {
+          @apply text-xs;
+        }
+      }
+    }
+  }
+  @media screen and (max-width: 350px) {
+    .cartItem {
+      grid-template-columns: 40vw 2fr 1fr 1fr;
+      .img {
+        display: none;
+      }
+    }
+  }

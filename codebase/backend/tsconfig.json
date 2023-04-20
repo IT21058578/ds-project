@@ -1,12 +1,9 @@
 {
 	"references": [
 		{ "path": "./core" },
-		{ "path": "./payment" },
-		{ "path": "./order" },
-		{ "path": "./item" },
-		{ "path": "./review" },
-		{ "path": "./cart" },
-		{ "path": "./gateway" }
+		{ "path": "./order_payment" },
+		{ "path": "./item_review" },
+		{ "path": "./cart" }
 	],
 	"files": []
 }

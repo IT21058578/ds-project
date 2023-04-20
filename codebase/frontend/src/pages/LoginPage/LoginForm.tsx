@@ -20,7 +20,11 @@ import { setAuth } from "../../store/slices/auth-slice";
 const loginSchema = yup.object({
 	email: yup
 		.string()
+<<<<<<< HEAD
 		.email("Invalid email")
+=======
+		.email("Invalid email")  
+>>>>>>> origin/DevDisira
 		.required("Please enter your email"),
 	password: yup.string().required("Please enter your password"),
 });
