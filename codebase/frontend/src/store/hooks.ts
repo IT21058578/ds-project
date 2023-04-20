@@ -9,4 +9,7 @@ export const createAppAsyncThunk = createAsyncThunk.withTypes<{
 	dispatch: AppDispatch;
 	rejectValue: string;
 }>();
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/Dev

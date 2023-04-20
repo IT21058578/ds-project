@@ -7,6 +7,7 @@ export const { MONGO_URI, REDIS_URI, PORT, SERVICE } = process.env;
 
 // API Keys
 export const { INTERNAL_API_KEY } = process.env;
+export const { SENDGRID_API_KEY } = process.env;
 
 export const MAX_IP_LOGIN_ATTEMPTS = 100;
 export const MAX_IP_EMAIL_LOGIN_ATTEMPTS = 10;
@@ -16,9 +17,10 @@ export const API_ROLES = [Role.ADMIN, Role.BUYER, Role.SELLER];
 // Comm Service routes
 const { COMM_PORT, COMM_HOST } = process.env;
 export const COMM_API_URI = `http://${COMM_HOST}:${COMM_PORT}/api`;
-export const SEND_REGISTER_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-register-mail`;
-export const SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-forgot-password-mail`;
-export const SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-password-changed-mail`;
+export const SEND_REGISTER_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-register-email`;
+export const SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-password-reset-email`;
+export const SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-password-changed-email`;
+export const SEND_ORDER_CONFIRMATION_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-order-confirmation-email`;
 
 // Auth Service Routes
 const { AUTH_PORT, AUTH_HOST } = process.env;

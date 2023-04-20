@@ -19,7 +19,11 @@ export interface IAuthState {
 export interface IUser {
 	firstName: string;
 	lastName: string;
+<<<<<<< HEAD
 	roles: ApiRole[]; 
+=======
+	roles: ApiRole[];
+>>>>>>> origin/Dev
 	email: string;
 	mobile: string;
 	id: string;
@@ -27,7 +31,10 @@ export interface IUser {
 	isAuthorized: boolean;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/Dev
 export interface IEndpoint {
 	url: string;
 	method: "post" | "delete" | "put" | "get" | "patch";
@@ -47,11 +54,16 @@ export interface IRegisterRequest {
 	mobile: string;
 	dateOfBirth: string;
 	isSubscribed: boolean;
+<<<<<<< HEAD
 }  
+=======
+}
+>>>>>>> origin/Dev
 
 export interface ILoginRequest {
 	email: string;
 	password: string;
+<<<<<<< HEAD
   }
 
 //products types
@@ -120,3 +132,6 @@ export interface ICard {
 	cvv: number;
 }
 
+=======
+}
+>>>>>>> origin/Dev

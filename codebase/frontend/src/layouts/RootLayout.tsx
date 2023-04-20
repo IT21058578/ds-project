@@ -10,6 +10,7 @@ import ErrorPage from "../pages/ErrorPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
+<<<<<<< HEAD
 import Checkout from "../pages/OrderPage/Checkout"
 import { useAppSelector } from "../store/hooks";
 import BuyerLayout from "./BuyerLayout";
@@ -23,6 +24,12 @@ import ReviewTable from "../pages/ReviewPage/UserReviewDetails"
 import ProfilePage from "../pages/ProfilePage/profile"
 
 
+=======
+import { useAppSelector } from "../store/hooks";
+import BuyerLayout from "./BuyerLayout";
+import SellerLayout from "./SellerLayout";
+import UserLayout from "./UserLayout";
+>>>>>>> origin/Dev
 
 /**
  * Root layout resonsible for rendering all other layouts.
@@ -49,6 +56,7 @@ const RootLayout = () => {
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/register" element={<RegisterPage />} />
 			<Route path="/forgot-password" element={<ForgotPasswordPage />} />
+<<<<<<< HEAD
 			<Route path="/cart" element={<Cart/>}/>
 			<Route path="/placeOrder" element={<Checkout/>} />
 			<Route path="/home" element={<ProductHome/>} />
@@ -56,6 +64,8 @@ const RootLayout = () => {
 			<Route path="/antdesigngrid" element={<AntDesignGrid/>} />
 			<Route path="/reviewtable" element={<ReviewTable/>} />
 			<Route path="/profilepage" element={<ProfilePage/>} />
+=======
+>>>>>>> origin/Dev
 			<Route path="/*" element={<ErrorPage />} />
 		</Route>
 	);

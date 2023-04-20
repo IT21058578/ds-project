@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import React from "react";
 import { useState } from "react";
 
 import {
+=======
+import { useState } from "react";
+
+import {
+	AppBar,
+>>>>>>> origin/Dev
 	Box,
 	Toolbar,
 	IconButton,
@@ -10,6 +17,7 @@ import {
 	useTheme,
 	Drawer,
 } from "@mui/material";
+<<<<<<< HEAD
 
 import {
 	LocalShipping,
@@ -18,12 +26,17 @@ import {
 } from "@mui/icons-material";
 import Typography from "@mui/material/Typography/Typography";
 import { ShoppingCart,Logout } from "@mui/icons-material";
+=======
+import Typography from "@mui/material/Typography/Typography";
+import { ShoppingCart, AccountCircle, Logout } from "@mui/icons-material";
+>>>>>>> origin/Dev
 import { useNavigate } from "react-router-dom";
 
 import { NavLinkItem } from "../../types";
 import { useAppSelector } from "../../store/hooks";
 import LogoutDialog from "../../components/LogoutDialog";
 
+<<<<<<< HEAD
 //drawer
 import { styled } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -83,11 +96,14 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
   
 
+=======
+>>>>>>> origin/Dev
 const BuyerNavBar = () => {
 	const navigate = useNavigate();
 	const {
 		palette: { grey },
 	} = useTheme();
+<<<<<<< HEAD
 	const theme = useTheme();
 
 	const [open, setOpen] = React.useState(false);
@@ -99,6 +115,8 @@ const BuyerNavBar = () => {
 	const handleDrawerClose = () => {
 		setOpen(false);
 	};
+=======
+>>>>>>> origin/Dev
 
 	const [hoveredNavItem, setHoveredNavItem] = useState<string | undefined>();
 	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState<boolean>(false);
@@ -112,6 +130,7 @@ const BuyerNavBar = () => {
 
 	return (
 		<>
+<<<<<<< HEAD
 			<AppBar position="fixed" open={open}>
 				<Toolbar>
 				<IconButton
@@ -124,6 +143,11 @@ const BuyerNavBar = () => {
 					<MenuIcon />
 				</IconButton>
 					<Button onClick={() => navigate("/home")}>
+=======
+			<AppBar position="sticky" elevation={2} sx={{ zIndex: 3000 }}>
+				<Toolbar>
+					<Button onClick={() => navigate("/")}>
+>>>>>>> origin/Dev
 						<Typography
 							sx={{
 								color: grey[900],
@@ -154,12 +178,17 @@ const BuyerNavBar = () => {
 						))}
 					</Box>
 					<Box sx={{ textAlign: "end" }}>
+<<<<<<< HEAD
 						 (
+=======
+						{!!user ? (
+>>>>>>> origin/Dev
 							<>
 								<IconButton
 									size="large"
 									sx={{ color: grey[900] }}
 									onClick={() => navigate("/cart")}
+<<<<<<< HEAD
 									
 								>
 									<StyledBadge badgeContent={4} color="warning">
@@ -167,6 +196,18 @@ const BuyerNavBar = () => {
 									</StyledBadge>
 								</IconButton>
 								
+=======
+								>
+									<ShoppingCart />
+								</IconButton>
+								<IconButton
+									size="large"
+									sx={{ color: grey[900] }}
+									onClick={() => navigate("/user")}
+								>
+									<AccountCircle />
+								</IconButton>
+>>>>>>> origin/Dev
 								<IconButton
 									size="large"
 									sx={{ color: grey[900] }}
@@ -188,6 +229,7 @@ const BuyerNavBar = () => {
 							>
 								Login
 							</Button>
+<<<<<<< HEAD
 						)
 					</Box>
 				</Toolbar>
@@ -259,6 +301,12 @@ const BuyerNavBar = () => {
 			</Drawer>
 
 
+=======
+						)}
+					</Box>
+				</Toolbar>
+			</AppBar>
+>>>>>>> origin/Dev
 			<Drawer anchor="top" open={!!hoveredNavItem} disableScrollLock>
 				<div style={{ height: "4rem" }} />
 				<Paper

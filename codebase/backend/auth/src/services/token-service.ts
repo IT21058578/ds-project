@@ -2,9 +2,13 @@ import { readFile } from "fs/promises";
 import jwt from "jsonwebtoken";
 import { Role } from "../types";
 
-const generateAccessToken = async (roles: Role[], id: string) => {
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
+
+const generateAccessToken = async (id: string) => {
 	const privateKey = await readFile("assets/access-private.key");
-	const accessToken = jwt.sign({ roles, id }, privateKey, {
+	const accessToken = jwt.sign({ id }, privateKey, {
 		expiresIn: "2h",
 		algorithm: "RS256",
 	});
@@ -20,15 +24,12 @@ const generateRefreshToken = async (id: string) => {
 	return refreshToken;
 };
 
-// TODO: Make function verify that the user exists.
 const decodeAccessToken = async (token: string) => {
 	const publicKey = await readFile("assets/access-public.key");
 	const payload = jwt.verify(token, publicKey);
 	return payload;
 };
 
-// FIXME: This is not working
-// TODO: Make function verify that the user exists.
 const decodeRefreshToken = async (token: string) => {
 	const publicKey = await readFile("assets/refresh-public.key");
 	const payload = jwt.verify(token, publicKey);

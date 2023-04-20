@@ -22,7 +22,11 @@ type Props = {};
 const loginSchema = yup.object({
 	email: yup
 		.string()
+<<<<<<< HEAD
 		.email("Invalid email")  
+=======
+		.email("Invalid email")
+>>>>>>> origin/Dev
 		.required("Please enter your email"),
 	password: yup.string().required("Please enter your password"),
 });
