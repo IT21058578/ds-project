@@ -1,7 +1,6 @@
 import express, { json, urlencoded } from "express";
 
 import helmet from "helmet";
-import cors from "cors";
 import dotenv from "dotenv";
 
 import { PORT, SERVICE, ORIGINS } from "./constants";

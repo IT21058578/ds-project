@@ -1,11 +1,8 @@
 import {
 	AUTH_HOST,
-	COMM_HOST,
-	TOKEN_HOST,
-	ORDER_HOST,
-	PAYMENT_HOST,
-	ITEM_HOST,
-	REVIEW_HOST,
+	CART_HOST,
+	ITEM_REVIEW_HOST,
+	ORDER_PAYMENT_HOST,
 } from "./constants";
 import { Route } from "./types";
 
@@ -16,26 +13,14 @@ export const routesConfig: Route[] = [
 	},
 	{
 		path: "/",
-		proxyHost: TOKEN_HOST || "",
+		proxyHost: ITEM_REVIEW_HOST || "",
 	},
 	{
 		path: "/",
-		proxyHost: COMM_HOST || "",
+		proxyHost: CART_HOST || "",
 	},
 	{
 		path: "/",
-		proxyHost: PAYMENT_HOST || "",
-	},
-	{
-		path: "/",
-		proxyHost: ITEM_HOST || "",
-	},
-	{
-		path: "/",
-		proxyHost: REVIEW_HOST || "",
-	},
-	{
-		path: "/",
-		proxyHost: ORDER_HOST || "",
+		proxyHost: ORDER_PAYMENT_HOST || "",
 	},
 ];

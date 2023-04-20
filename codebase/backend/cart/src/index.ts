@@ -5,6 +5,7 @@ import helmet from "helmet";
 import Mongoose from "mongoose";
 
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
+import cart from "./cart-routes";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.disable("x-powered-by");
 console.log("Configured application");
 
 //Need to attach relevant routes
+app.use("/carts", cart);
 console.log("Attached routes");
 
 //Connect to relevant databases and services

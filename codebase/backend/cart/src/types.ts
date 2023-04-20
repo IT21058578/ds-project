@@ -45,3 +45,13 @@ export interface IUser {
 	isSubscribed: boolean;
 	isAuthorized: boolean;
 }
+
+export interface ICart {
+	userId: string;
+	products: {
+		id: string;
+		name: string;
+		price: number;
+		qty: number;
+	}[];
+}
