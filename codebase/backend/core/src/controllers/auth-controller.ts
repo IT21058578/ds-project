@@ -66,6 +66,7 @@ const registerUser = async (req: Request, res: Response) => {
 			lastName,
 			mobile,
 			isSubscribed,
+			profileImageUrl,
 		}: IUser = req.body;
 		await AuthService.registerUser({
 			password,
@@ -74,6 +75,7 @@ const registerUser = async (req: Request, res: Response) => {
 			lastName,
 			mobile,
 			isSubscribed,
+			profileImageUrl,
 		} as IUser);
 		log.info("Register succesful");
 		return res.status(HttpStatusCode.Ok).send();

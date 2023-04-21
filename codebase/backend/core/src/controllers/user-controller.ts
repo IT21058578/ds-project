@@ -10,7 +10,8 @@ const log = initializeLogger(__filename.split("\\").pop() || "");
 const getUser = async (req: Request, res: Response) => {
 	try {
 		log.info("Attempting to find user");
-		const { id }: { id: string } = req.query as { id: string };
+		const { id }: { id: string } = req.params as { id: string };
+		log.info(`Id is : ${id}`);
 		const user = await UserService.getUser(id);
 		log.info("Successfully found user");
 		return res.status(HttpStatusCode.Ok).send({ ...user });
@@ -32,10 +33,10 @@ const searchUsers = async (req: Request, res: Response) => {
 			sortDir,
 			search,
 		}: {
-			pageNum: number;
-			pageSize: number;
-			sortCol: string;
-			sortDir: "asc" | "desc";
+			pageNum?: number;
+			pageSize?: number;
+			sortCol?: string;
+			sortDir?: "asc" | "desc";
 			search?: string;
 		} = req.body;
 		const users = await UserService.searchUsers({
@@ -48,7 +49,7 @@ const searchUsers = async (req: Request, res: Response) => {
 		log.info("Created list of users");
 		return res.status(HttpStatusCode.Ok).send(users);
 	} catch (err) {
-		log.error("Failed to search users", err);
+		log.error("Failed to search users. ERR:", err);
 		if (err instanceof Error) {
 			return res.status(HttpStatusCode.InternalServerError).send();
 		}

@@ -14,7 +14,7 @@ services:
 
   # Microservice images
   core-service:
-    image: 127.0.0.1:5000/ds-project
+    image: 127.0.0.1:5000/ds-project/core
     build: ./core
     ports:
       - "3001:3001"
@@ -24,17 +24,19 @@ services:
     depends_on:
       - mongo
       - redis
-    restart: always
 
   gateway-service:
-    image: 127.0.0.1:5000/ds-project
+    image: 127.0.0.1:5000/ds-project/gateway
     build: ./gateway
     ports:
       - "3000:3000"
-    restart: always
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - core-service
 
   cart-service:
-    image: 127.0.0.1:5000/ds-project
+    image: 127.0.0.1:5000/ds-project/cart
     build: ./cart
     ports:
       - "3002:3004"
@@ -42,10 +44,9 @@ services:
       - MONGO_URI=${CART_MONGO_URI}
     depends_on:
       - mongo
-    restart: always
 
   item-review-service:
-    image: 127.0.0.1:5000/ds-project
+    image: 127.0.0.1:5000/ds-project/item-review
     build: ./item_review
     ports:
       - "3006:3006"
@@ -53,7 +54,6 @@ services:
       - MONGO_URI=${ITEM_REVIEW_MONGO_URI}
     depends_on:
       - mongo
-    restart: always
 
   # order-payment-service:
   # image: 127.0.0.1:5000/ds-project
@@ -64,4 +64,3 @@ services:
   #     - MONGO_URI=${ORDER_PAYMENT_MONGO_URI}
   #   depends_on:
   #     - mongo
-  #   restart: always

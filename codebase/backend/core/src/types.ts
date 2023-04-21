@@ -60,10 +60,10 @@ export interface IUser {
 }
 
 export interface IUserSearchOptions {
-	pageNum: number;
-	pageSize: number;
-	sortCol: string;
-	sortDir: "asc" | "desc";
+	pageNum?: number;
+	pageSize?: number;
+	sortCol?: string;
+	sortDir?: "asc" | "desc";
 	search?: string;
 }
 

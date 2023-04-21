@@ -46,6 +46,10 @@ router.post(
 			in: ["body"],
 			isMobilePhone: true,
 		},
+		profileImageUrl: {
+			in: ["body"],
+			isURL: true,
+		},
 	}),
 	AuthController.registerUser
 );
@@ -101,13 +105,5 @@ router.patch(
 	}),
 	AuthController.changePassword
 );
-
-//Eliminate and add roles
-router.patch("/change-perms");
-
-//Change emails
-router.patch("/change-email");
-
-router.patch("/change-email/resend");
 
 export default router;

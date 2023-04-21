@@ -7,31 +7,34 @@ const log = initializeLogger(__filename.split("\\").pop() || "");
 
 const getUser = async (id: string) => {
 	log.info("Finding user", id);
-	const user = await User.findById(id).exec();
+	const user = await User.findById(id).select("-password").exec();
 
 	if (user === null) {
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
 	}
 
-	user.password = "";
-	user.authorizationToken = "";
-	user.resetToken = "";
-
 	return user.toObject();
 };
 
 const searchUsers = async (userSearchOptions: IUserSearchOptions) => {
-	const { pageSize, pageNum, sortCol, sortDir, search } = userSearchOptions;
+	const {
+		pageSize = 10,
+		pageNum = 1,
+		sortCol = "_id",
+		sortDir = "asc",
+		search,
+	} = userSearchOptions;
 
 	const users = await User.find({
-		$text: !!search ? { $search: search } : undefined,
+		...(search ? { $text: { $search: search } } : {}),
 	})
 		.sort({ [sortCol]: sortDir })
 		.skip(pageSize * (pageNum - 1))
 		.limit(pageSize)
+		.select("-password")
 		.exec();
 
-	const usersDto = users.map((user) => user.toObject());
+	const usersDto = users;
 
 	return usersDto;
 };
@@ -49,7 +52,7 @@ const editUser = async ({
 	brandName?: string;
 	profileImageUrl?: string;
 }) => {
-	const user = await User.findById(id).exec();
+	const user = await User.findById(id).select("-password").exec();
 
 	if (user === null) {
 		throw Error(UserErrorMessage.USER_NOT_FOUND);
@@ -61,9 +64,7 @@ const editUser = async ({
 	user.profileImageUrl = profileImageUrl || user.profileImageUrl;
 	user.lastEditedAt = new Date();
 
-	const editedUser = await user.save();
-
-	return editedUser.toObject();
+	return await user.save();
 };
 
 const deleteUser = async (id: string) => {

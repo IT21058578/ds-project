@@ -15,7 +15,7 @@ router.get(
 
 router.post("/search", UserController.searchUsers);
 
-router.patch(
+router.put(
 	"/:id",
 	...checkSchemaAndHandleErrors({ id: { in: ["params"], isMongoId: true } }),
 	UserController.editUser
