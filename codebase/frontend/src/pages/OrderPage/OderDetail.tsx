@@ -24,54 +24,34 @@ import { IOrder } from '../../types';
 
 
 function createData(
-  userID: string,
-  date: string,
-  deliveryfee: number,
-  payment: string,
-  total: number,
-  deliverystatus: string,
+    orderId: string,
+    userId: string,
+    date: string,
+    deliveryFee: number,
+    payment: string,
+    total: number,
+    deliveryStatus: string,
 ): IOrder{
   return {
+    orderId,
     date,
-    userID,
-    deliveryfee,
+    userId,
+    deliveryFee,
     payment,
     total,
-    deliverystatus,
-    shippingAddress: {
-      firstName: "tharidu",
-      lastName: "Sampath",
-      addressLine1: "Kottawa",
-      addressLine2: "SLIIT",
-      city: "KAlaniya",
-      state:"western",
-      postalCode: 10188,
-      country: "Sri lanka"
-    },
-    orderItems: [
+    deliveryStatus,
+    history: [
       {
-      productID: "1",
       productName: "Product 1",
-      productDescription: "This is product 1",
       price: 10.99,
-      image: ["https://www.nicepng.com/png/detail/394-3948184_hemp-skincare-cbd-skincare-sativa-product-range-skin.png","https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png"],
-      rating: 4.5,
-      countInStock: 2,
-      review: 'good',
-      brand: 'link',
-      categery: 'Category 1',
+      image: "https://www.nicepng.com/png/detail/394-3948184_hemp-skincare-cbd-skincare-sativa-product-range-skin.png",
+      amount: 4,
     },
     {
-      productID: "1",
       productName: "Product 2",
-      productDescription: "This is product 1",
       price: 10.99,
-      image: ["https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png"],
-      rating: 4.5,
-      countInStock: 2,
-      review: 'good',
-      brand: 'link',
-      categery: 'Category 2',
+      image: "https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png",
+      amount: 4,
     },
     ],
   };
@@ -98,10 +78,10 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           {row.orderId}
         </TableCell>
         <TableCell align="right">{row.date}</TableCell>
-        <TableCell align="right">{row.deliveryfee}</TableCell>
+        <TableCell align="right">{row.deliveryFee}</TableCell>
         <TableCell align="right" sx={{color: row.payment === 'Payed' ? 'green' :  row.payment === 'Unpayed' ? 'red':'red'}}>{row.payment}</TableCell>
         <TableCell align="right">{row.total}</TableCell>
-        <TableCell align="right" sx={{color: row.deliverystatus === 'shipped' ? 'green' : row.deliverystatus === 'In progress' ? 'red' : row.deliverystatus === 'Dispatched' ? 'orange':'green'}}>{row.deliverystatus}</TableCell>
+        <TableCell align="right" sx={{color: row.deliveryStatus === 'shipped' ? 'green' : row.deliveryStatus === 'In progress' ? 'red' : row.deliveryStatus === 'Dispatched' ? 'orange':'green'}}>{row.deliveryStatus}</TableCell>
       </TableRow>
       
       <TableRow sx={{backgroundColor: 'rgba(132, 208, 68, 0.1)'}}>
@@ -123,7 +103,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.orderItems.map((historyRow) => (
+                  {row.history.map((historyRow) => (
                     <TableRow key={historyRow.image}>
                       <TableCell component="th" scope="row">
                       <Avatar alt={historyRow.productName} src={historyRow.image} />  
@@ -154,7 +134,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 }
 
 const rows = [
-  createData('user1','2023-03-15', 159, 'Payed', 324,'In progress'),
+  createData('ddg','user1','2023-03-15', 159, 'Payed', 324,'In progress'),
   createData('ddg','user1','2023-03-15', 237, 'Payed', 337,'shipped'),
   createData('ddg','user1','2023-03-15', 262, 'Unpayed', 424,'Dispatched'),
   createData('ddg','user1','2023-03-15', 305, 'Payed', 667,'shipped'),

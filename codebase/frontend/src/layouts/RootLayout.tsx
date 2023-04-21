@@ -10,12 +10,6 @@ import ErrorPage from "../pages/ErrorPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-<<<<<<<<< Temporary merge branch 1
-import { useAppSelector } from "../store/hooks";
-import BuyerLayout from "./BuyerLayout";
-import SellerLayout from "./SellerLayout";
-import UserLayout from "./UserLayout";
-=========
 import Checkout from "../pages/OrderPage/Checkout"
 import { useAppSelector } from "../store/hooks";
 import BuyerLayout from "./BuyerLayout";
@@ -29,7 +23,13 @@ import ReviewTable from "../pages/ReviewPage/UserReviewDetails"
 import ProfilePage from "../pages/ProfilePage/profile"
 
 
->>>>>>>>> Temporary merge branch 2
+import OrdersListPage from "../pages/OrdersListPage";
+import ReviewsListPage from "../pages/ReviewsListPage";
+import CustomersListPage from "../pages/CustomersListPage";
+import SellersListPage from "../pages/SellersListPage";
+import ProductsListPage from "../pages/ProductsListPage";
+import AdminCustomerPage from "../pages/AdminCustomerPage";
+import AdminReviewPage from "../pages/AdminReviewPage";
 
 /**
  * Root layout responsible for rendering all other layouts.
@@ -48,17 +48,15 @@ const RootLayout = () => {
     return setIsUserSellerAdmin(true);
   }, [user]);
 
-	/**
-	 * Variable for defining all routing relevant to buyers and guests
-	 */
-	const buyerRouteConfiguration = (
-		<Route path="/" element={<BuyerLayout />}>
-			<Route path="/user" element={<UserLayout />}></Route>
-			<Route path="/login" element={<LoginPage />} />
-			<Route path="/register" element={<RegisterPage />} />
-			<Route path="/forgot-password" element={<ForgotPasswordPage />} />
-<<<<<<<<< Temporary merge branch 1
-=========
+  /**
+   * Variable for defining all routing relevant to buyers and guests
+   */
+  const buyerRouteConfiguration = (
+    <Route path="/" element={<BuyerLayout />}>
+      <Route path="/user" element={<UserLayout />}></Route>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 			<Route path="/cart" element={<Cart/>}/>
 			<Route path="/placeOrder" element={<Checkout/>} />
 			<Route path="/home" element={<ProductHome/>} />
@@ -66,10 +64,9 @@ const RootLayout = () => {
 			<Route path="/antdesigngrid" element={<AntDesignGrid/>} />
 			<Route path="/reviewtable" element={<ReviewTable/>} />
 			<Route path="/profilepage" element={<ProfilePage/>} />
->>>>>>>>> Temporary merge branch 2
-			<Route path="/*" element={<ErrorPage />} />
-		</Route>
-	);
+      <Route path="/*" element={<ErrorPage />} />
+    </Route>
+  );
 
   /**
    * Variable for defining all the routing relevant to admins and seller
