@@ -1,3 +1,12 @@
+import {
+	CustomerListTableColumns,
+	EDeliveryStatusOptions,
+	EPaymentStatusOptions,
+	OrderTableColumns,
+	ProductsListTableColumns,
+	ReviewListTableColumns,
+	SellerListTableColumns,
+} from "./constants/constants";
 import { store } from "./store/store";
 
 /* UI */
@@ -46,12 +55,16 @@ export interface IRegisterRequest {
 	mobile: string;
 	dateOfBirth: string;
 	isSubscribed: boolean;
-}  
+
+}
+
 
 export interface ILoginRequest {
 	email: string;
 	password: string;
-  }
+
+}
+
 
 //products types
 export interface Iproduct {
@@ -118,4 +131,5 @@ export interface ICard {
 	expDate: string;
 	cvv: number;
 }
+
 

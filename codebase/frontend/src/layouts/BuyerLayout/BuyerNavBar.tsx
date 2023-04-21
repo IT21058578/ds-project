@@ -1,14 +1,14 @@
-<<<<<<< HEAD
-import React from "react";
-import { useState } from "react";
-
-import {
-=======
+<<<<<<<<< Temporary merge branch 1
 import { useState } from "react";
 
 import {
 	AppBar,
->>>>>>> origin/Dev
+=========
+import React from "react";
+import { useState } from "react";
+
+import {
+>>>>>>>>> Temporary merge branch 2
 	Box,
 	Toolbar,
 	IconButton,
@@ -17,7 +17,10 @@ import {
 	useTheme,
 	Drawer,
 } from "@mui/material";
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
+import Typography from "@mui/material/Typography/Typography";
+import { ShoppingCart, AccountCircle, Logout } from "@mui/icons-material";
+=========
 
 import {
 	LocalShipping,
@@ -26,17 +29,15 @@ import {
 } from "@mui/icons-material";
 import Typography from "@mui/material/Typography/Typography";
 import { ShoppingCart,Logout } from "@mui/icons-material";
-=======
-import Typography from "@mui/material/Typography/Typography";
-import { ShoppingCart, AccountCircle, Logout } from "@mui/icons-material";
->>>>>>> origin/Dev
+>>>>>>>>> Temporary merge branch 2
 import { useNavigate } from "react-router-dom";
 
 import { NavLinkItem } from "../../types";
 import { useAppSelector } from "../../store/hooks";
 import LogoutDialog from "../../components/LogoutDialog";
 
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
+=========
 //drawer
 import { styled } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -96,14 +97,14 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
   
 
-=======
->>>>>>> origin/Dev
+>>>>>>>>> Temporary merge branch 2
 const BuyerNavBar = () => {
 	const navigate = useNavigate();
 	const {
 		palette: { grey },
 	} = useTheme();
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
+=========
 	const theme = useTheme();
 
 	const [open, setOpen] = React.useState(false);
@@ -115,8 +116,7 @@ const BuyerNavBar = () => {
 	const handleDrawerClose = () => {
 		setOpen(false);
 	};
-=======
->>>>>>> origin/Dev
+>>>>>>>>> Temporary merge branch 2
 
 	const [hoveredNavItem, setHoveredNavItem] = useState<string | undefined>();
 	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState<boolean>(false);
@@ -130,7 +130,11 @@ const BuyerNavBar = () => {
 
 	return (
 		<>
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
+			<AppBar position="sticky" elevation={2} sx={{ zIndex: 3000 }}>
+				<Toolbar>
+					<Button onClick={() => navigate("/")}>
+=========
 			<AppBar position="fixed" open={open}>
 				<Toolbar>
 				<IconButton
@@ -143,11 +147,7 @@ const BuyerNavBar = () => {
 					<MenuIcon />
 				</IconButton>
 					<Button onClick={() => navigate("/home")}>
-=======
-			<AppBar position="sticky" elevation={2} sx={{ zIndex: 3000 }}>
-				<Toolbar>
-					<Button onClick={() => navigate("/")}>
->>>>>>> origin/Dev
+>>>>>>>>> Temporary merge branch 2
 						<Typography
 							sx={{
 								color: grey[900],
@@ -178,25 +178,17 @@ const BuyerNavBar = () => {
 						))}
 					</Box>
 					<Box sx={{ textAlign: "end" }}>
-<<<<<<< HEAD
-						 (
-=======
+<<<<<<<<< Temporary merge branch 1
 						{!!user ? (
->>>>>>> origin/Dev
+=========
+						 (
+>>>>>>>>> Temporary merge branch 2
 							<>
 								<IconButton
 									size="large"
 									sx={{ color: grey[900] }}
 									onClick={() => navigate("/cart")}
-<<<<<<< HEAD
-									
-								>
-									<StyledBadge badgeContent={4} color="warning">
-									<ShoppingCart />
-									</StyledBadge>
-								</IconButton>
-								
-=======
+<<<<<<<<< Temporary merge branch 1
 								>
 									<ShoppingCart />
 								</IconButton>
@@ -207,7 +199,15 @@ const BuyerNavBar = () => {
 								>
 									<AccountCircle />
 								</IconButton>
->>>>>>> origin/Dev
+=========
+									
+								>
+									<StyledBadge badgeContent={4} color="warning">
+									<ShoppingCart />
+									</StyledBadge>
+								</IconButton>
+								
+>>>>>>>>> Temporary merge branch 2
 								<IconButton
 									size="large"
 									sx={{ color: grey[900] }}
@@ -229,7 +229,12 @@ const BuyerNavBar = () => {
 							>
 								Login
 							</Button>
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
+						)}
+					</Box>
+				</Toolbar>
+			</AppBar>
+=========
 						)
 					</Box>
 				</Toolbar>
@@ -301,12 +306,7 @@ const BuyerNavBar = () => {
 			</Drawer>
 
 
-=======
-						)}
-					</Box>
-				</Toolbar>
-			</AppBar>
->>>>>>> origin/Dev
+>>>>>>>>> Temporary merge branch 2
 			<Drawer anchor="top" open={!!hoveredNavItem} disableScrollLock>
 				<div style={{ height: "4rem" }} />
 				<Paper

@@ -3,33 +3,33 @@ import { Outlet } from "react-router-dom";
 
 import BuyerFooter from "./BuyerLayout/BuyerFooter";
 import BuyerNavBar from "./BuyerLayout/BuyerNavBar";
-<<<<<<< HEAD
-type Props = { children?: React.ReactNode };
-
-const BuyerLayout = ({ children }: Props) => {
-
-=======
+<<<<<<<<< Temporary merge branch 1
 
 type Props = { children?: React.ReactNode };
 
 const BuyerLayout = ({ children }: Props) => {
->>>>>>> origin/Dev
+=========
+type Props = { children?: React.ReactNode };
+
+const BuyerLayout = ({ children }: Props) => {
+
+>>>>>>>>> Temporary merge branch 2
 	return (
 		<Stack
 			justifyContent="space-between"
 			direction="column"
 			alignItems="center"
-<<<<<<< HEAD
-			sx={{ height: "auto" }}
-		>
-			<BuyerNavBar />
-			<Box 
-=======
+<<<<<<<<< Temporary merge branch 1
 			sx={{ height: "100vh" }}
 		>
 			<BuyerNavBar />
 			<Box
->>>>>>> origin/Dev
+=========
+			sx={{ height: "auto" }}
+		>
+			<BuyerNavBar />
+			<Box 
+>>>>>>>>> Temporary merge branch 2
 				sx={{
 					display: "flex",
 					justifyContent: "center",
@@ -42,10 +42,10 @@ const BuyerLayout = ({ children }: Props) => {
 			</Box>
 			<BuyerFooter />
 		</Stack>
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
+=========
 
-=======
->>>>>>> origin/Dev
+>>>>>>>>> Temporary merge branch 2
 	);
 };
 

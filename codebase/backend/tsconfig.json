@@ -1,10 +1,9 @@
 {
 	"references": [
-		{ "path": "./auth" },
-		{ "path": "./comm" },
+		{ "path": "./core" },
 		{ "path": "./order_payment" },
 		{ "path": "./item_review" },
-		{ "path": "./cart"}
+		{ "path": "./cart" }
 	],
 	"files": []
 }
