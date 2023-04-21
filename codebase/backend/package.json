@@ -3,15 +3,21 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"d-all": "concurrently \"npm:dev -C auth\" \"npm:dev -C comm\" \"npm:dev -C payment\" \"npm:dev -C order\" \"npm:dev -C review\" \"npm:dev -C cart\" \"npm:dev -C item\"",
-		"i-all": "(cd auth && npm i) && (cd ../comm && npm i) && (cd ../payment && npm i) && (cd ../order && npm i) && (cd ../review && npm i) && (cd ../cart && npm i) && (cd ../item && npm i)",
+		"d-all": "concurrently \"npm:dev -C core\" \"npm:dev -C order_payment\" \"npm:dev -C cart\" \"npm:dev -C item_review\" \"npm:dev -C gateway\"",
+		"d-ess": "concurrently \"npm:dev -C core\" \"npm:dev -C gateway\"",
+		"i-all": "(cd core && npm i) && (cd ../order_payment && npm i) && (cd ../item_review && npm i) && (cd ../cart && npm i) && (cd ../gateway && npm i)",
 		"b-all": "tsc -b -v",
-		"s-all": "concurrently \"npm:start -C auth\" \"npm:start -C comm\" \"npm:start -C payment\" \"npm:start -C order\" \"npm:start -C review\" \"npm:start -C cart\" \"npm:start -C item\""
+		"s-all": "concurrently \"npm:start -C core\" \"npm:start -C order_payment\" \"npm:start -C cart\" \"npm:start -C item_review\" \"npm:start -C gateway\""
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"concurrently": "^7.6.0"
+		"concurrently": "^7.6.0",
+		"uuid": "^9.0.0"
+	},
+	"devDependencies": {
+		"@types/jest": "^29.4.0",
+		"@types/mocha": "^10.0.1"
 	}
 }

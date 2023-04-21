@@ -12,9 +12,9 @@ const authSlice = createSlice({
 			{
 				payload,
 			}: PayloadAction<{
-				user: IUser;
 				accessToken: string;
 				refreshToken: string;
+				user: IUser;
 			}>
 		) => {
 			auth.accessToken = payload.accessToken;
@@ -30,7 +30,6 @@ const authSlice = createSlice({
 });
 
 // Exporting action creators
-export const { setAuth, removeAuth } = authSlice.actions;
-
+export const { removeAuth, setAuth } = authSlice.actions;
 //Exporting reducer
 export const authReducer = authSlice.reducer;

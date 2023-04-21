@@ -1,40 +1,47 @@
-import { ILoginRequest, IRegisterRequest } from "../../types";
+import {
+	IForgotPasswordRequest,
+	ILoginRequest,
+	IRegisterRequest,
+	IResetPasswordRequest,
+} from "../../types";
 import { baseApi } from "./base-api";
-
-const AUTH_API_URI: string = import.meta.env.VITE_AUTH_API_URI || "";
-
-
-const AuthEndpoints = {
-	login: {
-		method: "post",
-		url: `${AUTH_API_URI}/login`,
-	},
-	logout: {
-		method: "post",
-		url: `${AUTH_API_URI}/logout`,
-	},
-	register: {
-		method: "post",
-		url: `${AUTH_API_URI}/register`,
-	},
-};
 
 export const authApi = baseApi.injectEndpoints({
 	endpoints: (build) => ({
 		userLogin: build.mutation<any, ILoginRequest>({
 			query: (body) => ({
-				...AuthEndpoints.login,
+				method: "post",
+				url: `/auth/login`,
 				body,
 			}),
 		}),
 		userLogout: build.mutation({
 			query: (body: { id: string }) => ({
-				...AuthEndpoints.logout,
+				method: "post",
+				url: `/auth/logout`,
 				body,
 			}),
 		}),
 		userRegister: build.mutation({
-			query: (body: IRegisterRequest) => ({ ...AuthEndpoints.register, body }),
+			query: (body: IRegisterRequest) => ({
+				method: "post",
+				url: `/auth/register`,
+				body,
+			}),
+		}),
+		forgotPassword: build.mutation({
+			query: (body: IForgotPasswordRequest) => ({
+				url: `/auth/forgot-password`,
+				method: "PATCH",
+				body,
+			}),
+		}),
+		resetPassword: build.mutation({
+			query: (body: IResetPasswordRequest) => ({
+				url: `/auth/reset-password`,
+				method: "PATCH",
+				body,
+			}),
 		}),
 	}),
 });
@@ -43,4 +50,6 @@ export const {
 	useUserLoginMutation,
 	useUserLogoutMutation,
 	useUserRegisterMutation,
+	useResetPasswordMutation,
+	useForgotPasswordMutation,
 } = authApi;
