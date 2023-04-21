@@ -20,11 +20,7 @@ import { setAuth } from "../../store/slices/auth-slice";
 const loginSchema = yup.object({
 	email: yup
 		.string()
-<<<<<<< HEAD
 		.email("Invalid email")
-=======
-		.email("Invalid email")  
->>>>>>> origin/DevDisira
 		.required("Please enter your email"),
 	password: yup.string().required("Please enter your password"),
 });
@@ -75,7 +71,7 @@ const LoginForm = () => {
 				payload: { id: string };
 			};
 
-			const { data } = await getUser(id as string);
+			const { data } = await getUser({ userId: id });
 			if (!data) throw Error("This should not happen");
 
 			const user: IUser = {
