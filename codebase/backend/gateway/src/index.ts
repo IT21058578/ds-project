@@ -3,15 +3,7 @@ import express, { json, urlencoded } from "express";
 import helmet from "helmet";
 import dotenv from "dotenv";
 
-import {
-	PORT,
-	SERVICE,
-	AUTH_HOST,
-	CART_HOST,
-	ITEM_REVIEW_HOST,
-	ORDER_PAYMENT_HOST,
-	ENVIRONMENT,
-} from "./constants";
+import { PORT, SERVICE } from "./constants";
 import initializeLogger from "./logger";
 import { configureProxy } from "./configure-proxy";
 import path from "path";

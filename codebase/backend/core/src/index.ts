@@ -10,8 +10,6 @@ import token from "./routes/token-routes";
 import user from "./routes/user-routes";
 import email from "./routes/email-routes";
 
-
-
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 import initializeLogger from "./logger";
 import cors from "cors";

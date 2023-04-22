@@ -14,7 +14,7 @@ const generateAccessToken = async (req: Request, res: Response) => {
 	try {
 		log.info("Attempting to generate access token");
 		const { id }: { id: string } = req.body;
-		const accessToken = await TokenService.generateAccessToken(id);
+		const accessToken = await TokenService.generateAccessToken(id, []); // FIXME: Just a temporary fix here
 		log.info("Successfully generated token");
 		return res.status(HttpStatusCode.Ok).send({ accessToken });
 	} catch (err) {
@@ -29,7 +29,7 @@ const generateRefreshToken = async (req: Request, res: Response) => {
 	try {
 		log.info("Attempting to generate refresh token");
 		const { id }: { id: string } = req.body;
-		const refreshToken = await TokenService.generateRefreshToken(id);
+		const refreshToken = await TokenService.generateRefreshToken(id, []); // FIXME: Just a temporary fix here
 		log.info("Successfully generated token");
 		return res.status(HttpStatusCode.Ok).send({ refreshToken });
 	} catch (err) {

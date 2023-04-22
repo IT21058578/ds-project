@@ -5,6 +5,9 @@ import { HttpStatusCode } from "axios";
 import { DECODE_ACCCESS_TOKEN_ENDPOINT, INTERNAL_API_KEY } from "../constants";
 import { Role, UserErrorMessage } from "../types";
 import axios from "axios";
+import initializeLogger from "../logger";
+
+const log = initializeLogger(__filename.split("\\").pop() || "");
 
 /**
  * Middleware used to authorize a route. Simply pass in an array of permitted roles. This function works by searching for
@@ -47,4 +50,45 @@ export const authorizeRequest = (allowedRoles?: Role[]) => {
 			next();
 		}
 	};
+};
+
+/**
+ * @param allowedRoles - Array of permitted roles
+ * @param authHeader - Authorization header from request
+ * @returns Whether this user has appropriate roles
+ */
+export const isRequestAuthorized = async (
+	allowedRoles?: Role[],
+	authHeader?: string
+) => {
+	const accessToken = authHeader?.split(" ")[1];
+	if (allowedRoles === undefined) {
+		return true; // If no allowed roles defined
+	} else {
+		if (accessToken === undefined) {
+			return false; // If allowed roles are defined but header no token
+		} else if (authHeader === INTERNAL_API_KEY) {
+			return true; // If auth is actually api key
+		} else {
+			try {
+				const {
+					data: { roles },
+				} = await axios
+					.post<{ roles: Role[] }>(DECODE_ACCCESS_TOKEN_ENDPOINT, {
+						accessToken,
+					})
+					.catch(() => {
+						throw Error(UserErrorMessage.INTERNAL_SERVER_ERROR);
+					});
+				for (const role of roles) {
+					if (allowedRoles.includes(role)) {
+						return true; // If any of the allowedRoles matches one of the roles this user has
+					}
+				}
+				return false;
+			} catch (err) {
+				log.error(`An error occurred when trying to authorize ERR: ${err}`);
+			}
+		}
+	}
 };

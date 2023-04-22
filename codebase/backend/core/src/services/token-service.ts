@@ -6,18 +6,18 @@ import initializeLogger from "../logger";
 
 const log = initializeLogger(__filename.split("\\").pop() || "");
 
-const generateAccessToken = async (id: string) => {
+const generateAccessToken = async (id: string, roles: Role[]) => {
 	const privateKey = await readFile("assets/access-private.key");
-	const accessToken = jwt.sign({ id }, privateKey, {
+	const accessToken = jwt.sign({ id, roles }, privateKey, {
 		expiresIn: "2h",
 		algorithm: "RS256",
 	});
 	return accessToken;
 };
 
-const generateRefreshToken = async (id: string) => {
+const generateRefreshToken = async (id: string, roles: Role[]) => {
 	const privateKey = await readFile("assets/refresh-private.key");
-	const refreshToken = jwt.sign({ id }, privateKey, {
+	const refreshToken = jwt.sign({ id, roles }, privateKey, {
 		expiresIn: "24h",
 		algorithm: "RS256",
 	});

@@ -1,7 +1,13 @@
+import { Method } from "axios";
+
 export interface Route {
 	paths: string[];
 	proxyHost: string;
-	roles?: Role[];
+}
+
+export interface RouteConfigItem {
+	endpoints: {};
+	host: string;
 }
 
 /**
@@ -23,4 +29,9 @@ export enum Role {
 	SELLER = "SELLER",
 	ADMIN = "ADMIN",
 	SYSTEM = "SYSTEM",
+}
+
+export interface IRouteConfig {
+	endpoints: [path: string, method?: Method, roles?: Role[]][];
+	host: string;
 }

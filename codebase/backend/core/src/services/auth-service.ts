@@ -22,7 +22,7 @@ const loginUser = async (email: string, password: string) => {
 	}
 
 	if (!user.isAuthorized) {
-		throw Error(UserErrorMessage.USER_CONFLICT);
+		throw Error("User is not authorized yet");
 	}
 
 	const isPasswordCorrect = await bcrypt.compare(password, user.password);
@@ -33,8 +33,14 @@ const loginUser = async (email: string, password: string) => {
 	log.info("Saving token family in redis");
 	// TODO: Convert to api calls
 	const tokenFamily: ITokenFamily = {
-		latestAccessToken: await TokenService.generateAccessToken(user.id),
-		latestRefreshToken: await TokenService.generateRefreshToken(user.id),
+		latestAccessToken: await TokenService.generateAccessToken(
+			user.id,
+			user.roles
+		),
+		latestRefreshToken: await TokenService.generateRefreshToken(
+			user.id,
+			user.roles
+		),
 		expiredAccessTokens: Array(1),
 		expiredRefreshTokens: Array(1),
 	};
@@ -168,10 +174,12 @@ const refreshTokens = async (refreshToken: string) => {
 	tokenFamily.expiredAccessTokens.push(tokenFamily.latestAccessToken);
 	tokenFamily.expiredRefreshTokens.push(tokenFamily.latestRefreshToken);
 	tokenFamily.latestAccessToken = await TokenService.generateAccessToken(
-		user.id
+		user.id,
+		user.roles
 	);
 	tokenFamily.latestRefreshToken = await TokenService.generateRefreshToken(
-		user.id
+		user.id,
+		user.roles
 	);
 
 	log.info("Saving token family in redis");
