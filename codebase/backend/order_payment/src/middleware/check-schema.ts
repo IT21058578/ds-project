@@ -11,7 +11,7 @@ import { HttpStatusCode } from "axios";
  * @returns An array of middleware functions
  */
 export const checkSchemaAndHandleErrors = (schema: Schema) => {
-	const check = checkSchema(schema);
+	const check = checkSchema(schema, ["body"]);
 	const handle = (req: Request, res: Response, next: NextFunction) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {

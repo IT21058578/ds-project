@@ -17,7 +17,7 @@ export const configureProxy = (app: ReturnType<typeof express>) => {
 	log.info(`Attaching proxy routes`);
 	log.info(`Environment detected was ${ENVIRONMENT}`);
 	console.table(routesConfig);
-	
+
 	routesConfig.forEach(({ paths, proxyHost, roles }) => {
 		paths.forEach((path) => {
 			app.use(

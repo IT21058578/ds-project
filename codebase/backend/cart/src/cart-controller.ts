@@ -1,13 +1,13 @@
 import { HttpStatusCode } from "axios";
 import { CartService } from "./cart-service";
 import { Request, Response } from "express";
+import { ICart } from "./types";
 
 const getCart = async (req: Request, res: Response) => {
 	try {
 		console.log("Attempting to get cart");
-		const { id } = req.params as { id: string };
-		const { userId } = req.body;
-		const cart = await CartService.getCart(id, userId);
+		const { userId } = req.params;
+		const cart = await CartService.getCart(userId);
 		console.log("Successfully got cart");
 		return res.status(HttpStatusCode.Ok).send({ ...cart });
 	} catch (err) {
@@ -21,9 +21,9 @@ const getCart = async (req: Request, res: Response) => {
 const editCart = async (req: Request, res: Response) => {
 	try {
 		console.log("Attempting to edit cart");
-		const { id } = req.params as { id: string };
-		const { products } = req.body;
-		const cart = await CartService.editCart({ id, products } as any);
+		const { userId } = req.params as { userId: string };
+		const { products } = req.body as Partial<ICart>;
+		const cart = await CartService.editCart(userId, products);
 		console.log("Successfully edited cart");
 		return res.status(HttpStatusCode.Ok).send({ ...cart });
 	} catch (err) {
@@ -37,8 +37,8 @@ const editCart = async (req: Request, res: Response) => {
 const deleteCart = async (req: Request, res: Response) => {
 	try {
 		console.log("Attempting to delete cart");
-		const { id } = req.params as { id: string };
-		await CartService.deleteCart(id);
+		const { userId } = req.params as { userId: string };
+		await CartService.deleteCart(userId);
 		console.log("Successfully deleted cart");
 		return res.status(HttpStatusCode.Ok).send();
 	} catch (err) {

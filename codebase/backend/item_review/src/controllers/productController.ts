@@ -2,6 +2,7 @@ import { HttpStatusCode } from "axios";
 import { Request, Response } from "express";
 import { Product, Review } from "../models/productModel";
 import { IPage } from "../types";
+import { IReview } from "../types/product";
 
 const createProduct = async (req: Request, res: Response) => {
 	try {
@@ -163,14 +164,7 @@ const createReview = async (req: Request, res: Response) => {
 	try {
 		console.log("Attempting to create review");
 		const { comment, productId, productName, rating, userId, createdBy } =
-			req.body as {
-				userId: string;
-				productId: string;
-				productName: string;
-				comment: string;
-				rating: number;
-				createdBy: string;
-			};
+			req.body as Partial<IReview>;
 
 		const review = new Review({
 			comment,
@@ -261,10 +255,7 @@ const updateReview = async (req: Request, res: Response) => {
 	try {
 		console.log("Attempting to update review");
 		const { id } = req.params as { id: string };
-		const { rating, comment } = req.body as {
-			rating?: number;
-			comment?: string;
-		};
+		const { rating, comment } = req.body as Partial<IReview>;
 
 		const review = await Review.findById(id).exec();
 		if (review === null) throw Error("Review not found");

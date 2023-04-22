@@ -14,6 +14,11 @@ const app = express();
 //Confguring express erver
 let mongoose: typeof Mongoose | undefined;
 
+app.use((req, _res, next) => {
+	console.log(`Request received by ${SERVICE} service to '${req.originalUrl}'`);
+	next();
+});
+
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());
@@ -21,7 +26,7 @@ app.disable("x-powered-by");
 console.log("Configured application");
 
 //Need to attach relevant routes
-app.use("/carts", cart);
+app.use("/api/carts", cart);
 console.log("Attached routes");
 
 //Connect to relevant databases and services

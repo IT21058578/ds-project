@@ -25,29 +25,24 @@ router.post(
 router.post(
 	"/register",
 	...checkSchemaAndHandleErrors({
-		email: { in: ["body"], isEmail: true },
+		email: { isEmail: true },
 		firstName: {
-			in: ["body"],
 			isAlpha: true,
 			trim: true,
 		},
 		lastName: {
-			in: ["body"],
 			isAlpha: true,
 			trim: true,
 		},
-		password: { in: ["body"], isString: true, trim: true },
+		password: { isString: true, trim: true },
 		isSubscribed: {
-			in: ["body"],
 			toBoolean: true,
 			default: true,
 		},
 		mobile: {
-			in: ["body"],
 			isMobilePhone: true,
 		},
 		profileImageUrl: {
-			in: ["body"],
 			isURL: true,
 		},
 	}),

@@ -46,11 +46,10 @@ export interface IProductDTO {
 export interface IOrderDTO {
 	id: string;
 	userId: string;
-	date: string;
 	deliveryStatus: "IN_PROGRESS" | "NOT_STARTED" | "FINISHED";
 	paymentStatus: "PAID" | "UNPAID";
 	createdOn: string;
-	lastUpdatedOn: string;
+	lastEditedOn: string;
 	items: {
 		name: string;
 		imageUrl: string;
@@ -77,18 +76,29 @@ export interface IOrderDTO {
 	};
 }
 
+export interface IPageDTO<T> {
+	isLast: boolean;
+	isFirst: boolean;
+	totalPages: number;
+	totalElements: number;
+	pageNum: number;
+	pageSize: number;
+	content: T[];
+	searchOptions?: { [key: string]: any };
+	sort?: {
+		sortDir: "asc" | "desc";
+		sortCol: string;
+	};
+}
+
 // Order - Checkout requests
 //* POST
 export interface ICreateOrderResponseData extends IOrderDTO {}
 
-export interface ISearchOrdersResponseData {
-	content: IOrderDTO[];
-}
+export interface ISearchOrdersResponseData extends IPageDTO<IOrderDTO> {}
 
 //* GET
-export interface IGetAllUserOrdersResponseData {
-	content: IOrderDTO[];
-}
+export interface IGetAllUserOrdersResponseData extends IPageDTO<IOrderDTO> {}
 
 export interface IGetOrderResponseData extends IOrderDTO {}
 
@@ -108,24 +118,17 @@ export interface ICreateProductResponseData extends IProductDTO {}
 
 export interface ICreateReviewResponseData extends IReviewDTO {}
 
-export interface ISearchReviewsResponseData {
-	content: IReviewDTO[];
-}
+export interface ISearchReviewsResponseData extends IPageDTO<IReviewDTO> {}
 
-export interface ISearchProductsResponseData {
-	content: IProductDTO[];
-}
+export interface ISearchProductsResponseData extends IPageDTO<IProductDTO> {}
 
 //* GET
-export interface IGetAllUserReviewsResponseData {
-	content: IReviewDTO[];
-}
+export interface IGetAllUserReviewsResponseData extends IPageDTO<IReviewDTO> {}
 
 export interface IGetReviewResponseData extends IReviewDTO {}
 
-export interface IGetAllSellerProductsResponseData {
-	content: IProductDTO;
-}
+export interface IGetAllSellerProductsResponseData
+	extends IPageDTO<IProductDTO> {}
 
 export interface IGetProductResponseData extends IProductDTO {}
 
@@ -145,9 +148,7 @@ export interface IDeleteProductResponseData {
 
 // User Requests
 //* POST
-export interface ISearchUsersResponseData {
-	content: IUserDTO[];
-}
+export interface ISearchUsersResponseData extends IPageDTO<IUserDTO> {}
 
 //* GET
 export interface IGetUserResponseData extends IUserDTO {}
