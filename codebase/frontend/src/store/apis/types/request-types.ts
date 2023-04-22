@@ -73,9 +73,10 @@ export interface ICreateProductRequestData {
 
 export interface ICreateReviewRequestData {
 	userId: string;
+	createdBy: string;
 	productId: string;
 	productName: string;
-	review: string;
+	comment: string;
 	rating: number;
 }
 
@@ -116,7 +117,7 @@ export interface IGetProductRequestData {
 export interface IUpdateReviewRequestData {
 	reviewId: string;
 	rating?: number;
-	review?: string;
+	comment?: string;
 }
 
 export interface IUpdateProductRequestData {

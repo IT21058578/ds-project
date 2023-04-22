@@ -3,36 +3,31 @@ import { Model, Document } from "mongoose";
 /**
  * Represents a product
  */
-export interface Product {
-  productName: string;
-  productDescription: string;
-  image: string[];
-  price: number;
-  rating: number;
-  review: string;
-  countInStock: number;
-  brand: string;
-  categery: string;
+export interface IProduct {
+	id: string;
+	brandId: string;
+	brandName: string;
+	name: string;
+	price: number;
+	imageUrl: string[];
+	description: string;
+	countInStock: number;
+	category: string;
+	createdOn: Date;
+	lastEditedOn: Date;
 }
 
 /**
  * Represents a product review
  */
-export interface Review {
-  user: string;
-  productName: string;
-  rating: number;
-  review: string;
+export interface IReview {
+	id: string;
+	userId: string;
+	productId: string;
+	productName: string;
+	createdBy: string;
+	createdOn: Date;
+	comment: string;
+	lastEditedOn: Date;
+	rating: number;
 }
-
-/**
- * Represents a product w/ reviews
- */
-interface ProductInDatabase extends Product {
-  user: string;
-  reviews: Review[];
-}
-
-export interface ProductDocument extends ProductInDatabase, Document {}
-
-export interface ProductModel extends Model<ProductDocument> {}

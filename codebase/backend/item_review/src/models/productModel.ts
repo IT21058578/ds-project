@@ -1,81 +1,47 @@
-import { model, Schema } from "mongoose";
-import { ProductDocument } from "../types/";
+import { Schema, Types, model } from "mongoose";
+import { IProduct, IReview } from "../types/product";
 
-const reviewSchema = new Schema(
-  {
-    user: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    rating: {
-      type: Number,
-      required: true,
-    },
-    comment: {
-      type: String,
-      required: true,
-    },
-  },
-  { timestamps: true }
-);
+const reviewSchema = new Schema<IReview>({
+	userId: Types.ObjectId,
+	productId: Types.ObjectId,
+	createdBy: String,
+	createdOn: Date,
+	lastEditedOn: Date,
+	productName: String,
+	rating: Number,
+	comment: String,
+});
 
-const productSchema = new Schema(
-  {
-    user: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    image: {
-      type: String,
-      required: true,
-    },
-    brand: {
-      type: String,
-      required: true,
-    },
-    category: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    reviews: [reviewSchema],
-    rating: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    numReviews: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    price: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    countInStock: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+reviewSchema.virtual("id").get(function () {
+	return this._id.toHexString();
+});
 
-export const Product = model<ProductDocument>("Product", productSchema);
+reviewSchema.set("toJSON", {
+	virtuals: true,
+});
+
+const productSchema = new Schema<IProduct>({
+	brandId: Types.ObjectId,
+	brandName: String,
+	category: String,
+	countInStock: Number,
+	description: String,
+	imageUrl: [String],
+	name: String,
+	price: Number,
+	createdOn: Date,
+	lastEditedOn: Date,
+});
+
+productSchema.virtual("id").get(function () {
+	return this._id.toHexString();
+});
+
+productSchema.set("toJSON", {
+	virtuals: true,
+});
+
+const Review = model<IReview>("User", reviewSchema);
+const Product = model<IProduct>("Product", productSchema);
+
+export { Review, Product };

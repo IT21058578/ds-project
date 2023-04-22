@@ -27,7 +27,7 @@ export interface IReviewDTO {
 	productName: string;
 	createdBy: string;
 	createdOn: string;
-	review: string;
+	comment: string;
 	rating: number;
 }
 

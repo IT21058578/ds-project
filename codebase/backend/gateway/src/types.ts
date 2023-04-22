@@ -1,5 +1,5 @@
 export interface Route {
-	path: string;
+	paths: string[];
 	proxyHost: string;
 	roles?: Role[];
 }

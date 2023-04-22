@@ -1,210 +1,347 @@
-import asyncHandler from "express-async-handler";
-import { Product } from "../models/";
-import { Response, Request, Review } from "../types/";
+import { HttpStatusCode } from "axios";
+import { Request, Response } from "express";
+import { Product, Review } from "../models/productModel";
 
-/**
- * Fetch all products
- * @route GET /api/products
- * @access Public
- */
-const getProducts = asyncHandler(async (req: Request, res: Response) => {
-  const pageSize = 10;
-  const page = Number(req.query.pageNumber) || 1;
+const createProduct = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to create product");
+		const {
+			brandId,
+			brandName,
+			name,
+			price,
+			imageUrl,
+			description,
+			countInStock,
+			category,
+		} = req.body as {
+			brandId: string;
+			brandName: string;
+			name: string;
+			price: number;
+			imageUrl: string[];
+			description: string;
+			countInStock: number;
+			category: string;
+		};
 
-  // Get search keyword from request and search for partial match
-  const keyword = req.query.keyword
-    ? {
-        name: {
-          $regex: req.query.keyword,
-          $options: "i",
-        } as any,
-      }
-    : {};
+		const product = new Product({
+			brandId,
+			brandName,
+			category,
+			countInStock,
+			description,
+			imageUrl,
+			name,
+			price,
+			createdOn: new Date(),
+			lastEditedOn: new Date(),
+		});
 
-  const count = await Product.countDocuments({ ...keyword });
-  const products = await Product.find({ ...keyword })
-    .limit(pageSize)
-    .skip(pageSize * (page - 1));
+		const savedProduct = await product.save();
+		return res.status(HttpStatusCode.Created).json(savedProduct);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-  res.json({ products, page, pages: Math.ceil(count / pageSize) });
-});
+const getProduct = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to get product");
+		const { id } = req.params as { id: string };
+		const product = await Product.findById(id).exec();
+		if (product === null) throw Error("Product not found");
+		else {
+			return res.status(HttpStatusCode.Ok).json(product);
+		}
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-/**
- * Fetch single product
- * @route GET /api/products/:id
- * @param id ID of product to fetch
- * @access Public
- */
-const getProductById = asyncHandler(async (req: Request, res: Response) => {
-  const product = await Product.findById(req.params.id);
+const searchProducts = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to search product");
+		const {
+			pageSize = 10,
+			pageNum = 1,
+			sortCol = "_id",
+			sortDir = "asc",
+			search,
+		} = req.body;
 
-  if (product) {
-    res.json(product);
-  } else {
-    res.status(404);
-    throw new Error("Product not found");
-  }
-});
+		const products = await Product.find({
+			...(search ? { $text: { $search: search } } : {}),
+		})
+			.sort({ [sortCol]: sortDir })
+			.skip(pageSize * (pageNum - 1))
+			.limit(pageSize)
+			.exec();
 
-/**
- * Delete single product
- * @route DELETE /api/products/:id
- * @param id ID of product to delete
- * @access Private/Admin
- */
-const deleteProduct = asyncHandler(async (req: Request, res: Response) => {
-  const product = await Product.findById(req.params.id);
+		return res.status(HttpStatusCode.Ok).send(products);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-  if (product) {
-    await product.remove();
-    res.json({ message: "Product removed" });
-  } else {
-    res.status(404);
-    throw new Error("Product not found");
-  }
-});
+const updateProduct = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to update product");
+		const { id } = req.params as { id: string };
+		const { name, price, imageUrl, description, countInStock, category } =
+			req.body as {
+				name?: string;
+				price?: number;
+				imageUrl?: string[];
+				description?: string;
+				countInStock?: number;
+				category?: string;
+			};
 
-/**
- * Create a new product
- * @route POST /api/products
- * @access Private/Admin
- */
-const createProduct = asyncHandler(async (req: Request, res: Response) => {
-  const product = new Product({
-    name: "Sample Name",
-    price: 0,
-    user: req.user?._id,
-    image: "/images/sample.jpg",
-    brand: "Sample Brand",
-    category: "Sample Category",
-    countInStock: 0,
-    numReviews: 0,
-    description: "Same Description",
-  });
+		const product = await Product.findById(id).exec();
+		if (product === null) throw Error("Product not found");
+		else {
+			product.name = name || product.name;
+			product.price = price || product.price;
+			product.imageUrl = imageUrl || product.imageUrl;
+			product.description = description || product.description;
+			product.countInStock = countInStock || product.countInStock;
+			product.category = category || product.category;
+			product.lastEditedOn = new Date();
+		}
 
-  const createdProduct = await product.save();
-  res.status(201).json(product);
-});
+		const savedProduct = await product.save();
+		return res.status(HttpStatusCode.Created).json(savedProduct);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-/**
- * @description Update a product
- * @route PUT /api/products/:id
- * @access Private/Admin
- */
-const updateProduct = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params as { id: string };
-  const {
-    productName,
-    productDescription,
-    image,
-    price,
-    rating,
-    review,
-    countInStock,
-    brand,
-    categery,
-  } = req.body as {
-    productName: string;
-    productDescription: string;
-    image: string[];
-    price: number;
-    rating: number;
-    review: string;
-    countInStock: number;
-    brand: string;
-    categery: string;
-  };
+const deleteProduct = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to delete product");
+		const { id } = req.params as { id: string };
+		const product = await Product.findByIdAndDelete(id).exec();
+		if (product === null) throw Error("Product not found");
+		else {
+			return res.status(HttpStatusCode.NoContent);
+		}
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-  const product = await Product.findById(id);
+const createReview = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to create review");
+		const { comment, productId, productName, rating, userId, createdBy } =
+			req.body as {
+				userId: string;
+				productId: string;
+				productName: string;
+				comment: string;
+				rating: number;
+				createdBy: string;
+			};
 
-  if (product) {
-    product.productName = productName;
-    product.productDescription = productDescription;
-    product.image = image;
-    product.price = price;
-    product.rating = rating;
-    product.review = review;
-    product.countInStock = countInStock;
-    product.brand = brand;
-    product.categery = categery;
+		const review = new Review({
+			comment,
+			createdBy,
+			productId,
+			productName,
+			rating,
+			userId,
+			createdOn: new Date(),
+			lastEditedOn: new Date(),
+		});
 
-    const updatedProduct = await product.save();
-    res.status(201).json(updatedProduct);
-  } else {
-    res.status(404);
-    throw new Error("Product not found.");
-  }
-});
+		const savedReview = await review.save();
+		return res.status(HttpStatusCode.Created).json(savedReview);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-/**
- * @description Create a new review
- * @route POST /api/products/:id/reviews
- * @access Private
- */
-const createProductReview = asyncHandler(
-  async (req: Request, res: Response) => {
-    const { id } = req.params as { id: string };
-    const { rating, comment } = req.body as {
-      rating: number;
-      comment: string;
-    };
+const getReview = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to get review");
+		const { id } = req.params as { id: string };
+		const review = await Review.findById(id).exec();
+		if (review === null) throw Error("Review not found");
+		else {
+			return res.status(HttpStatusCode.Ok).json(review);
+		}
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-    const product = await Product.findById(id);
+const searchReviews = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to search review");
+		const {
+			pageSize = 10,
+			pageNum = 1,
+			sortCol = "_id",
+			sortDir = "asc",
+			search,
+		} = req.body;
 
-    if (product) {
-      // Check if user has already reviewed a product
-      const alreadyReviewed = product.reviews.find(
-        (review: Review) => review.user.toString() === req.user?._id.toString()
-      );
+		const reviews = await Review.find({
+			...(search ? { $text: { $search: search } } : {}),
+		})
+			.sort({ [sortCol]: sortDir })
+			.skip(pageSize * (pageNum - 1))
+			.limit(pageSize)
+			.exec();
 
-      if (alreadyReviewed) {
-        res.status(400);
-        throw new Error("Product already reviewed");
-      }
+		return res.status(HttpStatusCode.Ok).send(reviews);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-      const review = {
-        name: req.user?.name,
-        rating: Number(rating),
-        comment,
-        user: req.user?._id,
-      };
+const updateReview = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to update review");
+		const { id } = req.params as { id: string };
+		const { rating, comment } = req.body as {
+			rating?: number;
+			comment?: string;
+		};
 
-      //product.reviews.push(review);
+		const review = await Review.findById(id).exec();
+		if (review === null) throw Error("Review not found");
+		else {
+			review.rating = rating || review.rating;
+			review.comment = comment || review.comment;
+			review.lastEditedOn = new Date();
+		}
 
-      product.rating = product.reviews.length;
+		const savedReview = await review.save();
+		return res.status(HttpStatusCode.Created).json(savedReview);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-      product.rating =
-        product.reviews.reduce(
-          (acc: number, item: any) => item.rating + acc,
-          0
-        ) / product.reviews.length;
+const deleteReview = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to delete review");
+		const { id } = req.params as { id: string };
+		const review = await Review.findByIdAndDelete(id).exec();
+		if (review === null) throw Error("Review not found");
+		else {
+			return res.status(HttpStatusCode.NoContent);
+		}
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-      await product.save();
-      res.status(201).json({ message: "Review added" });
-    } else {
-      res.status(404);
-      throw new Error("Product not found.");
-    }
-  }
-);
+const searchAllUserReviews = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to search reviews by user");
+		const { userId } = req.params as { userId: string };
+		const {
+			pageSize = 10,
+			pageNum = 1,
+			sortCol = "_id",
+			sortDir = "asc",
+			search,
+		} = req.body;
 
-/**
- * @description Get top rated products
- * @route GET /api/products/top
- * @access Public
- */
-const getTopProducts = asyncHandler(async (req: Request, res: Response) => {
-  const products = await Product.find({}).sort({ rating: -1 }).limit(3);
+		const reviews = await Review.find({
+			userId,
+		})
+			.sort({ [sortCol]: sortDir })
+			.skip(pageSize * (pageNum - 1))
+			.limit(pageSize)
+			.exec();
 
-  res.json(products);
-});
+		return res.status(HttpStatusCode.Ok).send(reviews);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
 
-export {
-  getProducts,
-  getProductById,
-  deleteProduct,
-  createProduct,
-  updateProduct,
-  createProductReview,
-  getTopProducts,
+const searchAllProductReviews = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to search reviews by product");
+		const { productId } = req.params as { productId: string };
+		const {
+			pageSize = 10,
+			pageNum = 1,
+			sortCol = "_id",
+			sortDir = "asc",
+			search,
+		} = req.body;
+
+		const reviews = await Review.find({
+			productId,
+		})
+			.sort({ [sortCol]: sortDir })
+			.skip(pageSize * (pageNum - 1))
+			.limit(pageSize)
+			.exec();
+
+		return res.status(HttpStatusCode.Ok).send(reviews);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
+
+const searchAllBrandProducts = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to search products by brand");
+		const { brandId } = req.params as { brandId: string };
+		const {
+			pageSize = 10,
+			pageNum = 1,
+			sortCol = "_id",
+			sortDir = "asc",
+			search,
+		} = req.body;
+
+		const products = await Product.find({
+			brandId,
+		})
+			.sort({ [sortCol]: sortDir })
+			.skip(pageSize * (pageNum - 1))
+			.limit(pageSize)
+			.exec();
+
+		return res.status(HttpStatusCode.Ok).send(products);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
+
+export const ProductController = {
+	deleteProduct,
+	deleteReview,
+	createProduct,
+	createReview,
+	getProduct,
+	getReview,
+	searchProducts,
+	searchReviews,
+	updateProduct,
+	updateReview,
+	searchAllProductReviews,
+	searchAllUserReviews,
+	searchAllBrandProducts,
 };

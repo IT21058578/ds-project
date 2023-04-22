@@ -13,15 +13,22 @@ const log = initializeLogger(__filename.split("\\").pop() || "");
  * @param {Express} app
  */
 export const configureProxy = (app: ReturnType<typeof express>) => {
-	routesConfig.forEach(({ path, proxyHost, roles }) => {
-		app.use(
-			path,
-			(_req, _res, next) => {
-				log.info(`Request receive. sending to ${proxyHost}${path}`);
-				next();
-			},
-			authorizeRequest(roles),
-			proxy(`${proxyHost}`)
-		);
+	log.info(`Attaching proxy routes`);
+	routesConfig.forEach(({ paths, proxyHost, roles }) => {
+		paths.forEach((path) => {
+			console.log({ path, proxyHost });
+			app.use(
+				path,
+				(req, _res, next) => {
+					log.info(`Request url was ${req.baseUrl}`);
+					log.info(`Request received to ${proxyHost}${path}'`);
+					next();
+				},
+				authorizeRequest(roles),
+				proxy(`${proxyHost}`, {
+					proxyReqPathResolver: (req) => `${path}${req.url}`,
+				})
+			);
+		});
 	});
 };

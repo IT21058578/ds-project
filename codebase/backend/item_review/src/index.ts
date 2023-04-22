@@ -10,7 +10,8 @@ import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 import { notFound, errorHandler } from "./middleware/errorMiddleware";
 
 //Routes
-import productRouts from "./routes/productRoutes";
+import productRoutes from "./routes/productRoutes";
+import reviewRoutes from "./routes/reviewRoutes";
 
 dotenv.config();
 
@@ -22,6 +23,10 @@ let mongoose: typeof Mongoose | undefined;
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());
+app.use((req, res, next) => {
+	console.log("Request received to", req.originalUrl);
+	next();
+});
 app.disable("x-powered-by");
 console.log("Configured application");
 
@@ -34,11 +39,8 @@ console.log({ REDIS_URI, MONGO_URI });
 Mongoose.connect(MONGO_URI || "").then((client) => (mongoose = client));
 console.log("Connected to databases and services");
 
-app.use("/api/products/", productRouts);
-
-// Use Middleware
-app.use(notFound);
-app.use(errorHandler);
+app.use("/api/products/", productRoutes);
+app.use("/api/reviews/", reviewRoutes);
 
 //Start server
 app.listen(PORT || 3000, () => {

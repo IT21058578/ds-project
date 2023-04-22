@@ -1,24 +1,30 @@
 import express from "express";
-import {
-  createProduct,
-  createProductReview,
-  deleteProduct,
-  getProductById,
-  getProducts,
-  getTopProducts,
-  updateProduct,
-} from "../controllers/productController";
-// import { admin, protect } from "../middleware/authMiddleware";
+import { ProductController } from "../controllers/productController";
+import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
 
 const router = express.Router();
 
-router.route("/").get(getProducts).post(/*protect, admin,*/ createProduct);
-router.route("/:id/reviews").post(/*protect,*/ createProductReview);
-router.get("/top", getTopProducts);
+router.route("/brands/:brandId/search").post(
+	...checkSchemaAndHandleErrors({
+		brandId: { in: ["params"], isMongoId: true },
+	}),
+	ProductController.searchAllBrandProducts
+);
+router.route("/search").post(ProductController.searchProducts);
 router
-  .route("/:id")
-  .get(getProductById)
-  .delete(/*protect, admin,*/ deleteProduct)
-  .put(/*protect, admin,*/ updateProduct);
+	.route("/:id")
+	.get(
+		...checkSchemaAndHandleErrors({ id: { in: ["params"], isMongoId: true } }),
+		ProductController.getProduct
+	)
+	.put(
+		...checkSchemaAndHandleErrors({ id: { in: ["params"], isMongoId: true } }),
+		ProductController.updateProduct
+	)
+	.delete(
+		...checkSchemaAndHandleErrors({ id: { in: ["params"], isMongoId: true } }),
+		ProductController.deleteProduct
+	);
+router.route("/").post(ProductController.createProduct);
 
 export default router;

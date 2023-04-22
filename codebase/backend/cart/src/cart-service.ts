@@ -8,9 +8,9 @@ const getCart = async (id: string, userId: string) => {
 			userId,
 			products: [],
 		});
-		return (await newCart.save()).toObject();
+		return await newCart.save();
 	}
-	return cart.toObject();
+	return cart;
 };
 
 const editCart = async ({ id, userId, products }: { id: string } & ICart) => {
@@ -20,10 +20,10 @@ const editCart = async ({ id, userId, products }: { id: string } & ICart) => {
 			userId,
 			products,
 		});
-		return (await newCart.save()).toObject();
+		return await newCart.save();
 	}
 	cart.products = products;
-	return (await cart.save()).toObject();
+	return await cart.save();
 };
 
 const deleteCart = async (id: string) => {

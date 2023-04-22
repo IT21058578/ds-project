@@ -8,19 +8,19 @@ import { Route } from "./types";
 
 export const routesConfig: Route[] = [
 	{
-		path: "/",
+		paths: ["/api/users", "/api/auth"],
 		proxyHost: AUTH_HOST || "",
 	},
 	{
-		path: "/",
+		paths: ["/api/products", "/api/reviews"],
 		proxyHost: ITEM_REVIEW_HOST || "",
 	},
 	{
-		path: "/",
+		paths: ["/api/carts"],
 		proxyHost: CART_HOST || "",
 	},
 	{
-		path: "/",
+		paths: ["/api/orders"],
 		proxyHost: ORDER_PAYMENT_HOST || "",
 	},
 ];
