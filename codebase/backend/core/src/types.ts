@@ -67,12 +67,17 @@ export interface IUserSearchOptions {
 	search?: string;
 }
 
-export interface IPage<T> {
+export interface IPage {
 	isLast: boolean;
 	isFirst: boolean;
 	totalPages: number;
 	totalElements: number;
 	pageNum: number;
 	pageSize: number;
-	content: T[];
+	content: any[];
+	searchOptions?: { [key: string]: any };
+	sort?: {
+		sortDir: "asc" | "desc";
+		sortCol: string;
+	};
 }

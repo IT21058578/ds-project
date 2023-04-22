@@ -4,12 +4,6 @@ import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
 
 const router = express.Router();
 
-router.route("/brands/:brandId/search").post(
-	...checkSchemaAndHandleErrors({
-		brandId: { in: ["params"], isMongoId: true },
-	}),
-	ProductController.searchAllBrandProducts
-);
 router.route("/search").post(ProductController.searchProducts);
 router
 	.route("/:id")

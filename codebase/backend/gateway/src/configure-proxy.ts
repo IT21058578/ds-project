@@ -3,6 +3,7 @@ import proxy from "express-http-proxy";
 import { routesConfig } from "./route-config";
 import { authorizeRequest } from "./middleware/authorize-request";
 import initializeLogger from "./logger";
+import { ENVIRONMENT } from "./constants";
 
 const log = initializeLogger(__filename.split("\\").pop() || "");
 
@@ -14,9 +15,11 @@ const log = initializeLogger(__filename.split("\\").pop() || "");
  */
 export const configureProxy = (app: ReturnType<typeof express>) => {
 	log.info(`Attaching proxy routes`);
+	log.info(`Environment detected was ${ENVIRONMENT}`);
+	console.table(routesConfig);
+	
 	routesConfig.forEach(({ paths, proxyHost, roles }) => {
 		paths.forEach((path) => {
-			console.log({ path, proxyHost });
 			app.use(
 				path,
 				(req, _res, next) => {

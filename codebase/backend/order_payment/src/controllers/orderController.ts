@@ -1,153 +1,156 @@
-import asyncHandler from "express-async-handler";
-import { Order } from "../models/";
-import { Request, Response } from "../types/express";
+import { HttpStatusCode } from "axios";
+import { Request, Response } from "express";
+import { Order } from "../models";
+import { IOrder, IPage } from "../types";
 
-/**
- * Create new order
- * @route POST /api/orders
- * @access Private
- */
-const addOrderItems = asyncHandler(async (req: Request, res: Response) => {
-  const {
-    orderItems,
-    shippingAddress,
-    date,
-    payment,
-    total,
-    deliveryfee,
-    deliverystatus,
-  } = req.body;
+const searchOrders = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to search orders");
+		const {
+			userId,
+			deliveryStatus,
+			paymentStatus,
+			pageSize = 10,
+			pageNum = 1,
+			sortCol = "_id",
+			sortDir = "asc",
+		} = req.body;
 
-  if (orderItems && orderItems.length === 0) {
-    res.status(400);
-    throw new Error("No order items");
-    return;
-  } else {
-    const order = new Order({
-      orderItems,
-      user: req.user?._id,
-      shippingAddress,
-      date,
-      payment,
-      total,
-      deliveryfee,
-      deliverystatus,
-    });
+		const baseQuery = Order.find({
+			...(userId ? { userId } : {}),
+			...(paymentStatus ? { paymentStatus } : {}),
+			...(deliveryStatus ? { deliveryStatus } : {}),
+		});
+		const totalElements = await baseQuery.clone().count().exec();
+		const pageQuery = baseQuery
+			.sort({ [sortCol]: sortDir })
+			.skip(pageSize * (pageNum - 1))
+			.limit(pageSize);
+		const totalPages = await pageQuery.clone().count().exec();
+		const orders = await pageQuery.clone().exec();
 
-    const createdOrder = await order.save();
+		const page: IPage = {
+			content: orders,
+			isFirst: pageNum === 1,
+			isLast: pageNum === Math.ceil(totalElements / pageSize),
+			pageNum,
+			pageSize,
+			totalElements,
+			totalPages,
+			searchOptions: {
+				userId,
+				paymentStatus,
+				deliveryStatus,
+			},
+			sort: {
+				sortDir,
+				sortCol,
+			},
+		};
 
-    res.status(201).json(createdOrder);
-  }
-});
-
-/**
- * Get order by ID
- * @route GET /api/orders/:id
- * @access Private
- */
-const getOrderById = asyncHandler(async (req: Request, res: Response) => {
-  const order = await Order.findById(req.params.id).populate(
-    "user",
-    "name email"
-  );
-
-  if (order) {
-    res.json(order);
-  } else {
-    res.status(404);
-    throw new Error("Order not found");
-  }
-});
-
-/**
- * Update order to paid
- * @route GET /api/orders/:id/pay
- * @access Private
- */
-// const updateOrderToPaid = asyncHandler(async (req: Request, res: Response) => {
-//   const order = await Order.findById(req.params.id);
-
-//   if (order) {
-//     order.isPaid = true;
-//     order.paidAt = Date.now();
-//     // Payment result comes from PayPal API
-//     order.paymentResult = {
-//       id: req.body.id,
-//       status: req.body.status,
-//       update_time: req.body.update_time,
-//       email_address: req.body.payer.email_address,
-//     };
-
-//     const updatedOrder = await order.save();
-//     res.json(updatedOrder);
-//   } else {
-//     res.status(404);
-//     throw new Error("Order not found");
-//   }
-// });
-
-/**
- * Update order to delivered
- * @route GET /api/orders/:id/deliver
- * @access Private/Admin
- */
-// const updateOrderToDelivered = asyncHandler(
-//   async (req: Request, res: Response) => {
-//     const order = await Order.findById(req.params.id);
-
-//     if (order) {
-//       order.isDelivered = true;
-//       order.deliveredAt = Date.now();
-
-//       const updatedOrder = await order.save();
-//       res.json(updatedOrder);
-//     } else {
-//       res.status(404);
-//       throw new Error("Order not found");
-//     }
-//   }
-// );
-
-/**
- * Get all orders from a logged in user
- * @route GET /api/orders/myorders
- * @access Private
- */
-const getMyOrders = asyncHandler(async (req: Request, res: Response) => {
-  if (!req.user) throw new Error("User Not Found");
-
-  const orders = await Order.find({ user: req.user._id });
-
-  if (orders) {
-    res.json(orders);
-  } else {
-    res.status(404);
-    throw new Error("Order not found");
-  }
-});
-
-/**
- * Get all orders
- * @route GET /api/orders
- * @access Private/Admin
- */
-const getOrders = asyncHandler(async (req: Request, res: Response) => {
-  const orders = await Order.find({}).populate("user", "id name");
-
-  if (orders) {
-    res.json(orders);
-  } else {
-    res.status(404);
-    throw new Error("Orders not found");
-  }
-});
-
-export {
-  addOrderItems,
-  getOrderById,
-  // updateOrderToPaid,
-  // updateOrderToDelivered,
-  getMyOrders,
-  getOrders,
+		return res.status(HttpStatusCode.Ok).send(page);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
 };
 
+const getOrder = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to get order");
+		const { id } = req.params as { id: string };
+		const order = await Order.findById(id).exec();
+		if (order === null) throw Error("Order not found");
+		else {
+			return res.status(HttpStatusCode.Ok).json(order);
+		}
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
+
+const createOrder = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to create order");
+		const {
+			items,
+			paymentDetails,
+			shippingDetails,
+			userId,
+			paymentStatus = "UNPAID",
+			deliveryStatus = "NOT_STARTED",
+		} = req.body as Partial<IOrder>;
+
+		const order = new Order({
+			items,
+			userId,
+			paymentDetails,
+			shippingDetails,
+			paymentStatus,
+			deliveryStatus,
+			createdOn: new Date(),
+			lastEditedOn: new Date(),
+		});
+
+		const savedOrder = await order.save();
+		return res.status(HttpStatusCode.Created).json(savedOrder);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
+
+const updateOrder = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to update order");
+		const { id } = req.params as { id: string };
+		const {
+			deliveryStatus,
+			paymentStatus,
+			items,
+			shippingDetails,
+			paymentDetails,
+		} = req.body as Partial<IOrder>;
+
+		const order = await Order.findById(id).exec();
+		if (order === null) throw Error("Order not found");
+		else {
+			order.deliveryStatus = deliveryStatus || order.deliveryStatus;
+			order.paymentStatus = paymentStatus || order.paymentStatus;
+			order.items = items || order.items;
+			order.shippingDetails = shippingDetails || order.shippingDetails;
+			order.paymentDetails = paymentDetails || order.paymentDetails;
+			order.lastEditedOn = new Date();
+		}
+
+		const savedOrder = await order.save();
+		return res.status(HttpStatusCode.Created).json(savedOrder);
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
+
+const deleteOrder = async (req: Request, res: Response) => {
+	try {
+		console.log("Attempting to delete order");
+		const { id } = req.params as { id: string };
+		const order = await Order.findByIdAndDelete(id).exec();
+		if (order === null) throw Error("Order not found");
+		else {
+			return res.status(HttpStatusCode.NoContent);
+		}
+	} catch (error) {
+		console.log("An error occured: ", error);
+		return res.status(HttpStatusCode.InternalServerError).send();
+	}
+};
+
+export const OrderController = {
+	searchOrders,
+	getOrder,
+	createOrder,
+	updateOrder,
+	deleteOrder,
+};

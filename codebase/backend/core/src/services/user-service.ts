@@ -1,5 +1,5 @@
 import { User } from "../models/user-model";
-import { IUser, IUserSearchOptions, UserErrorMessage } from "../types";
+import { IPage, IUser, IUserSearchOptions, UserErrorMessage } from "../types";
 
 import initializeLogger from "../logger";
 
@@ -25,18 +25,33 @@ const searchUsers = async (userSearchOptions: IUserSearchOptions) => {
 		search,
 	} = userSearchOptions;
 
-	const users = await User.find({
+	const baseQuery = User.find({
 		...(search ? { $text: { $search: search } } : {}),
-	})
+	});
+	const totalElements = await baseQuery.clone().count().exec();
+	const pageQuery = baseQuery
 		.sort({ [sortCol]: sortDir })
 		.skip(pageSize * (pageNum - 1))
-		.limit(pageSize)
-		.select("-password")
-		.exec();
+		.limit(pageSize);
+	const totalPages = await pageQuery.clone().count().exec();
+	const users = await pageQuery.clone().exec();
 
-	const usersDto = users;
+	const page: IPage = {
+		content: users,
+		isFirst: pageNum === 1,
+		isLast: pageNum === Math.ceil(totalElements / pageSize),
+		pageNum,
+		pageSize,
+		totalElements,
+		totalPages,
+		searchOptions: {},
+		sort: {
+			sortDir,
+			sortCol,
+		},
+	};
 
-	return usersDto;
+	return page;
 };
 
 const editUser = async ({

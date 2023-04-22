@@ -1,6 +1,7 @@
 import { HttpStatusCode } from "axios";
 import { Request, Response } from "express";
 import { Product, Review } from "../models/productModel";
+import { IPage } from "../types";
 
 const createProduct = async (req: Request, res: Response) => {
 	try {
@@ -65,6 +66,7 @@ const searchProducts = async (req: Request, res: Response) => {
 	try {
 		console.log("Attempting to search product");
 		const {
+			brandId,
 			pageSize = 10,
 			pageNum = 1,
 			sortCol = "_id",
@@ -72,15 +74,36 @@ const searchProducts = async (req: Request, res: Response) => {
 			search,
 		} = req.body;
 
-		const products = await Product.find({
+		const baseQuery = Product.find({
+			...(brandId ? { brandId } : {}),
 			...(search ? { $text: { $search: search } } : {}),
-		})
+		});
+		const totalElements = await baseQuery.clone().count().exec();
+		const pageQuery = baseQuery
 			.sort({ [sortCol]: sortDir })
 			.skip(pageSize * (pageNum - 1))
-			.limit(pageSize)
-			.exec();
+			.limit(pageSize);
+		const totalPages = await pageQuery.clone().count().exec();
+		const products = await pageQuery.clone().exec();
 
-		return res.status(HttpStatusCode.Ok).send(products);
+		const page: IPage = {
+			content: products,
+			isFirst: pageNum === 1,
+			isLast: pageNum === Math.ceil(totalElements / pageSize),
+			pageNum,
+			pageSize,
+			totalElements,
+			totalPages,
+			sort: {
+				sortDir,
+				sortCol,
+			},
+			searchOptions: {
+				brandId,
+			},
+		};
+
+		return res.status(HttpStatusCode.Ok).send(page);
 	} catch (error) {
 		console.log("An error occured: ", error);
 		return res.status(HttpStatusCode.InternalServerError).send();
@@ -187,6 +210,8 @@ const searchReviews = async (req: Request, res: Response) => {
 	try {
 		console.log("Attempting to search review");
 		const {
+			userId,
+			productId,
 			pageSize = 10,
 			pageNum = 1,
 			sortCol = "_id",
@@ -194,15 +219,38 @@ const searchReviews = async (req: Request, res: Response) => {
 			search,
 		} = req.body;
 
-		const reviews = await Review.find({
+		const baseQuery = Review.find({
+			...(userId ? { userId } : {}),
+			...(productId ? { productId } : {}),
 			...(search ? { $text: { $search: search } } : {}),
-		})
+		});
+		const totalElements = await baseQuery.clone().count().exec();
+		const pageQuery = baseQuery
 			.sort({ [sortCol]: sortDir })
 			.skip(pageSize * (pageNum - 1))
-			.limit(pageSize)
-			.exec();
+			.limit(pageSize);
+		const totalPages = await pageQuery.clone().count().exec();
+		const reviews = await pageQuery.clone().exec();
 
-		return res.status(HttpStatusCode.Ok).send(reviews);
+		const page: IPage = {
+			content: reviews,
+			isFirst: pageNum === 1,
+			isLast: pageNum === Math.ceil(totalElements / pageSize),
+			pageNum,
+			pageSize,
+			totalElements,
+			totalPages,
+			searchOptions: {
+				userId,
+				productId,
+			},
+			sort: {
+				sortDir,
+				sortCol,
+			},
+		};
+
+		return res.status(HttpStatusCode.Ok).send(page);
 	} catch (error) {
 		console.log("An error occured: ", error);
 		return res.status(HttpStatusCode.InternalServerError).send();
@@ -249,87 +297,6 @@ const deleteReview = async (req: Request, res: Response) => {
 	}
 };
 
-const searchAllUserReviews = async (req: Request, res: Response) => {
-	try {
-		console.log("Attempting to search reviews by user");
-		const { userId } = req.params as { userId: string };
-		const {
-			pageSize = 10,
-			pageNum = 1,
-			sortCol = "_id",
-			sortDir = "asc",
-			search,
-		} = req.body;
-
-		const reviews = await Review.find({
-			userId,
-		})
-			.sort({ [sortCol]: sortDir })
-			.skip(pageSize * (pageNum - 1))
-			.limit(pageSize)
-			.exec();
-
-		return res.status(HttpStatusCode.Ok).send(reviews);
-	} catch (error) {
-		console.log("An error occured: ", error);
-		return res.status(HttpStatusCode.InternalServerError).send();
-	}
-};
-
-const searchAllProductReviews = async (req: Request, res: Response) => {
-	try {
-		console.log("Attempting to search reviews by product");
-		const { productId } = req.params as { productId: string };
-		const {
-			pageSize = 10,
-			pageNum = 1,
-			sortCol = "_id",
-			sortDir = "asc",
-			search,
-		} = req.body;
-
-		const reviews = await Review.find({
-			productId,
-		})
-			.sort({ [sortCol]: sortDir })
-			.skip(pageSize * (pageNum - 1))
-			.limit(pageSize)
-			.exec();
-
-		return res.status(HttpStatusCode.Ok).send(reviews);
-	} catch (error) {
-		console.log("An error occured: ", error);
-		return res.status(HttpStatusCode.InternalServerError).send();
-	}
-};
-
-const searchAllBrandProducts = async (req: Request, res: Response) => {
-	try {
-		console.log("Attempting to search products by brand");
-		const { brandId } = req.params as { brandId: string };
-		const {
-			pageSize = 10,
-			pageNum = 1,
-			sortCol = "_id",
-			sortDir = "asc",
-			search,
-		} = req.body;
-
-		const products = await Product.find({
-			brandId,
-		})
-			.sort({ [sortCol]: sortDir })
-			.skip(pageSize * (pageNum - 1))
-			.limit(pageSize)
-			.exec();
-
-		return res.status(HttpStatusCode.Ok).send(products);
-	} catch (error) {
-		console.log("An error occured: ", error);
-		return res.status(HttpStatusCode.InternalServerError).send();
-	}
-};
-
 export const ProductController = {
 	deleteProduct,
 	deleteReview,
@@ -341,7 +308,4 @@ export const ProductController = {
 	searchReviews,
 	updateProduct,
 	updateReview,
-	searchAllProductReviews,
-	searchAllUserReviews,
-	searchAllBrandProducts,
 };

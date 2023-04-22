@@ -39,9 +39,57 @@ export interface IUser {
 	email: string;
 	password: string;
 	createdAt: Date;
-	authorizationToken?: string;
+	authorizationToken?: string; 
 	lastLoggedAt?: Date;
 	roles: Role[];
 	isSubscribed: boolean;
 	isAuthorized: boolean;
+}
+
+export interface IPage {
+	isLast: boolean;
+	isFirst: boolean;
+	totalPages: number;
+	totalElements: number;
+	pageNum: number;
+	pageSize: number;
+	content: any[];
+	searchOptions?: { [key: string]: any };
+	sort?: {
+		sortDir: "asc" | "desc";
+		sortCol: string;
+	};
+}
+
+export interface IOrder {
+	id: string;
+	userId: string;
+	deliveryStatus: "IN_PROGRESS" | "NOT_STARTED" | "FINISHED";
+	paymentStatus: "PAID" | "UNPAID";
+	createdOn: Date;
+	lastEditedOn: Date;
+	items: {
+		name: string;
+		imageUrl: string;
+		qty: number;
+		amountPerUnit: number;
+	}[];
+	shippingDetails: {
+		firstName: string;
+		lastName: string;
+		address: {
+			firstLine: string;
+			secondLine: string;
+		};
+		city: string;
+		state: string;
+		postalCode: number;
+		country: string;
+	};
+	paymentDetails: {
+		name: string;
+		cardNumber: number;
+		expDate: string;
+		cvv: number;
+	};
 }

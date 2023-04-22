@@ -45,3 +45,18 @@ export interface IUser {
 	isSubscribed: boolean;
 	isAuthorized: boolean;
 }
+
+export interface IPage {
+	isLast: boolean;
+	isFirst: boolean;
+	totalPages: number;
+	totalElements: number;
+	pageNum: number;
+	pageSize: number;
+	content: any[];
+	searchOptions?: { [key: string]: any };
+	sort?: {
+		sortDir: "asc" | "desc";
+		sortCol: string;
+	};
+}

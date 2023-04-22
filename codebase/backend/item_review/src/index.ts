@@ -6,9 +6,6 @@ import Mongoose from "mongoose";
 
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 
-// New Edit
-import { notFound, errorHandler } from "./middleware/errorMiddleware";
-
 //Routes
 import productRoutes from "./routes/productRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
@@ -23,10 +20,6 @@ let mongoose: typeof Mongoose | undefined;
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());
-app.use((req, res, next) => {
-	console.log("Request received to", req.originalUrl);
-	next();
-});
 app.disable("x-powered-by");
 console.log("Configured application");
 
