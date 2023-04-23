@@ -157,20 +157,16 @@ const AdminCustomerPage = (props: Props) => {
 						}}
 					>
 						<InfiniteTable<IOrderDTO>
-							useGetDataMutation={useSearchOrdersMutation as any}
 							tableColumns={["id", "lastUpdate", "deliveryStatus"]}
 							tableRowRender={(item, idx) => (
 								<TableRow key={idx} onClick={() => {}}>
 									<TableCell>{textEllipsis(item.id, 20)}</TableCell>
-									<TableCell>{item.lastUpdatedOn}</TableCell>
+									<TableCell>{item.lastEditedOn}</TableCell>
 									<TableCell>
 										<Tag type={item.deliveryStatus} />
 									</TableCell>
 								</TableRow>
 							)}
-							tableHeight={"100%"}
-							defaultSortCol={"lastUpdate"}
-							search={""}
 						/>
 					</Grid>
 				</Grid>

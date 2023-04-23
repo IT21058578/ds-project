@@ -3,6 +3,7 @@ import express, { json, urlencoded } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import Mongoose from "mongoose";
+import cors from "cors";
 
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 import cart from "./cart-routes";
@@ -22,6 +23,7 @@ app.use((req, _res, next) => {
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());
+app.use(cors());
 app.disable("x-powered-by");
 console.log("Configured application");
 

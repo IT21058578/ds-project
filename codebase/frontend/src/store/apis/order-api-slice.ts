@@ -7,31 +7,31 @@ export const orderApi = baseApi.injectEndpoints({
 	endpoints: (build) => ({
 		searchOrders: build.mutation<IPageDTO<IOrderDTO>, TPageRequest<IOrderDTO>>({
 			query: (body) => ({
-				url: `${API_URI}/orders/search`,
+				url: `/orders/search`,
 				method: "POST",
 				body,
 			}),
 		}),
 		createOrder: build.mutation<IOrderDTO, Omit<Partial<IOrderDTO>, "id">>({
 			query: (body) => ({
-				url: `${API_URI}/orders`,
+				url: `/orders`,
 				method: "POST",
 				body,
 			}),
 		}),
 		getOrder: build.query<IOrderDTO, { orderId: string }>({
-			query: ({ orderId }) => `${API_URI}/orders/${orderId}`,
+			query: ({ orderId }) => `/orders/${orderId}`,
 		}),
-		updateOrder: build.mutation<Partial<IOrderDTO>, { orderId: string }>({
-			query: ({ orderId, ...body }) => ({
-				url: `${API_URI}/orders/${orderId}`,
+		updateOrder: build.mutation<Partial<IOrderDTO>, Partial<IOrderDTO>>({
+			query: ({ id, ...body }) => ({
+				url: `/orders/${id}`,
 				method: "PUT",
 				body,
 			}),
 		}),
 		deleteOrder: build.mutation<null, { orderId: string }>({
 			query: ({ orderId }) => ({
-				url: `${API_URI}/orders/${orderId}`,
+				url: `/orders/${orderId}`,
 				method: "DELETE",
 			}),
 		}),

@@ -25,13 +25,26 @@ import { textEllipsis } from "../utils/string-utils";
 import { IOrder, OrderTableItem } from "../types";
 import { useSearchOrdersMutation } from "../store/apis/order-api-slice";
 import { IOrderDTO } from "../store/apis/types/response-types";
+import dayjs from "dayjs";
+import useInfiniteQuery from "../hooks/useInfiniteQuery";
+import { useNavigate } from "react-router-dom";
 
 const OrdersListPage = () => {
+	const navigate = useNavigate();
 	const [search, setSearch] = useState<string>("");
+	const [sortCol, setSortCol] = useState<string>("");
+	const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+	const { data, loaderRef } = useInfiniteQuery({
+		useSearchDataMutation: useSearchOrdersMutation as any,
+		search,
+		searchOptions: {},
+		sortCol,
+		sortDir,
+	});
 	const searchRef = useRef<HTMLInputElement>(null);
 
 	const handleTableRowClick = (id: string) => {
-		console.log(id);
+		navigate(id)
 	};
 
 	const handleSearchClick = () => {
@@ -52,11 +65,7 @@ const OrdersListPage = () => {
 						height: "100%",
 					}}
 				>
-					<Grid
-						container
-						direction="column"
-						justifyContent="start"
-						alignItems="stretch"
+					<Stack
 						sx={{
 							height: "100%",
 							padding: "1.5rem",
@@ -110,28 +119,36 @@ const OrdersListPage = () => {
 								</Stack>
 							</Stack>
 						</Grid>
-						<InfiniteTable<IOrderDTO>
-							search={search}
-							useGetDataMutation={useSearchOrdersMutation as any}
-							defaultSortCol={OrderTableColumns.LAST_UPDATE}
-							tableColumns={Object.values(OrderTableColumns)}
-							tableHeight={"80vh"}
-							tableRowRender={(item, idx) => (
-								<TableRow
-									key={idx}
-									onClick={() => handleTableRowClick(item.id)}
-								>
-									<TableCell>{textEllipsis(item.id, 20)}</TableCell>
-									<TableCell>{item.userId}</TableCell>
-									<TableCell>{item.createdOn}</TableCell>
-									<TableCell>{item.lastUpdatedOn}</TableCell>
-									<TableCell>
-										<Tag type={item.deliveryStatus as any} />
-									</TableCell>
-								</TableRow>
-							)}
-						/>
-					</Grid>
+						<Grid item>
+							<InfiniteTable<IOrderDTO>
+								height="78vh"
+								tableColumns={Object.values(OrderTableColumns)}
+								setSortCol={setSortCol}
+								setSortDir={setSortDir}
+								sortCol={sortCol}
+								sortDir={sortDir}
+								data={data}
+								tableRowRender={(item, idx) => (
+									<TableRow
+										key={item.id || idx}
+										onClick={() => handleTableRowClick(item.id)}
+										hover={true}
+										sx={{ ":hover": { cursor: "pointer" } }}
+									>
+										<TableCell>{textEllipsis(item.id, 20)}</TableCell>
+										<TableCell>{item.userId}</TableCell>
+										<TableCell>{dayjs(item.createdOn).format("ll")}</TableCell>
+										<TableCell>
+											{dayjs(item.lastEditedOn).format("ll")}
+										</TableCell>
+										<TableCell>
+											<Tag type={item.deliveryStatus as any} />
+										</TableCell>
+									</TableRow>
+								)}
+							/>
+						</Grid>
+					</Stack>
 				</Box>
 			</Paper>
 		</Box>

@@ -29,130 +29,64 @@ import { isNotPresent } from "../utils/array-utils";
 import { IPageRequest } from "../types";
 
 type Props<T> = {
-	useGetDataMutation: UseMutation<
-		MutationDefinition<
-			IPageRequest,
-			BaseQueryFn<
-				string | FetchArgs,
-				unknown,
-				FetchBaseQueryError,
-				{},
-				FetchBaseQueryMeta
-			>,
-			never,
-			{ content: T[] },
-			"api"
-		>
-	>;
 	tableColumns: T[keyof T][];
-	tableHeight: string;
-	empty?: {
-		icon: React.ReactNode;
-		mainText: React.ReactNode;
-		subText: React.ReactNode;
-	};
-	error?: {
-		icon: React.ReactNode;
-		mainText: React.ReactNode;
-		subText: React.ReactNode;
-	};
 	tableRowRender: (items: T, idx: number) => React.ReactNode;
-	defaultSortCol: T[keyof T];
-	search: string;
+	sortCol?: string;
+	sortDir?: IPageRequest["sortDir"];
+	setSortCol?: (col: string) => void;
+	setSortDir?: (dir: "asc" | "desc") => void;
 	data?: T[];
+	height?: string;
 };
 const InfiniteTable = <TableItem,>({
 	tableColumns,
-	tableHeight,
-	useGetDataMutation,
-	empty,
-	error,
 	tableRowRender,
-	defaultSortCol,
-	search,
+	setSortCol,
+	setSortDir,
+	sortCol,
+	sortDir,
+	height,
 	data,
 }: Props<TableItem>) => {
 	type TableColumn = TableItem[keyof TableItem];
-
-	const pageSize = 20;
-	const [pageNum, setPageNum] = useState<number>(1);
-	const [itemList, setItemList] = useState<TableItem[]>();
-	const [getData, { isLoading, isError, isSuccess }] = useGetDataMutation();
-	const [sortCol, setSortCol] = useState<TableColumn>(defaultSortCol);
-	const [sortDir, setSortDir] = useState<"desc" | "asc">("asc");
-	const [hasNoMoreContent, setHasNoMoreContent] = useState<boolean>(false);
-	const loaderRef = useRef(null);
 	const {
 		palette: { grey },
 	} = useTheme();
 
-	const handleObserver = useCallback((entries: any[]) => {
-		const target = entries[0];
-		if (target.isIntersecting) {
-			setPageNum((prev) => prev + 1);
-		}
-	}, []);
-
-	useEffect(() => {
-		const option = {
-			root: null,
-			rootMargin: "20px",
-			threshold: 0,
-		};
-		const observer = new IntersectionObserver(handleObserver, option);
-		if (loaderRef.current) observer.observe(loaderRef.current);
-	}, [handleObserver]);
-
-	useEffect(() => {
-		const doGetData = async () => {
-			const tempSortCol = sortCol as unknown as string;
-			const data = await getData({
-				sortCol: tempSortCol,
-				sortDir,
-				pageNum,
-				search,
-				pageSize,
-			}).unwrap();
-			if (data.content && data.content.length === 0) setHasNoMoreContent(true);
-			setItemList((prev) => [...(prev || []), ...data.content]);
-		};
-		doGetData();
-	}, [sortCol, sortDir, pageNum, search]);
-
 	const handleSortChange = (col: TableColumn) => {
-		if (col === sortCol) {
-			setSortDir((prev) => (prev === "desc" ? "asc" : "desc"));
+		if (setSortCol && setSortDir) {
+			if (col === sortCol) {
+				setSortDir(sortDir === "asc" ? "desc" : "asc");
+			}
+			setSortCol(col as string);
 		}
-		setSortCol(col);
 	};
 
 	return (
 		<>
-			<Grid item>
-				<TableContainer sx={{ maxHeight: tableHeight && "80vh" }}>
-					<Table stickyHeader>
-						<TableHead>
-							<TableRow>
-								{Object.values(tableColumns).map((item: TableColumn, idx) => (
-									<TableCell
-										key={idx}
-										sx={{ borderBottom: "2px solid lightgray" }}
+			<TableContainer sx={{ maxHeight: height }}>
+				<Table stickyHeader>
+					<TableHead>
+						<TableRow>
+							{Object.values(tableColumns).map((item: TableColumn, idx) => (
+								<TableCell
+									key={idx}
+									sx={{ borderBottom: "2px solid lightgray" }}
+								>
+									<TableSortLabel
+										onClick={() => handleSortChange(item)}
+										active={sortCol === item}
+										direction={sortDir}
 									>
-										<TableSortLabel
-											onClick={() => handleSortChange(item)}
-											active={sortCol === item}
-											direction={sortDir}
-										>
-											{camelToNormal(item as string)}
-										</TableSortLabel>
-									</TableCell>
-								))}
-							</TableRow>
-						</TableHead>
-						<TableBody sx={{ overflow: "scroll" }}>
-							{!isNotPresent(itemList) && itemList?.map(tableRowRender)}
-							{data?.map(tableRowRender)}
-							{!hasNoMoreContent && !isError && (
+										{camelToNormal(item as string)}
+									</TableSortLabel>
+								</TableCell>
+							))}
+						</TableRow>
+					</TableHead>
+					<TableBody sx={{ overflow: "scroll" }}>
+						{!isNotPresent(data) && data?.map(tableRowRender)}
+						{/* {!hasNoMoreContent && !isError && (
 								<TableRow>
 									{tableColumns.map(() => (
 										<TableCell>
@@ -161,12 +95,11 @@ const InfiniteTable = <TableItem,>({
 									))}
 									<div ref={loaderRef} />
 								</TableRow>
-							)}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</Grid>
-			{isSuccess && isNotPresent(itemList) && (
+							)} */}
+					</TableBody>
+				</Table>
+			</TableContainer>
+			{/* {isSuccess && isNotPresent(itemList) && (
 				<Grid item xs>
 					<Stack
 						sx={{
@@ -193,7 +126,6 @@ const InfiniteTable = <TableItem,>({
 					</Stack>
 				</Grid>
 			)}
-			{isLoading && <>{/** TODO: Add loading display */}</>}
 			{isError && (
 				<Grid item xs>
 					<Stack
@@ -220,7 +152,7 @@ const InfiniteTable = <TableItem,>({
 						</Typography>
 					</Stack>
 				</Grid>
-			)}
+			)} */}
 		</>
 	);
 };

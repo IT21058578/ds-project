@@ -10,31 +10,31 @@ export const reviewApi = baseApi.injectEndpoints({
 			TPageRequest<IReviewDTO>
 		>({
 			query: (body) => ({
-				url: `${API_URI}/reviews/search`,
+				url: `/reviews/search`,
 				method: "POST",
 				body,
 			}),
 		}),
 		createReview: build.mutation<IReviewDTO, Omit<Partial<IReviewDTO>, "id">>({
 			query: (body) => ({
-				url: `${API_URI}/reviews`,
+				url: `/reviews`,
 				method: "POST",
 				body,
 			}),
 		}),
 		editReview: build.mutation<IReviewDTO, Partial<IReviewDTO>>({
 			query: ({ id, ...body }) => ({
-				url: `${API_URI}/reviews/${id}`,
+				url: `/reviews/${id}`,
 				method: "PUT",
 				body,
 			}),
 		}),
 		getReview: build.query<IReviewDTO, { reviewId: string }>({
-			query: ({ reviewId }) => `${API_URI}/reviews/${reviewId}`,
+			query: ({ reviewId }) => `/reviews/${reviewId}`,
 		}),
 		deleteReview: build.mutation<null, { reviewId: string }>({
 			query: ({ reviewId }) => ({
-				url: `${API_URI}/reviews/${reviewId}`,
+				url: `/reviews/${reviewId}`,
 				method: "DELETE",
 			}),
 		}),

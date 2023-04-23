@@ -28,6 +28,7 @@ import { NavLinkItemWithIcon } from "../../types";
 import { useAppSelector } from "../../store/hooks";
 import LogoutDialog from "../../components/LogoutDialog";
 
+
 type Props = {};
 
 const SellerNavBar = (props: Props) => {

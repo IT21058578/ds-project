@@ -20,16 +20,27 @@ import { ProductsListTableColumns } from "../constants/constants";
 import InfiniteTable from "../components/InfiniteTable";
 
 import { textEllipsis } from "../utils/string-utils";
-import { ProductListTableItem } from "../types";
-import { useSearchProductsMutation } from "../store/apis/products-api-slice";
 import { IProductDTO } from "../store/apis/types/response-types";
+import useInfiniteQuery from "../hooks/useInfiniteQuery";
+import { useSearchProductsMutation } from "../store/apis/products-api-slice";
+import { useNavigate } from "react-router-dom";
 
 const ProductsListPage = () => {
+	const navigate = useNavigate();
 	const [search, setSearch] = useState<string>("");
+	const [sortCol, setSortCol] = useState<string>("");
+	const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+	const { data, loaderRef } = useInfiniteQuery({
+		useSearchDataMutation: useSearchProductsMutation as any,
+		search,
+		searchOptions: {},
+		sortCol,
+		sortDir,
+	});
 	const searchRef = useRef<HTMLInputElement>(null);
 
 	const handleTableRowClick = (id: string) => {
-		console.log(id);
+		navigate(id);
 	};
 
 	const handleSearchClick = () => {
@@ -109,15 +120,19 @@ const ProductsListPage = () => {
 							</Stack>
 						</Grid>
 						<InfiniteTable<IProductDTO>
-							search={search}
-							useGetDataMutation={useSearchProductsMutation as any}
-							defaultSortCol={ProductsListTableColumns.NAME}
+							height="78vh"
 							tableColumns={Object.values(ProductsListTableColumns)}
-							tableHeight={"80vh"}
+							setSortCol={setSortCol}
+							setSortDir={setSortDir}
+							sortCol={sortCol}
+							sortDir={sortDir}
+							data={data}
 							tableRowRender={(item, idx) => (
 								<TableRow
-									key={idx}
+									key={item.id || idx}
 									onClick={() => handleTableRowClick(item.id)}
+									hover={true}
+									sx={{ ":hover": { cursor: "pointer" } }}
 								>
 									<TableCell>{textEllipsis(item.id, 20)}</TableCell>
 									<TableCell>{item.name}</TableCell>

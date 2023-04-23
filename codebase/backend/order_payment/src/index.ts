@@ -3,6 +3,7 @@ import express, { json, urlencoded } from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import Mongoose from "mongoose";
+import cors from "cors";
 
 import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
 
@@ -17,6 +18,7 @@ const app = express();
 //Confguring express erver
 let mongoose: typeof Mongoose | undefined;
 
+app.use(cors());
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());

@@ -10,17 +10,17 @@ export const productApi = baseApi.injectEndpoints({
 			TPageRequest<IProductDTO>
 		>({
 			query: (body) => ({
-				url: `${API_URI}/products/search`,
+				url: `/products/search`,
 				method: "POST",
 				body,
 			}),
 		}),
 		getProduct: build.query<IProductDTO, { productId: string }>({
-			query: ({ productId }) => `${API_URI}/products/${productId}`,
+			query: ({ productId }) => `/products/${productId}`,
 		}),
 		deleteProducts: build.mutation<null, { productId: string }>({
 			query: ({ productId }) => ({
-				url: `${API_URI}/products/${productId}`,
+				url: `/products/${productId}`,
 				method: "DELETE",
 			}),
 		}),
@@ -29,14 +29,14 @@ export const productApi = baseApi.injectEndpoints({
 			Omit<Partial<IProductDTO>, "id">
 		>({
 			query: (body) => ({
-				url: `${API_URI}/products`,
+				url: `/products`,
 				method: "POST",
 				body,
 			}),
 		}),
 		editProduct: build.mutation<IProductDTO, Partial<IProductDTO>>({
 			query: ({ id, ...body }) => ({
-				url: `${API_URI}/products/${id}`,
+				url: `/products/${id}`,
 				method: "PUT",
 				body,
 			}),

@@ -20,16 +20,28 @@ import { ReviewListTableColumns } from "../constants/constants";
 import InfiniteTable from "../components/InfiniteTable";
 
 import { textEllipsis } from "../utils/string-utils";
-import { ReviewListTableItem } from "../types";
-import { useSearchReviewsMutation } from "../store/apis/review-api-slice";
 import { IReviewDTO } from "../store/apis/types/response-types";
+import useInfiniteQuery from "../hooks/useInfiniteQuery";
+import { useSearchReviewsMutation } from "../store/apis/review-api-slice";
+import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 const ReviewsListPage = () => {
+	const navigate = useNavigate();
 	const [search, setSearch] = useState<string>("");
+	const [sortCol, setSortCol] = useState<string>("");
+	const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+	const { data, loaderRef } = useInfiniteQuery({
+		useSearchDataMutation: useSearchReviewsMutation as any,
+		search,
+		searchOptions: {},
+		sortCol,
+		sortDir,
+	});
 	const searchRef = useRef<HTMLInputElement>(null);
 
 	const handleTableRowClick = (id: string) => {
-		console.log(id);
+		navigate(id);
 	};
 
 	const handleSearchClick = () => {
@@ -109,19 +121,23 @@ const ReviewsListPage = () => {
 							</Stack>
 						</Grid>
 						<InfiniteTable<IReviewDTO>
-							search={search}
-							useGetDataMutation={useSearchReviewsMutation as any}
-							defaultSortCol={ReviewListTableColumns.CREATED_ON}
+							height="78vh"
+							setSortCol={setSortCol}
+							setSortDir={setSortDir}
+							sortCol={sortCol}
+							sortDir={sortDir}
+							data={data}
 							tableColumns={Object.values(ReviewListTableColumns)}
-							tableHeight={"80vh"}
 							tableRowRender={(item, idx) => (
 								<TableRow
-									key={idx}
+									key={item.id || idx}
 									onClick={() => handleTableRowClick(item.id)}
+									hover={true}
+									sx={{ ":hover": { cursor: "pointer" } }}
 								>
 									<TableCell>{textEllipsis(item.id, 20)}</TableCell>
 									<TableCell>{item.createdBy}</TableCell>
-									<TableCell>{item.createdOn}</TableCell>
+									<TableCell>{dayjs(item.createdOn).format("ll")}</TableCell>
 									<TableCell>{item.rating}</TableCell>
 								</TableRow>
 							)}

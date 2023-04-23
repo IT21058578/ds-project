@@ -13,7 +13,7 @@ router.post(
 		pageSize: { isInt: true, optional: true },
 		pageNum: { isInt: true, optional: true },
 		sortCol: { isString: true, optional: true },
-		sortDir: { isIn: { options: ["asc", "desc"] }, optional: true },
+		sortDir: { isString: true, optional: true },
 		search: { isString: true, optional: true },
 	}),
 	UserController.searchUsers

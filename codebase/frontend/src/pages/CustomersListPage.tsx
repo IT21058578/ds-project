@@ -22,14 +22,22 @@ import InfiniteTable from "../components/InfiniteTable";
 
 import { textEllipsis } from "../utils/string-utils";
 import { useSearchUsersMutation } from "../store/apis/user-api-slice";
-import {
-	ISearchUsersResponseData,
-	IUserDTO,
-} from "../store/apis/types/response-types";
+import { IUserDTO } from "../store/apis/types/response-types";
+import useInfiniteQuery from "../hooks/useInfiniteQuery";
+import dayjs from "dayjs";
 
 const CustomersListPage = () => {
 	const navigate = useNavigate();
 	const [search, setSearch] = useState<string>("");
+	const [sortCol, setSortCol] = useState<string>("");
+	const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+	const { data, loaderRef } = useInfiniteQuery({
+		useSearchDataMutation: useSearchUsersMutation as any,
+		search,
+		searchOptions: {},
+		sortCol,
+		sortDir,
+	});
 	const searchRef = useRef<HTMLInputElement>(null);
 
 	const handleTableRowClick = (id: string) => {
@@ -113,22 +121,24 @@ const CustomersListPage = () => {
 							</Stack>
 						</Grid>
 						<InfiniteTable<IUserDTO>
-							search={search}
-							useGetDataMutation={useSearchUsersMutation as any}
-							defaultSortCol={CustomerListTableColumns.CREATED_ON}
+							height="78vh"
 							tableColumns={Object.values(CustomerListTableColumns)}
-							tableHeight={"80vh"}
+							setSortCol={setSortCol}
+							setSortDir={setSortDir}
+							sortCol={sortCol}
+							sortDir={sortDir}
+							data={data}
 							tableRowRender={(item, idx) => (
 								<TableRow
-									key={idx}
+									key={item.id || idx}
 									onClick={() => handleTableRowClick(item.id)}
 									hover={true}
 									sx={{ ":hover": { cursor: "pointer" } }}
 								>
 									<TableCell>{textEllipsis(item.id, 20)}</TableCell>
 									<TableCell>{item.firstName}</TableCell>
-									<TableCell>{item.createdOn}</TableCell>
-									<TableCell>{item.lastLoggedOn}</TableCell>
+									<TableCell>{dayjs(item.createdOn).format("ll")}</TableCell>
+									<TableCell>{dayjs(item.lastLoggedOn).format("ll")}</TableCell>
 								</TableRow>
 							)}
 						/>
