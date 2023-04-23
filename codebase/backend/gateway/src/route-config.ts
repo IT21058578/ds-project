@@ -4,26 +4,7 @@ import {
 	ITEM_REVIEW_HOST,
 	ORDER_PAYMENT_HOST,
 } from "./constants";
-import { IRouteConfig, Role, Route } from "./types";
-
-export const temp: Route[] = [
-	// {
-	// 	paths: ["/api/users", "/api/auth"],
-	// 	proxyHost: AUTH_HOST || "",
-	// },
-	{
-		paths: ["/api/products", "/api/reviews"],
-		proxyHost: ITEM_REVIEW_HOST || "",
-	},
-	{
-		paths: ["/api/carts"],
-		proxyHost: CART_HOST || "",
-	},
-	{
-		paths: ["/api/orders"],
-		proxyHost: ORDER_PAYMENT_HOST || "",
-	},
-];
+import { IRouteConfig, Role } from "./types";
 
 export const routesConfig: IRouteConfig[] = [
 	{
@@ -36,8 +17,41 @@ export const routesConfig: IRouteConfig[] = [
 				[Role.ADMIN, Role.BUYER, Role.SELLER],
 			],
 			["/api/auth"],
+			["/api/users/", "PUT", [Role.ADMIN, Role.BUYER, Role.ADMIN]],
 			["/api/users"],
 		],
 		host: AUTH_HOST || "",
+	},
+	{
+		endpoints: [
+			["/api/products", "POST", [Role.ADMIN, Role.SELLER]],
+			["/api/products", "PUT", [Role.ADMIN, Role.SELLER]],
+			["/api/products", "DELETE", [Role.ADMIN, Role.SELLER]],
+			["/api/products"],
+			["/api/reviews", "POST", [Role.BUYER]],
+			["/api/reviews", "PUT", [Role.BUYER]],
+			["/api/reviews", "DELETE", [Role.BUYER, Role.ADMIN, Role.SELLER]],
+			["/api/reviews"],
+		],
+		host: ITEM_REVIEW_HOST || "",
+	},
+	{
+		endpoints: [
+			["/api/carts", "GET", [Role.BUYER]],
+			["/api/carts", "PUT", [Role.BUYER]],
+			["/api/carts", "DELETE", [Role.BUYER]],
+			["/api/carts"],
+		],
+		host: CART_HOST || "",
+	},
+	{
+		endpoints: [
+			["/api/orders", "GET", [Role.SELLER, Role.ADMIN, Role.BUYER]],
+			["/api/orders", "PUT", [Role.SELLER, Role.ADMIN, Role.BUYER]],
+			["/api/orders", "DELETE", [Role.SELLER, Role.ADMIN, Role.BUYER]],
+			["/api/orders"],
+			["/api/paypal"],
+		],
+		host: ORDER_PAYMENT_HOST || "",
 	},
 ];
