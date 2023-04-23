@@ -91,79 +91,13 @@ export interface IPageDTO<T> {
 	};
 }
 
-// Order - Checkout requests
-//* POST
-export interface ICreateOrderResponseData extends IOrderDTO {}
-
-export interface ISearchOrdersResponseData extends IPageDTO<IOrderDTO> {}
-
-//* GET
-export interface IGetAllUserOrdersResponseData extends IPageDTO<IOrderDTO> {}
-
-export interface IGetOrderResponseData extends IOrderDTO {}
-
-//* PUT
-export interface IUpdateOrderDeliveryStatusResponseData extends IOrderDTO {}
-
-export interface IUpdateOrderPaymentStatusResponseData extends IOrderDTO {}
-
-//* DELETE
-export interface IDeleteOrderResponseData {
-	// Response is empty
+export interface ICartDTO {
+	id?: string;
+	userId?: string;
+	items?: {
+		qty?: number;
+		price?: number;
+		name?: string;
+		imageUrl?: string;
+	}[];
 }
-
-// Product - Review requests
-//* POST
-export interface ICreateProductResponseData extends IProductDTO {}
-
-export interface ICreateReviewResponseData extends IReviewDTO {}
-
-export interface ISearchReviewsResponseData extends IPageDTO<IReviewDTO> {}
-
-export interface ISearchProductsResponseData extends IPageDTO<IProductDTO> {}
-
-//* GET
-export interface IGetAllUserReviewsResponseData extends IPageDTO<IReviewDTO> {}
-
-export interface IGetReviewResponseData extends IReviewDTO {}
-
-export interface IGetAllSellerProductsResponseData
-	extends IPageDTO<IProductDTO> {}
-
-export interface IGetProductResponseData extends IProductDTO {}
-
-//* PUT
-export interface IUpdateReviewResponseData extends IReviewDTO {}
-
-export interface IUpdateProductResponseData extends IProductDTO {}
-
-//* DELETE
-export interface IDeleteReviewResponseData {
-	//Response is empty
-}
-
-export interface IDeleteProductResponseData {
-	//Response is empty
-}
-
-// User Requests
-//* POST
-export interface ISearchUsersResponseData extends IPageDTO<IUserDTO> {}
-
-//* GET
-export interface IGetUserResponseData extends IUserDTO {}
-
-//* PUT
-export interface IEditUserResponseData extends IUserDTO {}
-
-//* DELETE
-export interface IDeleteUserResponseData {
-	// Response is empty
-}
-
-// Cart Requests
-//* GET
-
-//* PUT
-
-//* DELETE

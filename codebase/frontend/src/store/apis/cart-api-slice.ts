@@ -1,27 +1,33 @@
 import { baseApi } from "./base-api";
 import { API_URI } from "../../constants/constants";
-
+import { ICartDTO } from "./types/response-types";
 
 export const cartApi = baseApi.injectEndpoints({
 	endpoints: (build) => ({
-		getCart: build.query({
-            query: ({id}) => `${API_URI}/carts/${id}`
-        }),
-        editCart: build.mutation({
-            query: ({id, ...body}) => ({
-                url: `${API_URI}/carts/${id}`,
-                method: 'PUT',
-                body
-            })
-        }),
-        deleteCart: build.mutation({
-            query: ({id}) => ({
-                url: `${API_URI}/carts/${id}`,
-                method: 'DELETE',
-            })
-        })
+		getCart: build.query<ICartDTO, { userId: string }>({
+			query: ({ userId }) => `${API_URI}/carts/${userId}`,
+		}),
+		editCart: build.mutation<
+			ICartDTO,
+			{ userId: string; items: ICartDTO["items"] }
+		>({
+			query: ({ userId, ...body }) => ({
+				url: `${API_URI}/carts/${userId}`,
+				method: "PUT",
+				body,
+			}),
+		}),
+		deleteCart: build.mutation<null, { userId: string }>({
+			query: ({ userId }) => ({
+				url: `${API_URI}/carts/${userId}`,
+				method: "DELETE",
+			}),
+		}),
 	}),
 });
 
-export const {useDeleteCartMutation,useEditCartMutation,useLazyGetCartQuery} = cartApi;
-
+export const {
+	useDeleteCartMutation,
+	useEditCartMutation,
+	useLazyGetCartQuery,
+} = cartApi;
