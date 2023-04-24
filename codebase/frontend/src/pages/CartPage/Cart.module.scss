@@ -1,5 +1,6 @@
 .cart {
     @apply flex flex-col gap-2 px-32 py-3;
+    min-width: 1000px;
     .top {
       @apply flex justify-between items-center;
       .title {
@@ -8,6 +9,7 @@
       .clear {
         button {
           @apply flex gap-2 items-center text-gray-500;
+          color: red;
           &:hover {
             @apply text-black;
           }
@@ -22,14 +24,25 @@
       .back,
       .buy {
         @apply border rounded-3xl px-16 py-2 py-1 text-lg font-normal text-slate-500 cursor-pointer;
+        background-color: white;
+        color: black;
+        border: 2px solid green;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
         &:hover {
           @apply text-black;
+          background-color: green;
+          color: white;
         }
       }
       .buy {
         @apply text-black;
         &:hover {
           @apply bg-slate-200;
+          background-color: rgb(255, 197, 7);
+          color: rgb(255, 2, 2);
         }
       }
     }

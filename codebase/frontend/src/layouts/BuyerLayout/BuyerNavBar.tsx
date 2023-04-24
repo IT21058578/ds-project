@@ -110,8 +110,17 @@ const BuyerNavBar = () => {
 
 	return (
 		<>
-			<AppBar position="sticky" elevation={2} sx={{ zIndex: 3000 }}>
+			<AppBar position="fixed" open={open} elevation={2} sx={{ zIndex: 3000 }}>
 				<Toolbar>
+				<IconButton
+					color="inherit"
+					aria-label="open drawer"
+					onClick={handleDrawerOpen}
+					edge="start"
+					sx={{ mr: 2, ...(open && { display: 'none' }) }}
+				>
+					<MenuIcon />
+				</IconButton>
 					<Button onClick={() => navigate("/")}>
 						<Typography
 							sx={{
@@ -143,22 +152,24 @@ const BuyerNavBar = () => {
 						))}
 					</Box>
 					<Box sx={{ textAlign: "end" }}>
-						{!!user ? (
+						{!user ? (
 							<>
 								<IconButton
 									size="large"
 									sx={{ color: grey[900] }}
 									onClick={() => navigate("/cart")}
 								>
-									<ShoppingCart />
+									<StyledBadge badgeContent={4} color="warning">
+									   <ShoppingCart />
+									</StyledBadge>
 								</IconButton>
-								<IconButton
+								{/* <IconButton
 									size="large"
 									sx={{ color: grey[900] }}
 									onClick={() => navigate("/user")}
 								>
 									<AccountCircle />
-								</IconButton>
+								</IconButton> */}
 								<IconButton
 									size="large"
 									sx={{ color: grey[900] }}
@@ -184,6 +195,72 @@ const BuyerNavBar = () => {
 					</Box>
 				</Toolbar>
 			</AppBar>
+
+			{/* new drawer */}
+			<Drawer
+				sx={{
+				width: drawerWidth,
+				flexShrink: 0,
+				'& .MuiDrawer-paper': {
+					width: drawerWidth,
+					boxSizing: 'border-box',
+					backgroundColor: 'rgba(246, 246, 246, 0.85)',
+				},
+				}}
+				variant="persistent"
+				anchor="left"
+				open={open}
+			>
+				<DrawerHeader>
+				<IconButton onClick={handleDrawerClose}>
+					{theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+				</IconButton>
+				</DrawerHeader>
+
+				<Divider />
+				<List>
+				{['Profile'].map((text) => (
+					<ListItem key={text} disablePadding>
+					<ListItemButton
+					onClick={() => navigate("/ProfilePage")}>
+						<ListItemIcon>
+							<People/>
+						</ListItemIcon>
+						<ListItemText primary={text} />
+					</ListItemButton>
+					</ListItem>
+				))}
+				</List>
+				<Divider />
+				<List>
+				{['Orders'].map((text) => (
+					<ListItem key={text} disablePadding>
+					<ListItemButton
+					onClick={() => navigate("/order")}>
+						<ListItemIcon>
+							<LocalShipping/>
+						</ListItemIcon>
+						<ListItemText primary={text} />
+					</ListItemButton>
+					</ListItem>
+				))}
+				</List>
+				<Divider />
+				<List>
+				{['Reviews'].map((text) => (
+					<ListItem key={text} disablePadding>
+					<ListItemButton
+					onClick={() => navigate("/reviewtable")}>
+						<ListItemIcon>
+							<Reviews/>
+						</ListItemIcon>
+						<ListItemText primary={text} />
+					</ListItemButton>
+					</ListItem>
+				))}
+				</List>
+			</Drawer>
+
 			<Drawer anchor="top" open={!!hoveredNavItem} disableScrollLock>
 				<div style={{ height: "4rem" }} />
 				<Paper

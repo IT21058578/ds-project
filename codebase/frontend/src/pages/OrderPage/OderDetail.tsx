@@ -141,7 +141,7 @@ const rows = [
   createData('ddg','user1','2023-03-15', 356, 'Payed', 549,'In progress'),
 ];
 
-export default function CollapsibleTable() {
+export default function Order() {
   return (
     <Box sx={{ minWidth: 275 , border: '1px solid green' , padding: '70px' , borderRadius:'30px' , backgroundColor: 'rgba(234, 234, 234, 0.1)' ,marginTop:'100px' ,marginBottom:'20px', boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.25)',}} >
     <div style={{ display: "flex", justifyContent: "center" ,color:'gray'}}>

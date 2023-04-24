@@ -18,7 +18,7 @@ import SellerLayout from "./SellerLayout";
 import UserLayout from "./UserLayout";
 import ProductView from "../pages/ProductPage/DetailViewer";
 import Cart from "../pages/CartPage/CartView"
-import AntDesignGrid from "../pages/OrderPage/OderDetail"
+import Order from "../pages/OrderPage/OderDetail"
 import ReviewTable from "../pages/ReviewPage/UserReviewDetails"
 import ProfilePage from "../pages/ProfilePage/profile"
 
@@ -30,6 +30,7 @@ import SellersListPage from "../pages/SellersListPage";
 import ProductsListPage from "../pages/ProductsListPage";
 import AdminCustomerPage from "../pages/AdminCustomerPage";
 import AdminReviewPage from "../pages/AdminReviewPage";
+
 
 /**
  * Root layout responsible for rendering all other layouts.
@@ -45,7 +46,7 @@ const RootLayout = () => {
       }
     }
     // FIXME: Changed for testing
-    return setIsUserSellerAdmin(true);
+    return setIsUserSellerAdmin(false);
   }, [user]);
 
   /**
@@ -59,9 +60,9 @@ const RootLayout = () => {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 			<Route path="/cart" element={<Cart/>}/>
 			<Route path="/placeOrder" element={<Checkout/>} />
-			<Route path="/home" element={<ProductHome/>} />
+			<Route path="/" element={<ProductHome/>} />
 			<Route path="/productdetails" element={<ProductView/>} />
-			<Route path="/antdesigngrid" element={<AntDesignGrid/>} />
+			<Route path="/order" element={<Order/>} />
 			<Route path="/reviewtable" element={<ReviewTable/>} />
 			<Route path="/profilepage" element={<ProfilePage/>} />
       <Route path="/*" element={<ErrorPage />} />

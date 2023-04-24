@@ -97,7 +97,7 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
                     align="center"
                     marginTop="1rem"
                   >
-                    ${product.price}
+                    Rs. {product.price}
                   </Typography>
                   <Typography
                     variant="body2"
