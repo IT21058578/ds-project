@@ -19,8 +19,9 @@ import UserLayout from "./UserLayout";
 import ProductView from "../pages/ProductPage/DetailViewer";
 import Cart from "../pages/CartPage/CartView";
 import AntDesignGrid from "../pages/OrderPage/OderDetail";
-import ReviewTable from "../pages/ReviewPage/UserReviewDetails";
 import ProfilePage from "../pages/ProfilePage/profile";
+import Order from "../pages/OrderPage/OderDetail";
+import ReviewTable from "../pages/ReviewPage/UserReviewDetails";
 
 import OrdersListPage from "../pages/OrdersListPage";
 import ReviewsListPage from "../pages/ReviewsListPage";
@@ -40,17 +41,14 @@ const RootLayout = () => {
 	const user = useAppSelector((state) => state.auth.user);
 	const [isUserSellerAdmin, setIsUserSellerAdmin] = useState<boolean>();
 
-	const isUserSeller = () => {
-		return user?.roles.includes("SELLER");
-	};
-
 	useEffect(() => {
 		if (!!user) {
 			if (user.roles.some((role) => ["SELLER", "ADMIN"].includes(role))) {
 				return setIsUserSellerAdmin(true);
 			}
 		}
-		return setIsUserSellerAdmin(true);
+		// FIXME: Changed for testing
+		return setIsUserSellerAdmin(false);
 	}, [user]);
 
 	/**
@@ -64,9 +62,9 @@ const RootLayout = () => {
 			<Route path="/forgot-password" element={<ForgotPasswordPage />} />
 			<Route path="/cart" element={<Cart />} />
 			<Route path="/placeOrder" element={<Checkout />} />
-			<Route path="/home" element={<ProductHome />} />
+			<Route path="/" element={<ProductHome />} />
 			<Route path="/productdetails" element={<ProductView />} />
-			<Route path="/antdesigngrid" element={<AntDesignGrid />} />
+			<Route path="/order" element={<Order />} />
 			<Route path="/reviewtable" element={<ReviewTable />} />
 			<Route path="/profilepage" element={<ProfilePage />} />
 			<Route path="/*" element={<ErrorPage />} />

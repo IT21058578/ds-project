@@ -21,27 +21,27 @@ const CartItems: FC<CartItem> = memo(
     return (
       <div className={styles.cartItem}>
         <div className={styles.img}>
-          <img src={image || placeholder} alt="ice-cream" />
+          <img src={image[0] || placeholder} alt="Product Image" style={{maxWidth:'150px' , maxHeight:'150px' , borderRadius:'20%', padding:'20px'}}/>
         </div>
         <div className={styles.titles}>
-          <Link to={`/ice-cream/${productID}`}>
+          <Link to={`${productID}`}>
             <div className={styles.title}>{productName}</div>
           </Link>
         </div>
 
         <div className={styles.count}>
-          <button onClick={() => dispatch(minusItem(data))}>
-            <RemoveCircleOutlineOutlinedIcon />
+        <button onClick={() => dispatch(minusItem(data))}>
+            <RemoveCircleOutlineOutlinedIcon color="success"/>
           </button>
           {quantity}
           <button onClick={() => dispatch(addItem(data))}>
-            <ControlPointOutlinedIcon />
+            <ControlPointOutlinedIcon color="error"/>
           </button>
         </div>
-        <div className={styles.price}>{(quantity * price).toFixed(2)}$</div>
+        <div className={styles.price}>Rs. {(quantity * price).toFixed(2)}</div>
         <div className={styles.delete}>
           <button onClick={() => dispatch(deleteItem(data))}>
-            <CloseOutlinedIcon />
+            <CloseOutlinedIcon color="error"/>
           </button>
         </div>
       </div>
