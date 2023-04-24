@@ -20,54 +20,39 @@ import { Grid } from '@mui/material';
 import ReviewPopup from '../ReviewPage/ReviewPopup';
 import { CartItem } from '../../types';
 import Avatar from '@mui/material/Avatar';
+import { IOrder } from '../../types';
 
-
-interface IOrder {
-  orderId: string;
-  userID: string;
-  date: string;
-  deliveryfee: number;
-  payment: string;
-  total: number;
-  deliverystatus: string;
-  history: Array<{
-    image: string;
-    productName: string;
-    amount: number;
-    price: number;
-  }>;
-}
 
 function createData(
-  orderId: string,
-  userID: string,
-  date: string,
-  deliveryfee: number,
-  payment: string,
-  total: number,
-  deliverystatus: string,
+    orderId: string,
+    userId: string,
+    date: string,
+    deliveryFee: number,
+    payment: string,
+    total: number,
+    deliveryStatus: string,
 ): IOrder{
   return {
+    orderId,
     date,
-    userID,
-    deliveryfee,
+    userId,
+    deliveryFee,
     payment,
     total,
-    deliverystatus,
-    orderId,
+    deliveryStatus,
     history: [
       {
-        image: 'https://cdn.shopify.com/s/files/1/1833/6907/products/HerbalLineGlutaSaffronNaturalFairnessDayCream50g_grande.jpg?v=1644917585',
-        productName: 'Kottamalli',
-        amount: 3,
-        price: 23,
-      },
-      {
-        image: 'https://img.freepik.com/free-photo/beautiful-still-life-with-herbal-medicine_23-2149292041.jpg',
-        productName: 'Kottamalli',
-        amount: 3,
-        price: 23,
-      },
+      productName: "Product 1",
+      price: 10.99,
+      image: "https://www.nicepng.com/png/detail/394-3948184_hemp-skincare-cbd-skincare-sativa-product-range-skin.png",
+      amount: 4,
+    },
+    {
+      productName: "Product 2",
+      price: 10.99,
+      image: "https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png",
+      amount: 4,
+    },
     ],
   };
 }
@@ -93,10 +78,10 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           {row.orderId}
         </TableCell>
         <TableCell align="right">{row.date}</TableCell>
-        <TableCell align="right">{row.deliveryfee}</TableCell>
+        <TableCell align="right">{row.deliveryFee}</TableCell>
         <TableCell align="right" sx={{color: row.payment === 'Payed' ? 'green' :  row.payment === 'Unpayed' ? 'red':'red'}}>{row.payment}</TableCell>
         <TableCell align="right">{row.total}</TableCell>
-        <TableCell align="right" sx={{color: row.deliverystatus === 'shipped' ? 'green' : row.deliverystatus === 'In progress' ? 'red' : row.deliverystatus === 'Dispatched' ? 'orange':'green'}}>{row.deliverystatus}</TableCell>
+        <TableCell align="right" sx={{color: row.deliveryStatus === 'shipped' ? 'green' : row.deliveryStatus === 'In progress' ? 'red' : row.deliveryStatus === 'Dispatched' ? 'orange':'green'}}>{row.deliveryStatus}</TableCell>
       </TableRow>
       
       <TableRow sx={{backgroundColor: 'rgba(132, 208, 68, 0.1)'}}>
@@ -156,7 +141,7 @@ const rows = [
   createData('ddg','user1','2023-03-15', 356, 'Payed', 549,'In progress'),
 ];
 
-export default function CollapsibleTable() {
+export default function Order() {
   return (
     <Box sx={{ minWidth: 275 , border: '1px solid green' , padding: '70px' , borderRadius:'30px' , backgroundColor: 'rgba(234, 234, 234, 0.1)' ,marginTop:'100px' ,marginBottom:'20px', boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.25)',}} >
     <div style={{ display: "flex", justifyContent: "center" ,color:'gray'}}>

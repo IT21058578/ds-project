@@ -15,7 +15,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddressForm from './AddressForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
-
+import HomeIcon from '@mui/icons-material/Home';
+import { useNavigate } from 'react-router-dom';
 
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
 
@@ -42,6 +43,7 @@ export default function Checkout() {
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+  const navigate = useNavigate();
 
   return (
   
@@ -73,6 +75,12 @@ export default function Checkout() {
                 confirmation, and will send you an update when your order has
                 shipped.
               </Typography>
+              <Button 
+              sx={{margin:'30px',marginLeft:'175px'}}
+              onClick={() => navigate("/")}
+              variant="outlined" startIcon={<HomeIcon />} >
+                Back to home
+              </Button>
             </React.Fragment>
           ) : (
             <React.Fragment>
