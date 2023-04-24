@@ -1,8 +1,22 @@
 import Stripe from 'stripe';
 import asyncHandler from 'express-async-handler';
-import UIDGenerator from 'uid-generator';
-import sanitizedConfig from '../config';
+import sanitizedConfig from './sanitizedConfig';
 import { Request, Response } from 'express';
+import { randomBytes } from 'crypto';
+
+export default class UIDGenerator {
+  private readonly length: number;
+
+  constructor(length = 16) {
+    this.length = length;
+  }
+
+  public async generate(): Promise<string> {
+    const buffer = await randomBytes(this.length);
+    return buffer.toString('hex');
+  }
+}
+
 
 const key: string | undefined = sanitizedConfig.STRIPE_SECRET_KEY || '';
 
