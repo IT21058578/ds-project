@@ -9,15 +9,15 @@ router.route("/search").post(
 		pageSize: { isInt: true, optional: true },
 		pageNum: { isInt: true, optional: true },
 		sortCol: { isString: true, optional: true },
-		sortDir: { isString: true , optional: true },
+		sortDir: { isString: true, optional: true },
 		search: { isString: true, optional: true },
 		userId: { isMongoId: true, optional: true },
 		deliveryStatus: {
-			isIn: { options: ["NOT_STARTED", "IN_PROGRESS", "FINISHED"] },
+			isString: true,
 			optional: true,
 		},
 		paymentStatus: {
-			isIn: { options: ["PAID", "UNPAID"] },
+			isString: true,
 			optional: true,
 		},
 	}),
@@ -52,11 +52,11 @@ router
 			"shippingDetails.address.firstLine": { isString: true, optional: true },
 			"shippingDetails.address.secondLine": { isString: true, optional: true },
 			deliveryStatus: {
-				isIn: { options: ["NOT_STARTED", "IN_PROGRESS", "FINISHED"] },
+				isString: true,
 				optional: true,
 			},
 			paymentStatus: {
-				isIn: { options: ["PAID", "UNPAID"] },
+				isString: true,
 				optional: true,
 			},
 		}),
@@ -86,11 +86,11 @@ router.route("/").post(
 		"shippingDetails.address.firstLine": { isString: true, optional: true },
 		"shippingDetails.address.secondLine": { isString: true, optional: true },
 		deliveryStatus: {
-			isIn: { options: ["NOT_STARTED", "IN_PROGRESS", "FINISHED"] },
+			isString: true,
 			optional: true,
 		},
 		paymentStatus: {
-			isIn: { options: ["PAID", "UNPAID"] },
+			isString: true,
 			optional: true,
 		},
 	}),

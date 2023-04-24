@@ -127,7 +127,7 @@ const SellersListPage = () => {
 							sortCol={sortCol}
 							sortDir={sortDir}
 							data={data}
-							tableColumns={Object.values(SellerListTableColumns)}
+							tableColumns={["id", "brandName", "createdOn", "lastLoggedOn"]}
 							tableRowRender={(item, idx) => (
 								<TableRow
 									key={item.id || idx}
@@ -136,7 +136,7 @@ const SellersListPage = () => {
 									sx={{ ":hover": { cursor: "pointer" } }}
 								>
 									<TableCell>{textEllipsis(item.id, 20)}</TableCell>
-									<TableCell>{item.firstName}</TableCell>
+									<TableCell>{item.brandName}</TableCell>
 									<TableCell>{dayjs(item.createdOn).format("ll")}</TableCell>
 									<TableCell>{dayjs(item.lastLoggedOn).format("ll")}</TableCell>
 									<TableCell>-</TableCell>

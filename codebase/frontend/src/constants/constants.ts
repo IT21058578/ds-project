@@ -49,4 +49,4 @@ export const EDeliveryStatusOptions = {
 export const EPaymentStatusOptions = {
 	PAID: { value: "PAID", label: "Paid" },
 	UNPAID: { value: "UNPAID", label: "Unpaid" },
-};
+} as const;

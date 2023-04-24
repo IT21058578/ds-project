@@ -121,7 +121,7 @@ const ProductsListPage = () => {
 						</Grid>
 						<InfiniteTable<IProductDTO>
 							height="78vh"
-							tableColumns={Object.values(ProductsListTableColumns)}
+							tableColumns={["id", "name", "brandName", "countInStock"]}
 							setSortCol={setSortCol}
 							setSortDir={setSortDir}
 							sortCol={sortCol}

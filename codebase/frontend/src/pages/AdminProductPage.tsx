@@ -52,7 +52,9 @@ const AdminProductPage = () => {
 	}, [productId]);
 
 	useEffect(() => {
-		// TODO: Handle data reception here
+		if (productRawData) {
+			
+		}
 	}, [productRawData]);
 
 	const handleDeleteProductConfirm = () => {

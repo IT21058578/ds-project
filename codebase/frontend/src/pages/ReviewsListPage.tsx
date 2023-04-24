@@ -127,7 +127,7 @@ const ReviewsListPage = () => {
 							sortCol={sortCol}
 							sortDir={sortDir}
 							data={data}
-							tableColumns={Object.values(ReviewListTableColumns)}
+							tableColumns={["id", "createdBy", "createdOn", "rating"]}
 							tableRowRender={(item, idx) => (
 								<TableRow
 									key={item.id || idx}

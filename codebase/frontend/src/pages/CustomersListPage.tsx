@@ -122,7 +122,7 @@ const CustomersListPage = () => {
 						</Grid>
 						<InfiniteTable<IUserDTO>
 							height="78vh"
-							tableColumns={Object.values(CustomerListTableColumns)}
+							tableColumns={["id", "firstName", "createdOn", "lastLoggedOn"]}
 							setSortCol={setSortCol}
 							setSortDir={setSortDir}
 							sortCol={sortCol}

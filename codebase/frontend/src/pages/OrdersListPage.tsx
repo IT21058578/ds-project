@@ -44,7 +44,7 @@ const OrdersListPage = () => {
 	const searchRef = useRef<HTMLInputElement>(null);
 
 	const handleTableRowClick = (id: string) => {
-		navigate(id)
+		navigate(id);
 	};
 
 	const handleSearchClick = () => {
@@ -122,7 +122,13 @@ const OrdersListPage = () => {
 						<Grid item>
 							<InfiniteTable<IOrderDTO>
 								height="78vh"
-								tableColumns={Object.values(OrderTableColumns)}
+								tableColumns={[
+									"id",
+									"userId",
+									"createdOn",
+									"lastEditedOn",
+									"deliveryStatus",
+								]}
 								setSortCol={setSortCol}
 								setSortDir={setSortDir}
 								sortCol={sortCol}
@@ -142,7 +148,7 @@ const OrdersListPage = () => {
 											{dayjs(item.lastEditedOn).format("ll")}
 										</TableCell>
 										<TableCell>
-											<Tag type={item.deliveryStatus as any} />
+											<Tag type={item.deliveryStatus} />
 										</TableCell>
 									</TableRow>
 								)}

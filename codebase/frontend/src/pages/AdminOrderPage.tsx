@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
 	useDeleteOrderMutation,
 	useLazyGetOrderQuery,
+	useSearchOrdersMutation,
 	useUpdateOrderMutation,
 } from "../store/apis/order-api-slice";
 import AdminPageBox from "../components/AdminPageBox";
@@ -22,8 +23,15 @@ import { camelToNormal } from "../utils/string-utils";
 import NormalTable from "../components/NormalTable";
 import Tag from "../components/Tag";
 import { EDeliveryStatusOptions } from "../constants/constants";
-import { DeliverStatusOptionsKeyType } from "../types";
+import {
+	DeliverStatusOptionsKeyType,
+	PaymentStatusOptionsKeyType,
+} from "../types";
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
+import { useLazyGetUserQuery } from "../store/apis/user-api-slice";
+import { IOrderDTO } from "../store/apis/types/response-types";
+import { EPaymentStatusOptions } from "../constants/constants";
+import dayjs from "dayjs";
 
 interface IOrderUserData {
 	id?: string;
@@ -46,35 +54,87 @@ interface IOrderItemData {
 
 const AdminOrderPage = () => {
 	const { orderId = "" } = useParams();
+	const navigate = useNavigate();
 	const {
 		palette: { grey },
 	} = useTheme();
-	const [getOrder, { isSuccess: isGetOrderSuccess, data: orderRawData }] =
-		useLazyGetOrderQuery();
+	const [getOrder, { data: orderRawData }] = useLazyGetOrderQuery();
+	const [getUser, { data: userRawData }] = useLazyGetUserQuery();
 	const [updateOrder] = useUpdateOrderMutation();
 	const [deleteOrder] = useDeleteOrderMutation();
-	const [title] = useState("Tharindu Gunasekera's Order - 1245");
-	const [orderStatus] = useState<DeliverStatusOptionsKeyType>("NOT_STARTED");
-	const [orderUserData] = useState<IOrderUserData>({});
-	const [orderPaymentData] = useState<IOrderPaymentData>({});
-	const [orderItemsData] = useState<IOrderItemData[]>([]);
+	const [title, setTitle] = useState("Tharindu Gunasekera's Order - 1245");
+	const [orderStatus, setOrderStatus] =
+		useState<DeliverStatusOptionsKeyType>("NOT_STARTED");
+	const [orderPaymentStatus, setOrderPaymentStatus] =
+		useState<PaymentStatusOptionsKeyType>("PAID");
+	const [orderUserData, setOrderUserData] = useState<IOrderUserData>({});
+	const [orderPaymentData, setOrderPaymentsData] = useState<IOrderPaymentData>(
+		{}
+	);
+	const [orderItemsData, setOrderItemsData] = useState<IOrderItemData[]>([]);
 	const [isOrderDeleteModalOpen, setIsOrderDeleteModalOpen] =
 		useState<boolean>(false);
 
 	useEffect(() => {
-		getOrder({ orderId });
-	}, [orderId]);
+		if (!orderRawData) {
+			getOrder({ orderId });
+		} else {
+			getUser({ userId: orderRawData.userId });
+		}
+	}, [orderId, orderRawData?.userId]);
 
 	useEffect(() => {
-		// TODO: Handle data reception here
-	}, [isGetOrderSuccess, orderRawData]);
+		if (orderRawData && userRawData) {
+			const { firstName, lastName, email, mobile } = userRawData;
+			const { deliveryStatus, userId, items, lastEditedOn, paymentStatus } =
+				orderRawData;
+			const name = `${firstName} ${lastName}`;
 
-	const handleDeliveryStatusSelect = (status: DeliverStatusOptionsKeyType) => {
-		updateOrder({ id: orderId, deliveryStatus: status });
+			let amount = 0;
+			items.forEach((item) => {
+				amount += item.qty * item.amountPerUnit;
+			});
+
+			setTitle(`${name}'s Order - ${orderId}`);
+			setOrderStatus(deliveryStatus);
+			setOrderUserData({
+				name,
+				email,
+				id: userId,
+				mobile,
+			});
+			setOrderPaymentsData({
+				amount,
+				...(paymentStatus === "PAID"
+					? { madeOn: lastEditedOn, method: "CARD" }
+					: {}),
+			});
+			setOrderItemsData(
+				items.map((item) => ({
+					amount: item.amountPerUnit,
+					name: item.name,
+					quantity: item.qty,
+				}))
+			);
+		}
+	}, [orderRawData, userRawData]);
+
+	const handleUpdateOrder = ({
+		deliveryStatus,
+		paymentStatus,
+	}: Partial<IOrderDTO>) => {
+		updateOrder({ id: orderId, deliveryStatus, paymentStatus });
+		setOrderStatus((prev) => deliveryStatus || prev);
+		setOrderPaymentStatus((prev) => paymentStatus || prev);
 	};
 
-	const handleDeleteOrder = () => {
+	const handleDeleteOrderClick = () => {
+		setIsOrderDeleteModalOpen(true);
+	};
+
+	const handleDeleteOrderConfirm = () => {
 		deleteOrder({ orderId });
+		navigate("/orders");
 	};
 
 	return (
@@ -90,7 +150,7 @@ const AdminOrderPage = () => {
 					{ label: orderId || "" },
 				]}
 			>
-				<div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
+				<div style={{ display: "flex", flexDirection: "row", height: "78vh" }}>
 					<div style={{ width: "50%" }}>
 						<NormalTable<IOrderItemData>
 							tableColumns={["name", "quantity", "amount"]}
@@ -107,29 +167,20 @@ const AdminOrderPage = () => {
 							search={""}
 						/>
 					</div>
-					<div style={{ width: "50%", display: "flex", flexDirection: "row" }}>
-						<div>
-							<FormControl sx={{ m: 1, width: "100%" }} size="small">
-								<InputLabel>Delivery Status</InputLabel>
-								<Select
-									value={orderStatus}
-									label="Age"
-									onChange={(e) =>
-										handleDeliveryStatusSelect(
-											e.target.value as DeliverStatusOptionsKeyType
-										)
-									}
-								>
-									{Object.values(EDeliveryStatusOptions).map((item) => (
-										<MenuItem value={item.value}>
-											<Tag type={item.value} />
-										</MenuItem>
-									))}
-								</Select>
-							</FormControl>
-							<Button>Delete Order</Button>
-						</div>
-						<div style={{ height: "50%", width: "100%" }}>
+					<Divider
+						orientation="vertical"
+						variant="middle"
+						sx={{ marginRight: "30px", marginLeft: "30px" }}
+					/>
+					<div
+						style={{
+							width: "50%",
+							display: "flex",
+							flexDirection: "column",
+							justifyContent: "space-between",
+						}}
+					>
+						<div style={{ width: "100%", marginTop: "20px" }}>
 							{Object.entries(orderUserData).map(([key, value]) => (
 								<div
 									style={{
@@ -148,8 +199,53 @@ const AdminOrderPage = () => {
 									</span>
 								</div>
 							))}
+							<div
+								style={{
+									display: "flex",
+									flexDirection: "row",
+									marginTop: "8px",
+								}}
+							>
+								<FormControl sx={{ m: 1, width: "25%" }} size="small">
+									<InputLabel>Delivery Status</InputLabel>
+									<Select
+										value={orderStatus}
+										label="Age"
+										onChange={(e) =>
+											handleUpdateOrder({
+												deliveryStatus: e.target.value as any,
+											})
+										}
+									>
+										{Object.values(EDeliveryStatusOptions).map((item) => (
+											<MenuItem value={item.value}>
+												{EDeliveryStatusOptions[item.value].label}
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+								<FormControl sx={{ m: 1, width: "25%" }} size="small">
+									<InputLabel>Payment Status</InputLabel>
+									<Select
+										value={orderRawData?.paymentStatus || "UNPAID"}
+										label="Age"
+										onChange={(e) =>
+											handleUpdateOrder({
+												paymentStatus: e.target.value as any,
+											})
+										}
+									>
+										{Object.values(EPaymentStatusOptions).map((item) => (
+											<MenuItem value={item.value}>
+												{EPaymentStatusOptions[item.value].label}
+											</MenuItem>
+										))}
+									</Select>
+								</FormControl>
+							</div>
+							<Button onClick={handleDeleteOrderClick}>Delete Order</Button>
 						</div>
-						<div style={{ height: "50%", width: "100%" }}>
+						<div style={{ width: "100%" }}>
 							{Object.entries(orderPaymentData).map(([key, value]) => (
 								<div
 									style={{
@@ -164,11 +260,13 @@ const AdminOrderPage = () => {
 										</Typography>
 									</span>
 									<span>
-										<Typography variant={"h4"} fontWeight={900}>
-											{value}
+										<Typography variant={"h5"} fontWeight={900}>
+											{key === "madeOn" ? dayjs(value).format("ll") : value}
 										</Typography>
 									</span>
-									<Divider sx={{ marginRight: "32px", marginTop: "4px" }} />
+									<Divider
+										sx={{ marginRight: "32px", margin: "8px 0px 8px 0px" }}
+									/>
 								</div>
 							))}
 						</div>
@@ -177,7 +275,7 @@ const AdminOrderPage = () => {
 			</AdminPageBox>
 			<DeleteConfirmationModal
 				isOpen={isOrderDeleteModalOpen}
-				onConfirm={handleDeleteOrder}
+				onConfirm={handleDeleteOrderConfirm}
 				setIsOpen={setIsOrderDeleteModalOpen}
 			/>
 		</>
