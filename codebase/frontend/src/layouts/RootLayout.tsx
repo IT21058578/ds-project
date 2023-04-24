@@ -40,13 +40,16 @@ const RootLayout = () => {
 	const user = useAppSelector((state) => state.auth.user);
 	const [isUserSellerAdmin, setIsUserSellerAdmin] = useState<boolean>();
 
+	const isUserSeller = () => {
+		return user?.roles.includes("SELLER");
+	};
+
 	useEffect(() => {
 		if (!!user) {
 			if (user.roles.some((role) => ["SELLER", "ADMIN"].includes(role))) {
 				return setIsUserSellerAdmin(true);
 			}
 		}
-		// FIXME: Changed for testing
 		return setIsUserSellerAdmin(true);
 	}, [user]);
 
@@ -75,17 +78,17 @@ const RootLayout = () => {
 	 */
 	const sellerRouteConfiguration = (
 		<Route path="/" element={<SellerLayout />}>
-			<Route path="/orders" element={<OrdersListPage />} />
-			<Route path="/orders/:orderId" element={<AdminOrderPage />} />
 			<Route path="/reviews" element={<ReviewsListPage />} />
 			<Route path="/reviews/:reviewId" element={<AdminReviewPage />} />
-			<Route path="/customers" element={<CustomersListPage />} />
-			<Route path="/customers/:customerId" element={<AdminCustomerPage />} />
-			<Route path="/sellers" element={<SellersListPage />} />
-			<Route path="/sellers/:brandId" element={<AdminSellerPage />} />
 			<Route path="/products" element={<ProductsListPage />} />
 			<Route path="/products/:productId" element={<AdminProductPage />} />
 			<Route path="/*" element={<ErrorPage />} />
+			<Route path="/orders" element={<OrdersListPage />} />
+			<Route path="/orders/:orderId" element={<AdminOrderPage />} />
+			<Route path="/sellers" element={<SellersListPage />} />
+			<Route path="/sellers/:brandId" element={<AdminSellerPage />} />
+			<Route path="/customers" element={<CustomersListPage />} />
+			<Route path="/customers/:customerId" element={<AdminCustomerPage />} />
 		</Route>
 	);
 

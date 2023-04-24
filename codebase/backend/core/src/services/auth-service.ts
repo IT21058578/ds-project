@@ -77,7 +77,7 @@ const registerUser = async (user: IUser) => {
 	user.isAuthorized = false;
 	user.createdAt = new Date();
 
-	if (user.brandName) {
+	if (user.brandName !== undefined) {
 		user.roles = Array(Role.SELLER);
 	} else {
 		user.roles = Array(Role.BUYER);

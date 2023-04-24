@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import AdminPageBox from "../components/AdminPageBox";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, TableCell, TableRow, Typography } from "@mui/material";
+import {
+	Button,
+	TableCell,
+	TableRow,
+	Typography,
+	Divider,
+} from "@mui/material";
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 import { camelToNormal } from "../utils/string-utils";
 import NormalTable from "../components/NormalTable";
@@ -11,12 +17,16 @@ import {
 } from "../store/apis/products-api-slice";
 import AddEditProductModal from "../components/AddEditProductModal";
 import InfiniteTable from "../components/InfiniteTable";
+import { useSearchReviewsMutation } from "../store/apis/review-api-slice";
+import dayjs from "dayjs";
 
 interface IProductBasicData {
 	brand?: string;
 	category?: string;
+	countInStock?: number;
 	createdOn?: string;
 	lastEditedOn?: string;
+	price?: string;
 }
 
 interface IProductReviewData {
@@ -33,7 +43,9 @@ const AdminProductPage = () => {
 	const [brand, setBrand] = useState("");
 	const [brandId, setBrandId] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
+	const [description, setDescription] = useState("");
 	const [getProduct, { data: productRawData }] = useLazyGetProductQuery();
+	const [searchReviews, { data: reviewsRawData }] = useSearchReviewsMutation();
 	const [deleteProduct] = useDeleteProductsMutation();
 	const [productBasicData, setProductBasicData] = useState<IProductBasicData>(
 		{}
@@ -49,13 +61,45 @@ const AdminProductPage = () => {
 
 	useEffect(() => {
 		getProduct({ productId });
+		searchReviews({ productId, pageSize: 100 });
 	}, [productId]);
 
 	useEffect(() => {
-		if (productRawData) {
-			
+		if (productRawData && reviewsRawData) {
+			const { content: productReviews } = reviewsRawData;
+			const {
+				brandId,
+				brandName,
+				category,
+				countInStock,
+				description,
+				name,
+				price,
+				createdOn,
+				lastEditedOn,
+			} = productRawData;
+			setDescription(description);
+			setTitle(name);
+			setBrand(brandName);
+			setBrandId(brandId);
+			setProductBasicData({
+				brand: brandName,
+				category,
+				countInStock,
+				price: `$ ${price}`,
+				createdOn: dayjs(createdOn).format("ll"),
+				lastEditedOn: dayjs(lastEditedOn).format("ll"),
+			});
+			setProductReviewsData(
+				productReviews.map((review) => ({
+					createdBy: `${review.createdBy}`,
+					createdOn: dayjs(review.createdOn).format("ll"),
+					rating: review.rating,
+					id: review.id,
+				}))
+			);
 		}
-	}, [productRawData]);
+	}, [productRawData, reviewsRawData]);
 
 	const handleDeleteProductConfirm = () => {
 		deleteProduct({ productId });
@@ -80,8 +124,7 @@ const AdminProductPage = () => {
 					style={{
 						display: "flex",
 						flexDirection: "row",
-						width: "100%",
-						height: "100%",
+						height: "78vh",
 					}}
 				>
 					<div
@@ -92,16 +135,14 @@ const AdminProductPage = () => {
 							height: "100%",
 						}}
 					>
-						<div style={{ width: "100%", height: "50%" }}>
-							<img src={imageUrl} alt="Image of the product" />
-						</div>
-						<div style={{ width: "100%", height: "50%" }}>
+						<div style={{ width: "100%", height: "100%" }}>
 							{Object.entries(productBasicData).map(([key, value]) => (
 								<div
 									style={{
 										display: "flex",
 										flexDirection: "row",
 										width: "100%",
+										margin: "4px 0px 16px 0px",
 									}}
 								>
 									<span style={{ width: "33.3%" }}>
@@ -110,33 +151,49 @@ const AdminProductPage = () => {
 										</Typography>
 									</span>
 									<span>
-										<Typography>{value.toString()}</Typography>
+										<Typography>{value}</Typography>
 									</span>
 								</div>
 							))}
+							<p>{description}</p>
 						</div>
 						<div
 							style={{
 								display: "flex",
 								flexDirection: "row",
-								justifyContent: "flex-end",
+								justifyContent: "flex-start",
 								gap: "4px",
 							}}
 						>
 							<Button onClick={() => setIsEditProductModalOpen(true)}>
 								Edit Product
 							</Button>
-							<Button onClick={() => setIsDeleteProductModalOpen(true)}>
+							<Button
+								variant="contained"
+								onClick={() => setIsDeleteProductModalOpen(true)}
+							>
 								Delete Product
 							</Button>
 						</div>
 					</div>
-					<div style={{ width: "50%", height: "100%" }}>
+					<Divider
+						orientation="vertical"
+						sx={{ margin: "0px 16px 0px 16px" }}
+					/>
+					<div
+						style={{
+							width: "50%",
+							border: "1px solid lightgray",
+							borderRadius: "4px",
+						}}
+					>
 						<InfiniteTable<IProductReviewData>
 							tableColumns={["createdBy", "createdOn", "rating"]}
 							tableRowRender={(item, idx) => (
 								<TableRow
 									key={idx}
+									hover={true}
+									sx={{ ":hover": { cursor: "pointer" } }}
 									onClick={() => handleProductReviewTableRowClick(item.id)}
 								>
 									<TableCell>{item.createdBy}</TableCell>

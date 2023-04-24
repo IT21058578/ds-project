@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AdminPageBox from "../components/AdminPageBox";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
 	Divider,
 	Grid,
@@ -17,16 +17,17 @@ import Tag from "../components/Tag";
 import { useSearchOrdersMutation } from "../store/apis/order-api-slice";
 import { IOrderDTO } from "../store/apis/types/response-types";
 import { useLazyGetUserQuery } from "../store/apis/user-api-slice";
+import { useSearchReviewsMutation } from "../store/apis/review-api-slice";
+import dayjs from "dayjs";
 
 type Props = {};
 
 type IUserBasicData = {
 	name?: string;
-	address?: string;
 	mobile?: string;
 	isSubscribed?: string;
 	isAuthorized?: string;
-	lastLoggedAt?: string;
+	lastLoggedOn?: string;
 	joinedOn?: string;
 };
 
@@ -40,24 +41,68 @@ const AdminCustomerPage = (props: Props) => {
 	const {
 		palette: { grey },
 	} = useTheme();
-	const [name] = useState("");
-	const [userBasicData] = useState<IUserBasicData>({});
-	const [userSpendingData] = useState<IUserSpendingData>({});
-	const [
-		getCustomerUser,
-		{ isSuccess: isGetCustomerUserSuccess, data: customerUserRawData },
-	] = useLazyGetUserQuery({});
-	const { customerId } = useParams();
+	const navigate = useNavigate();
+	const [name, setName] = useState("");
+	const [userBasicData, setUserBasicData] = useState<IUserBasicData>({});
+	const [userSpendingData, setUserSpendingData] = useState<IUserSpendingData>(
+		{}
+	);
+	const [getCustomerUser, { data: userRawData }] = useLazyGetUserQuery({});
+	const [searchReviews, { data: reviewRawData }] = useSearchReviewsMutation();
+	const [searchOrders, { data: orderRawData }] = useSearchOrdersMutation();
+	const { customerId = "" } = useParams();
 
 	useEffect(() => {
 		if (customerId) {
 			getCustomerUser({ userId: customerId });
+			searchReviews({ pageNum: 100, userId: customerId });
+			searchOrders({ pageSize: 100, userId: customerId });
 		}
 	}, [customerId]);
 
 	useEffect(() => {
-		// TODO: Handle data reception here
-	}, [customerUserRawData, isGetCustomerUserSuccess]);
+		if (userRawData && orderRawData && reviewRawData) {
+			const {
+				firstName,
+				lastName,
+				isAuthorized,
+				isSubscribed,
+				createdOn,
+				lastLoggedOn,
+				mobile,
+			} = userRawData;
+			const { content: orderContent, totalElements: orderCount } = orderRawData;
+			const { content: reviewContent, totalElements: reviewCount } =
+				reviewRawData;
+
+			const name = `${firstName} ${lastName}`;
+			let totalSpending = 0;
+			orderContent.forEach((order) => {
+				order?.items?.forEach((item) => {
+					totalSpending += (item?.qty || 0) * (item?.amountPerUnit || 0);
+				});
+			});
+
+			setName(name);
+			setUserBasicData({
+				name,
+				joinedOn: dayjs(createdOn).format("ll"),
+				lastLoggedOn: dayjs(lastLoggedOn).format("ll"),
+				mobile,
+				isAuthorized: isAuthorized ? "Yes" : "No",
+				isSubscribed: isSubscribed ? "Yes" : "No",
+			});
+			setUserSpendingData({
+				totalOrders: orderCount,
+				totalReviews: reviewCount,
+				totalSpending,
+			});
+		}
+	}, [userRawData, reviewRawData, orderRawData]);
+
+	const handleOrderTableRowClick = (id: string) => {
+		navigate(`/orders/${id}`);
+	};
 
 	return (
 		<AdminPageBox
@@ -157,11 +202,17 @@ const AdminCustomerPage = (props: Props) => {
 						}}
 					>
 						<InfiniteTable<IOrderDTO>
+							data={orderRawData?.content}
 							tableColumns={["id", "lastUpdate", "deliveryStatus"]}
 							tableRowRender={(item, idx) => (
-								<TableRow key={idx} onClick={() => {}}>
+								<TableRow
+									key={item.id || idx}
+									onClick={() => handleOrderTableRowClick(item.id || "")}
+									hover={true}
+									sx={{ ":hover": { cursor: "pointer" } }}
+								>
 									<TableCell>{textEllipsis(item.id, 20)}</TableCell>
-									<TableCell>{item.lastEditedOn}</TableCell>
+									<TableCell>{dayjs(item.lastEditedOn).format("ll")}</TableCell>
 									<TableCell>
 										<Tag type={item.deliveryStatus} />
 									</TableCell>

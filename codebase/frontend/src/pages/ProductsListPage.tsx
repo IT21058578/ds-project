@@ -24,12 +24,17 @@ import { IProductDTO } from "../store/apis/types/response-types";
 import useInfiniteQuery from "../hooks/useInfiniteQuery";
 import { useSearchProductsMutation } from "../store/apis/products-api-slice";
 import { useNavigate } from "react-router-dom";
+import AddEditProductModal from "../components/AddEditProductModal";
+import { useAppSelector } from "../store/hooks";
 
 const ProductsListPage = () => {
 	const navigate = useNavigate();
+	const userRoles = useAppSelector((state) => state.auth.user?.roles);
 	const [search, setSearch] = useState<string>("");
 	const [sortCol, setSortCol] = useState<string>("");
 	const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+	const [isCreateProductModalOpen, setIsCreateProductModalOpen] =
+		useState<boolean>(false);
 	const { data, loaderRef } = useInfiniteQuery({
 		useSearchDataMutation: useSearchProductsMutation as any,
 		search,
@@ -39,12 +44,18 @@ const ProductsListPage = () => {
 	});
 	const searchRef = useRef<HTMLInputElement>(null);
 
+	const isUserSeller = () => !!userRoles?.includes("SELLER");
+
 	const handleTableRowClick = (id: string) => {
 		navigate(id);
 	};
 
 	const handleSearchClick = () => {
 		setSearch(searchRef?.current?.value || "");
+	};
+
+	const handleCreateProductClick = () => {
+		setIsCreateProductModalOpen(true);
 	};
 
 	return (
@@ -89,6 +100,14 @@ const ProductsListPage = () => {
 								<Typography variant="h5" sx={{ fontWeight: "600" }}>
 									Products
 								</Typography>
+								{isUserSeller() && (
+									<Button
+										variant="contained"
+										onClick={handleCreateProductClick}
+									>
+										Create Product
+									</Button>
+								)}
 								<Stack
 									width={"30%"}
 									direction="row"
@@ -144,6 +163,11 @@ const ProductsListPage = () => {
 					</Grid>
 				</Box>
 			</Paper>
+			<AddEditProductModal
+				type="ADD"
+				isOpen={isCreateProductModalOpen}
+				setIsOpen={setIsCreateProductModalOpen}
+			/>
 		</Box>
 	);
 };

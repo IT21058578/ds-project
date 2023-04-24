@@ -41,6 +41,8 @@ export interface IProductDTO {
 	description: string;
 	countInStock: number;
 	category: string;
+	createdOn: string;
+	lastEditedOn: string;
 }
 
 export interface IOrderDTO {

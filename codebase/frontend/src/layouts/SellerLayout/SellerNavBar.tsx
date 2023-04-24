@@ -28,7 +28,6 @@ import { NavLinkItemWithIcon } from "../../types";
 import { useAppSelector } from "../../store/hooks";
 import LogoutDialog from "../../components/LogoutDialog";
 
-
 type Props = {};
 
 const SellerNavBar = (props: Props) => {
@@ -44,13 +43,21 @@ const SellerNavBar = (props: Props) => {
 	const [isCollapsed, setIsCollapsed] = useState<boolean>();
 	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState<boolean>(false);
 
+	const isUserSeller = () => {
+		return user?.roles.includes("SELLER");
+	};
+
 	const navBarLinks: NavLinkItemWithIcon[] = [
 		{ label: "Dashboard", icon: <Dashboard />, link: "/" },
 		{ label: "Products", icon: <Inventory />, link: "/products" },
-		{ label: "Sellers", icon: <Storefront />, link: "/sellers" },
-		{ label: "Orders", icon: <LocalShipping />, link: "/orders" },
 		{ label: "Reviews", icon: <Reviews />, link: "/reviews" },
-		{ label: "Customers", icon: <People />, link: "/customers" },
+		...(isUserSeller()
+			? []
+			: [
+					{ label: "Customers", icon: <People />, link: "/customers" },
+					{ label: "Sellers", icon: <Storefront />, link: "/sellers" },
+					{ label: "Orders", icon: <LocalShipping />, link: "/orders" },
+			  ]),
 	];
 
 	const miscLinks: NavLinkItemWithIcon[] = [

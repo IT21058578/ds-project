@@ -5,6 +5,7 @@ type Props = {
 	loadingText: string;
 	normalText: string;
 	onClick?: () => {};
+	formId?: string;
 };
 
 const SubmitButton = ({

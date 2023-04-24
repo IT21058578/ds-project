@@ -8,6 +8,7 @@ import {
 	useDeleteReviewMutation,
 	useLazyGetReviewQuery,
 } from "../store/apis/review-api-slice";
+import dayjs from "dayjs";
 
 interface IReviewBasicData {
 	createdBy?: string;
@@ -17,15 +18,15 @@ interface IReviewBasicData {
 }
 
 const AdminReviewPage = () => {
-	const { reviewId } = useParams();
+	const { reviewId = "" } = useParams();
 	const navigate = useNavigate();
-	const [title] = useState("Tharindu`s Review on Order - 12345");
-	const [description] = useState("");
+	const [title, setTitle] = useState("Tharindu`s Review on Order - 12345");
+	const [description, setDescription] = useState("");
 	const [isDeleteReviewModalOpen, setIsDeleteReviewModalOpen] = useState(false);
 	const [getReview, { isSuccess: isGetReviewSuccess, data: reviewRawData }] =
 		useLazyGetReviewQuery();
-	const [deleteReview, {}] = useDeleteReviewMutation();
-	const [reviewBasicData] = useState<IReviewBasicData>({
+	const [deleteReview] = useDeleteReviewMutation();
+	const [reviewBasicData, setReviewBasicData] = useState<IReviewBasicData>({
 		createdBy: "Tharindu Gunasekera",
 		createdAt: "12/4/2001",
 		product: "Regal's Body Cleansing Cologne",
@@ -33,7 +34,22 @@ const AdminReviewPage = () => {
 	});
 
 	useEffect(() => {
-		// TODO: Handle reception of data here
+		getReview({ reviewId });
+	}, [reviewId]);
+
+	useEffect(() => {
+		if (reviewRawData) {
+			const { comment, createdBy, createdOn, id, productName, rating } =
+				reviewRawData;
+			setTitle(`${createdBy || "John"}'s Review on Order - ${id}`);
+			setDescription(comment);
+			setReviewBasicData({
+				createdBy,
+				createdAt: dayjs(createdOn).format("ll"),
+				product: productName,
+				rating: rating,
+			});
+		}
 	}, [isGetReviewSuccess, reviewRawData]);
 
 	const handleDeleteReviewClick = () => {
@@ -54,7 +70,10 @@ const AdminReviewPage = () => {
 				title={title}
 				breadcrumbOptions={[
 					{ label: "Reviews", to: "/reviews" },
-					{ label: "Tharindu Gunasekera", to: "/customers/1234" },
+					{
+						label: `${reviewRawData?.createdBy}`,
+						to: `/customers/${reviewRawData?.userId}`,
+					},
 					{ label: reviewId || "" },
 				]}
 			>
@@ -64,23 +83,22 @@ const AdminReviewPage = () => {
 						flexDirection: "row",
 						flexWrap: "wrap",
 						width: "100%",
-						height: "12.5%",
 					}}
 				>
 					{Object.entries(reviewBasicData).map(([key, value]) => (
-						<div style={{ width: "50%" }}>
+						<div style={{ width: "50%", paddingTop: "8px" }}>
 							<span style={{ width: "33.3%" }}>
 								<Typography sx={{ fontWeight: "600" }}>
 									{camelToNormal(key)}
 								</Typography>
 							</span>
 							<span>
-								<Typography>{value.toString()}</Typography>
+								<Typography>{value}</Typography>
 							</span>
 						</div>
 					))}
 				</div>
-				<div style={{ flexGrow: 1 }}>
+				<div style={{ flexGrow: 1, marginTop: "8px" }}>
 					<Typography>{description}</Typography>
 				</div>
 				<div
