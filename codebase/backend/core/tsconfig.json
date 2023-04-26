@@ -14,6 +14,6 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true
 	},
-	"include": ["src/**/*.ts"],
+	"include": ["src/**/*.ts", "../gateway/src/types/express/index.d.ts"],
 	"exclude": ["node_modules"]
 }

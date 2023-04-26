@@ -17,7 +17,7 @@ router.post(
 router.post(
 	"/logout",
 	...checkSchemaAndHandleErrors({
-		id: { in: ["body"], isMongoId: true },
+		"user-id": { in: ["headers"], isMongoId: true },
 	}),
 	AuthController.logoutUser
 );

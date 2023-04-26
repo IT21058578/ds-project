@@ -65,6 +65,21 @@ export interface IUserSearchOptions {
 	sortCol?: string;
 	sortDir?: "asc" | "desc";
 	search?: string;
+	role?: string;
+	name?: string;
+	mobile?: string;
+	createdAt?: string;
+	createdBefore?: string;
+	createdAfter?: string;
+	lastLoggedAt?: string;
+	lastLoggedBefore?: string;
+	lastLoggedAfter?: string;
+	lastEditedAt?: string;
+	lastEditedBefore?: string;
+	lastEditedAfter?: string;
+	isSubscribed?: boolean;
+	isAuthorized?: boolean;
+	email?: string;
 }
 
 export interface IPage {
@@ -80,4 +95,9 @@ export interface IPage {
 		sortDir: "asc" | "desc";
 		sortCol: string;
 	};
+}
+
+export interface IAuthorizedUser {
+	id: string;
+	roles: Role[];
 }

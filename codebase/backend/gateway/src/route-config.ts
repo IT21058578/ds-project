@@ -9,15 +9,15 @@ import { IRouteConfig, Role } from "./types";
 export const routesConfig: IRouteConfig[] = [
 	{
 		endpoints: [
-			// ["/api/auth/refresh", "POST", [Role.ADMIN, Role.BUYER, Role.SELLER]],
-			// ["/api/auth/logout", "POST", [Role.ADMIN, Role.BUYER, Role.SELLER]],
-			// [
-			// 	"/api/auth/change-password",
-			// 	"POST",
-			// 	[Role.ADMIN, Role.BUYER, Role.SELLER],
-			// ],
+			["/api/auth/refresh", "POST", [Role.ADMIN, Role.BUYER, Role.SELLER]],
+			["/api/auth/logout", "POST", [Role.ADMIN, Role.BUYER, Role.SELLER]],
+			[
+				"/api/auth/change-password",
+				"POST",
+				[Role.ADMIN, Role.BUYER, Role.SELLER],
+			],
+			["/api/users/", "PUT", [Role.ADMIN, Role.BUYER, Role.ADMIN]],
 			["/api/auth"],
-			// ["/api/users/", "PUT", [Role.ADMIN, Role.BUYER, Role.ADMIN]],
 			["/api/users"],
 		],
 		host: AUTH_HOST || "",

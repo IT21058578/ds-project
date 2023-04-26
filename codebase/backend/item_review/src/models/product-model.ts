@@ -4,10 +4,8 @@ import { IProduct, IReview } from "../types/product";
 const reviewSchema = new Schema<IReview>({
 	userId: Types.ObjectId,
 	productId: Types.ObjectId,
-	createdBy: String,
 	createdOn: Date,
 	lastEditedOn: Date,
-	productName: String,
 	rating: Number,
 	comment: String,
 });
@@ -22,7 +20,6 @@ reviewSchema.set("toJSON", {
 
 const productSchema = new Schema<IProduct>({
 	brandId: Types.ObjectId,
-	brandName: String,
 	category: String,
 	countInStock: Number,
 	description: String,

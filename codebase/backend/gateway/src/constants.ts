@@ -8,7 +8,6 @@ export const { PORT, SERVICE, ORIGINS, ENVIRONMENT } = process.env;
 export const { INTERNAL_API_KEY } = process.env;
 
 // ** All API Routes **
-// Comm Service routes
 let AUTH_HOST: string = "";
 let CART_HOST: string = "";
 let ITEM_REVIEW_HOST: string = "";

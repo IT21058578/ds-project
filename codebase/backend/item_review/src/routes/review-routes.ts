@@ -1,5 +1,5 @@
 import express from "express";
-import { ProductController } from "../controllers/productController";
+import { ReviewController } from "../controllers/review-controller";
 import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
 
 const router = express.Router();
@@ -14,14 +14,14 @@ router.route("/search").post(
 		userId: { isMongoId: true, optional: true },
 		productId: { isMongoId: true, optional: true },
 	}),
-	ProductController.searchReviews
+	ReviewController.searchReviews
 );
 
 router
 	.route("/:id")
 	.get(
 		...checkSchemaAndHandleErrors({ id: { in: ["params"], isMongoId: true } }),
-		ProductController.getReview
+		ReviewController.getReview
 	)
 	.put(
 		...checkSchemaAndHandleErrors({
@@ -29,11 +29,11 @@ router
 			comment: { isString: true, optional: true },
 			rating: { isNumeric: true, optional: true },
 		}),
-		ProductController.updateReview
+		ReviewController.updateReview
 	)
 	.delete(
 		...checkSchemaAndHandleErrors({ id: { in: ["params"], isMongoId: true } }),
-		ProductController.deleteReview
+		ReviewController.deleteReview
 	);
 
 router.route("/").post(
@@ -45,7 +45,7 @@ router.route("/").post(
 		createdBy: { isString: true, optional: true },
 		rating: { isNumeric: true, optional: true },
 	}),
-	ProductController.createReview
+	ReviewController.createReview
 );
 
 export default router;

@@ -36,7 +36,7 @@ const loginUser = async (req: Request, res: Response) => {
 const logoutUser = async (req: Request, res: Response) => {
 	try {
 		log.info("Attempting to logout user");
-		const { id } = req.body;
+		const id = (req.headers["user-id"] as string | undefined) || "";
 		await AuthService.logoutUser(id);
 		log.info("Logout succesful");
 		return res.status(HttpStatusCode.Ok).send();

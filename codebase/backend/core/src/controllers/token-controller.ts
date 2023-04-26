@@ -4,18 +4,27 @@ import { HttpStatusCode } from "axios";
 
 import { TokenService } from "../services/token-service";
 
+import initializeLogger from "../logger";
 import { Role } from "../types";
 
-import initializeLogger from "../logger";
-
 const log = initializeLogger(__filename.split("\\").pop() || "");
+
+// IMPORANT: These controllers are only accessed if user is already logged in
 
 const generateAccessToken = async (req: Request, res: Response) => {
 	try {
 		log.info("Attempting to generate access token");
-		const { id }: { id: string } = req.body;
-		const accessToken = await TokenService.generateAccessToken(id, []); // FIXME: Just a temporary fix here
-		log.info("Successfully generated token");
+		const authorizedUserId = req.headers["user-id"] as string | undefined;
+		const authorizedUserRoles = req.headers["user-roles"] as Role[] | undefined;
+		if (!authorizedUserId || !authorizedUserRoles) {
+			return res
+				.status(HttpStatusCode.Unauthorized)
+				.send("Cannot create access token without valid id");
+		}
+		const accessToken = await TokenService.generateAccessToken(
+			authorizedUserId,
+			authorizedUserRoles
+		);
 		return res.status(HttpStatusCode.Ok).send({ accessToken });
 	} catch (err) {
 		console.error("Failed to generate access token", err);
@@ -28,9 +37,17 @@ const generateAccessToken = async (req: Request, res: Response) => {
 const generateRefreshToken = async (req: Request, res: Response) => {
 	try {
 		log.info("Attempting to generate refresh token");
-		const { id }: { id: string } = req.body;
-		const refreshToken = await TokenService.generateRefreshToken(id, []); // FIXME: Just a temporary fix here
-		log.info("Successfully generated token");
+		const authorizedUserId = req.headers["user-id"] as string | undefined;
+		const authorizedUserRoles = req.headers["user-roles"] as Role[] | undefined;
+		if (!authorizedUserId || !authorizedUserRoles) {
+			return res
+				.status(HttpStatusCode.Unauthorized)
+				.send("Cannot create access token without valid id");
+		}
+		const refreshToken = await TokenService.generateRefreshToken(
+			authorizedUserId,
+			authorizedUserRoles
+		);
 		return res.status(HttpStatusCode.Ok).send({ refreshToken });
 	} catch (err) {
 		console.error("Failed to generate refresh token", err);

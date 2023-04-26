@@ -5,11 +5,10 @@ import helmet from "helmet";
 import Mongoose from "mongoose";
 import cors from "cors";
 
-import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
+import { REDIS_URI, MONGO_URI, PORT, SERVICE, ALL_HOSTS } from "./constants";
 
 // Routes
-import orderRoutes from "./routes/orderRoutes";
-import paypalRoutes from "./routes/paypalRoutes";
+import orderRoutes from "./routes/order-routes";
 
 dotenv.config();
 
@@ -18,7 +17,13 @@ const app = express();
 //Confguring express erver
 let mongoose: typeof Mongoose | undefined;
 
-app.use(cors());
+app.use(cors({ origin: ALL_HOSTS }));
+
+app.use((req, _res, next) => {
+	console.log(`Request received by ${SERVICE} service to '${req.originalUrl}'`);
+	next();
+});
+
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());
@@ -35,7 +40,6 @@ Mongoose.connect(MONGO_URI || "").then((client) => (mongoose = client));
 console.log("Connected to databases and services");
 
 app.use("/api/orders/", orderRoutes);
-app.use("/api/config/paypal", paypalRoutes);
 
 //Start server
 app.listen(PORT || 3000, () => {

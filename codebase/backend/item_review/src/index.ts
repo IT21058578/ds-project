@@ -5,11 +5,11 @@ import helmet from "helmet";
 import Mongoose from "mongoose";
 import cors from "cors";
 
-import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
+import { REDIS_URI, MONGO_URI, PORT, SERVICE, ALL_HOSTS } from "./constants";
 
 //Routes
-import productRoutes from "./routes/productRoutes";
-import reviewRoutes from "./routes/reviewRoutes";
+import productRoutes from "./routes/product-routes";
+import reviewRoutes from "./routes/review-routes";
 
 dotenv.config();
 
@@ -18,10 +18,16 @@ const app = express();
 //Confguring express erver
 let mongoose: typeof Mongoose | undefined;
 
+app.use(cors({ origin: ALL_HOSTS }));
+
+app.use((req, _res, next) => {
+	console.log(`Request received by ${SERVICE} service to '${req.originalUrl}'`);
+	next();
+});
+
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());
-app.use(cors());
 app.disable("x-powered-by");
 console.log("Configured application");
 

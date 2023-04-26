@@ -8,14 +8,30 @@ export const { MONGO_URI, REDIS_URI, PORT, SERVICE } = process.env;
 export const { INTERNAL_API_KEY } = process.env;
 
 // ** All API Routes **
-// Comm Service routes
-const { COMM_PORT, COMM_HOST } = process.env;
-export const COMM_API_URI = `http://${COMM_HOST}:${COMM_PORT}/api`;
-export const SEND_REGISTER_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-register-mail`;
-export const SEND_FORGOT_PASSWORD_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-forgot-password-mail`;
-export const SEND_PASSWORD_CHANGED_NOTICE_EMAIL_ENDPOINT = `${COMM_API_URI}/email/send-password-changed-mail`;
+export const { ENVIRONMENT } = process.env;
+let AUTH_HOST: string = "";
+let CART_HOST: string = "";
+let ITEM_REVIEW_HOST: string = "";
+let ORDER_PAYMENT_HOST: string = "";
 
-// Auth Service Routes
-const { AUTH_PORT, AUTH_HOST } = process.env;
-export const AUTH_API_URI = `http://${AUTH_HOST}:${AUTH_PORT}/api`;
-export const DECODE_ACCCESS_TOKEN_ENDPOINT = `${AUTH_API_URI}/token/decode-access-token`;
+if (ENVIRONMENT === "PROD") {
+	AUTH_HOST = process.env["PROD_AUTH_HOST"] || "";
+	CART_HOST = process.env["PROD_CART_HOST"] || "";
+	ITEM_REVIEW_HOST = process.env["PROD_ITEM_REVIEW_HOST"] || "";
+	ORDER_PAYMENT_HOST = process.env["PROD_ORDER_PAYMENT_HOST"] || "";
+} else {
+	AUTH_HOST = process.env["DEV_AUTH_HOST"] || "";
+	CART_HOST = process.env["DEV_CART_HOST"] || "";
+	ITEM_REVIEW_HOST = process.env["DEV_ITEM_REVIEW_HOST"] || "";
+	ORDER_PAYMENT_HOST = process.env["DEV_ORDER_PAYMENT_HOST"] || "";
+}
+
+const ALL_HOSTS = [AUTH_HOST, CART_HOST, ITEM_REVIEW_HOST, ORDER_PAYMENT_HOST];
+export {
+	AUTH_HOST,
+	CART_HOST,
+	ITEM_REVIEW_HOST,
+	ORDER_PAYMENT_HOST,
+	ALL_HOSTS,
+};
+

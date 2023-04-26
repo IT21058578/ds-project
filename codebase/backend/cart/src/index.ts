@@ -5,7 +5,7 @@ import helmet from "helmet";
 import Mongoose from "mongoose";
 import cors from "cors";
 
-import { REDIS_URI, MONGO_URI, PORT, SERVICE } from "./constants";
+import { REDIS_URI, MONGO_URI, PORT, SERVICE, ALL_HOSTS } from "./constants";
 import cart from "./cart-routes";
 
 dotenv.config();
@@ -15,6 +15,8 @@ const app = express();
 //Confguring express erver
 let mongoose: typeof Mongoose | undefined;
 
+app.use(cors({ origin: ALL_HOSTS }));
+
 app.use((req, _res, next) => {
 	console.log(`Request received by ${SERVICE} service to '${req.originalUrl}'`);
 	next();
@@ -23,7 +25,6 @@ app.use((req, _res, next) => {
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());
-app.use(cors());
 app.disable("x-powered-by");
 console.log("Configured application");
 

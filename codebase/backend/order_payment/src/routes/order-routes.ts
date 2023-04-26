@@ -1,5 +1,5 @@
 import express from "express";
-import { OrderController } from "../controllers/orderController";
+import { OrderController } from "../controllers/order-controller";
 import { checkSchemaAndHandleErrors } from "../middleware/check-schema";
 
 const router = express.Router();

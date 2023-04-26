@@ -1,5 +1,11 @@
 import { User } from "../models/user-model";
-import { IPage, IUser, IUserSearchOptions, UserErrorMessage } from "../types";
+import {
+	IAuthorizedUser,
+	IPage,
+	IUser,
+	IUserSearchOptions,
+	UserErrorMessage,
+} from "../types";
 
 import initializeLogger from "../logger";
 
@@ -23,10 +29,54 @@ const searchUsers = async (userSearchOptions: IUserSearchOptions) => {
 		sortCol = "_id",
 		sortDir = "asc",
 		search,
+		...searchOptions
 	} = userSearchOptions;
 
 	const baseQuery = User.find({
 		...(search ? { $text: { $search: search } } : {}),
+		...(searchOptions.role ? { roles: searchOptions.role } : {}),
+		...(searchOptions.email ? { email: searchOptions.email } : {}),
+		...(searchOptions.mobile ? { mobile: searchOptions.mobile } : {}),
+		...(searchOptions.createdAt ? { createdAt: searchOptions.createdAt } : {}),
+		...(searchOptions.createdBefore
+			? { createdAt: { $lt: searchOptions.createdBefore } }
+			: {}),
+		...(searchOptions.createdAfter
+			? { createdAt: { $gt: searchOptions.createdAfter } }
+			: {}),
+		...(searchOptions.lastLoggedAt
+			? { lastLoggedAt: searchOptions.lastLoggedAt }
+			: {}),
+		...(searchOptions.lastLoggedBefore
+			? { lastLoggedAt: { $lt: searchOptions.lastLoggedBefore } }
+			: {}),
+		...(searchOptions.lastLoggedAfter
+			? { lastLoggedAt: { $gt: searchOptions.lastLoggedAfter } }
+			: {}),
+		...(searchOptions.lastEditedAt
+			? { lastEditedAt: searchOptions.lastEditedAt }
+			: {}),
+		...(searchOptions.lastEditedBefore
+			? { lastEditedAt: { $lt: searchOptions.lastEditedBefore } }
+			: {}),
+		...(searchOptions.lastEditedAfter
+			? { lastEditedAt: { $gt: searchOptions.lastEditedAfter } }
+			: {}),
+		...(searchOptions.isSubscribed
+			? { isSubscribed: searchOptions.isSubscribed }
+			: {}),
+		...(searchOptions.isAuthorized
+			? { isAuthorized: searchOptions.isAuthorized }
+			: {}),
+		...(searchOptions.name
+			? {
+					$or: [
+						{ firstName: searchOptions.name },
+						{ lastName: searchOptions.name },
+						{ brandName: searchOptions.name },
+					],
+			  }
+			: {}),
 	});
 	const totalElements = await baseQuery.clone().count().exec();
 	const pageQuery = baseQuery
@@ -44,7 +94,7 @@ const searchUsers = async (userSearchOptions: IUserSearchOptions) => {
 		pageSize,
 		totalElements,
 		totalPages,
-		searchOptions: {},
+		searchOptions,
 		sort: {
 			sortDir,
 			sortCol,

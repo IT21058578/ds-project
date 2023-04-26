@@ -36,15 +36,19 @@ export const configureProxy = (app: ReturnType<typeof express>) => {
 					log.info(`Attempting to forward request to ${proxyPath}'`);
 					if (proxyPath.startsWith(toPath) && method === req.method && roles) {
 						log.info("Trying to access a protected route");
-						if (
-							!(await isRequestAuthorized(roles, req.headers.authorization))
-						) {
+						const [isAuthorized, userId, userRoles] = await isRequestAuthorized(
+							roles,
+							req.headers.authorization
+						);
+						if (!isAuthorized) {
 							log.info("User does not have appropriate permissions");
 							return res
 								.status(HttpStatusCode.Unauthorized)
 								.send(UserErrorMessage.INVALID_CREDENTIALS);
 						} else {
 							log.info("User has appropriate permissions");
+							req.headers["user-id"] = userId;
+							req.headers["user-roles"] = userRoles;
 						}
 					} else {
 						log.info("Route is not protected");

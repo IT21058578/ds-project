@@ -60,21 +60,21 @@ export const authorizeRequest = (allowedRoles?: Role[]) => {
 export const isRequestAuthorized = async (
 	allowedRoles?: Role[],
 	authHeader?: string
-) => {
+): Promise<[boolean, string?, Role[]?]> => {
 	const accessToken = authHeader?.split(" ")[1];
 	if (allowedRoles === undefined) {
-		return true; // If no allowed roles defined
+		return [true]; // If no allowed roles defined
 	} else {
 		if (accessToken === undefined) {
-			return false; // If allowed roles are defined but header no token
+			return [false]; // If allowed roles are defined but header no token
 		} else if (authHeader === INTERNAL_API_KEY) {
-			return true; // If auth is actually api key
+			return [true]; // If auth is actually api key
 		} else {
 			try {
 				const {
-					data: { roles },
+					data: { roles, id },
 				} = await axios
-					.post<{ roles: Role[] }>(DECODE_ACCCESS_TOKEN_ENDPOINT, {
+					.post<{ roles: Role[]; id: string }>(DECODE_ACCCESS_TOKEN_ENDPOINT, {
 						accessToken,
 					})
 					.catch(() => {
@@ -82,13 +82,14 @@ export const isRequestAuthorized = async (
 					});
 				for (const role of roles) {
 					if (allowedRoles.includes(role)) {
-						return true; // If any of the allowedRoles matches one of the roles this user has
+						return [true, id, roles]; // If any of the allowedRoles matches one of the roles this user has
 					}
 				}
-				return false;
+				return [false, id, roles];
 			} catch (err) {
 				log.error(`An error occurred when trying to authorize ERR: ${err}`);
 			}
 		}
 	}
+	return [false];
 };

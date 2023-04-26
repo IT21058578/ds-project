@@ -6,7 +6,6 @@ import { Model, Document } from "mongoose";
 export interface IProduct {
 	id: string;
 	brandId: string;
-	brandName: string;
 	name: string;
 	price: number;
 	imageUrl: string[];
@@ -24,8 +23,6 @@ export interface IReview {
 	id: string;
 	userId: string;
 	productId: string;
-	productName: string;
-	createdBy: string;
 	createdOn: Date;
 	comment: string;
 	lastEditedOn: Date;

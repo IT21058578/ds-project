@@ -1,3 +1,6 @@
+import { IReview } from "./types/product";
+import { IProduct } from "./types/product";
+
 /**
  * An enum for errors thrown within the auth, token and user apis
  */
@@ -60,3 +63,45 @@ export interface IPage {
 		sortCol: string;
 	};
 }
+
+export interface IAuthorizedUser {
+	id?: string;
+	roles?: Role[];
+}
+
+interface IBasicPageRequest<T> {
+	pageNum?: number;
+	pageSize?: number;
+	sortCol?: keyof T;
+	sortDir?: "asc" | "desc";
+	search?: string;
+}
+
+type TPageSearchOptions<T> = {
+	[Property in keyof T]?: T[Property];
+};
+
+export type TPageRequest<T> = IBasicPageRequest<T> & TPageSearchOptions<T>;
+
+export type IProductPageRequest = Omit<
+	TPageRequest<IProduct>,
+	"id" | "imageUrl"
+> & {
+	countInStockLargerThan?: number;
+	countInStockLessThen?: number;
+	priceLargerThan?: number;
+	priceLessThen?: number;
+	createdBefore?: string;
+	createdAfter?: string;
+	lastEditedBefore?: string;
+	lastEditedAfter?: string;
+};
+
+export type IReviewPageRequest = Omit<TPageRequest<IReview>, "id"> & {
+	ratingLargerThan?: number;
+	ratingLessThen?: number;
+	createdBefore?: string;
+	createdAfter?: string;
+	lastEditedBefore?: string;
+	lastEditedAfter?: string;
+};

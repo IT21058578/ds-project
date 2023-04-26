@@ -58,8 +58,19 @@ const sendPasswordChangedEmail = async (firstName: string, email: string) => {
 	log.info("Email sent", info.messageId);
 };
 
-const sendOrderConfirmationEmail = async () => {
-	// TODO: Implement Order Confirmation Email
+const sendOrderConfirmationEmail = async (
+	email: string,
+	firstName: string,
+	orderId: string
+) => {
+	log.info("Attempting to send password changed email...");
+	const info = await transporter.sendMail({
+		to: email,
+		from: VERIFIED_SENDER,
+		subject: "Password Changed",
+		html: `Hey ${firstName}. We are sending this email to notify your order with with order id '${orderId}' has been confirmed`,
+	});
+	log.info("Email sent", info.messageId);
 };
 
 export const EmailService = {

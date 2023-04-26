@@ -39,26 +39,11 @@ export interface IUser {
 	email: string;
 	password: string;
 	createdAt: Date;
-	authorizationToken?: string; 
+	authorizationToken?: string;
 	lastLoggedAt?: Date;
 	roles: Role[];
 	isSubscribed: boolean;
 	isAuthorized: boolean;
-}
-
-export interface IPage {
-	isLast: boolean;
-	isFirst: boolean;
-	totalPages: number;
-	totalElements: number;
-	pageNum: number;
-	pageSize: number;
-	content: any[];
-	searchOptions?: { [key: string]: any };
-	sort?: {
-		sortDir: "asc" | "desc";
-		sortCol: string;
-	};
 }
 
 export interface IOrder {
@@ -69,10 +54,8 @@ export interface IOrder {
 	createdOn: Date;
 	lastEditedOn: Date;
 	items: {
-		name: string;
-		imageUrl: string;
+		id: string;
 		qty: number;
-		amountPerUnit: number;
 	}[];
 	shippingDetails: {
 		firstName: string;
@@ -91,5 +74,51 @@ export interface IOrder {
 		cardNumber: number;
 		expDate: string;
 		cvv: number;
+	};
+}
+
+interface IBasicPageRequest<T> {
+	pageNum?: number;
+	pageSize?: number;
+	sortCol?: keyof T;
+	sortDir?: "asc" | "desc";
+	search?: string;
+}
+
+type TPageSearchOptions<T> = {
+	[Property in keyof T]?: T[Property];
+};
+
+export type TPageRequest<T> = IBasicPageRequest<T> & TPageSearchOptions<T>;
+
+export type IOrderPageRequest = Omit<
+	TPageRequest<IOrder>,
+	"id" | "shippingDetails" | "paymentDetails"
+> & {
+	includesItemId?: string;
+	excludesItemId?: string;
+	createdBefore?: string;
+	createdAfter?: string;
+	lastEditedBefore?: string;
+	lastEditedAfter?: string;
+};
+
+export interface IAuthorizedUser {
+	id?: string;
+	roles?: Role[];
+}
+
+export interface IPage {
+	isLast: boolean;
+	isFirst: boolean;
+	totalPages: number;
+	totalElements: number;
+	pageNum: number;
+	pageSize: number;
+	content: any[];
+	searchOptions?: { [key: string]: any };
+	sort?: {
+		sortDir: "asc" | "desc";
+		sortCol: string;
 	};
 }
