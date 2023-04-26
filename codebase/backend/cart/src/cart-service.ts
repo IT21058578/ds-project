@@ -15,14 +15,14 @@ const editCart = async (
 	products: Partial<ICart>["products"]
 ) => {
 	const cart = await Cart.findOne({ userId }).exec();
-	if (cart === null) throw Error("Card does not exist");
+	if (cart === null) throw Error("Cart does not exist");
 	cart.products = products || [];
 	return (await cart.save()).toObject();
 };
 
 const deleteCart = async (userId: string) => {
 	const cart = await Cart.findOneAndDelete({ userId }).exec();
-	if (cart === null) throw Error("Card does not exist");
+	if (cart === null) throw Error("Cart does not exist");
 	return;
 };
 
