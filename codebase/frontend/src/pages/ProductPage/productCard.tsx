@@ -15,8 +15,7 @@ import BookTwoToneIcon from '@mui/icons-material/BookTwoTone';
 import AddShoppingCartTwoToneIcon from '@mui/icons-material/AddShoppingCartTwoTone';
 import { useNavigate } from "react-router-dom";
 import { Iproduct } from "../../types";
-
-
+import AlertDialogSlide from "../../components/Alert/alert";
 
 interface ProductCardListProps {
   products: Iproduct[];
@@ -45,6 +44,7 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
     border: 1px solid green;
     border-radius: 13px;
   `;
+  
 
   return (
     <Box
@@ -113,14 +113,15 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
 
                 <CardBorder>
                 <Stack spacing={1} direction="row">
-                  <Button
+                  {/* <Button
                   onClick={() => handleAddToCart(product)}
                   sx={{
                     color: 'red', 
                   }}
                   >
                     <AddShoppingCartTwoToneIcon/>
-                 </Button>
+                 </Button> */}
+                  <AlertDialogSlide></AlertDialogSlide>
 
                  <Button>
                   <BookTwoToneIcon 

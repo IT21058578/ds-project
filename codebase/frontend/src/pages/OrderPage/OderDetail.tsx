@@ -42,16 +42,16 @@ function createData(
     deliveryStatus,
     history: [
       {
-      productName: "Product 1",
-      price: 10.99,
-      image: "https://www.nicepng.com/png/detail/394-3948184_hemp-skincare-cbd-skincare-sativa-product-range-skin.png",
-      amount: 4,
+      productName: "Fenugeek Oil",
+      price: 500.00,
+      image: "https://cdn.shopify.com/s/files/1/0036/5245/2397/products/fenugreekoil_740x.png?v=1676350286",
+      amount: 1,
     },
     {
-      productName: "Product 2",
-      price: 10.99,
+      productName: "Liya Cream",
+      price: 400.00,
       image: "https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png",
-      amount: 4,
+      amount: 1,
     },
     ],
   };
@@ -134,11 +134,11 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 }
 
 const rows = [
-  createData('ddg','user1','2023-03-15', 159, 'Payed', 324,'In progress'),
-  createData('ddg','user1','2023-03-15', 237, 'Payed', 337,'shipped'),
-  createData('ddg','user1','2023-03-15', 262, 'Unpayed', 424,'Dispatched'),
-  createData('ddg','user1','2023-03-15', 305, 'Payed', 667,'shipped'),
-  createData('ddg','user1','2023-03-15', 356, 'Payed', 549,'In progress'),
+  createData('2001539','user1','2023-04-27', 0.00, 'Payed', 900,'In progress'),
+  // createData('ddg','user1','2023-03-15', 237, 'Payed', 337,'shipped'),
+  // createData('ddg','user1','2023-03-15', 262, 'Unpayed', 424,'Dispatched'),
+  // createData('ddg','user1','2023-03-15', 305, 'Payed', 667,'shipped'),
+  // createData('ddg','user1','2023-03-15', 356, 'Payed', 549,'In progress'),
 ];
 
 export default function Order() {

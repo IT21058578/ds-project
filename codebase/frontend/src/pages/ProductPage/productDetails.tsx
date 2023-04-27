@@ -156,7 +156,7 @@ const Product: React.FC<Props> = ({ product, onAddToCart }) => {
           {product.productDescription}
         </Typography>
         <Typography variant="h6" gutterBottom>
-          Price: ${product.price}
+          Price: Rs.{product.price}
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
           <Typography variant="subtitle1">Stock:</Typography>

@@ -3,19 +3,19 @@ import { Iproduct } from "../../types";
 
 const product: Iproduct = {
     productID: "1",
-    productName: "Product 1",
-    productDescription: "• The system should have a web interface where buyers can shop for items uploaded by sellers. • A service should be there where sellers can add/update/delete items.• A service should be there where buyers can search/buy items. • A buyer may buy multiple items.• Once an item is purchased, an administrator may manually verify the order and confirm theorder. ",
-    price: 10.99,
-    rating: 4.5,
+    productName: "Fenugeek Oil",
+    productDescription: "Uses: Fenugreek seed essential oil is popularly used in combating hair loss and baldness. Fenugreek nourishes the hair and the scalp in depth. It also helps fight lice and dandruff. In addition, Fenugreek oil strengthens and softens dry, damaged and brittle hair and stimulates hair growth. Anti-inflammatory properties of Fenugreek essential oil help reduce acne, swelling and puffiness of the skin. It is used in aromatherapy to reduce high blood pressure and nervousness.",
+    price: 500.00,
+    rating: 3.5,
     countInStock: 2,
     review: 'good',
     brand: 'link',
-	  categery: 'Category 1',
+	  categery: 'Oils',
     image: [
-      "https://picsum.photos/seed/1/800/600",
-      "https://picsum.photos/seed/2/800/600",
-      "https://picsum.photos/seed/3/800/600",
-      "https://picsum.photos/seed/4/800/600",
+      "https://cdn.shopify.com/s/files/1/0036/5245/2397/products/fenugreekoil_740x.png?v=1676350286",
+      "https://cdn.shopify.com/s/files/1/0036/5245/2397/products/fenugreekseedoil_740x.png?v=1676350286",
+      "https://cdn.shopify.com/s/files/1/0036/5245/2397/products/fenugreekoilsrilanka_740x.png?v=1676350286",
+      "https://cdn.shopify.com/s/files/1/0036/5245/2397/products/fenugreekseedoilsrilanka_740x.png?v=1676350286",
     ],
 };
 
