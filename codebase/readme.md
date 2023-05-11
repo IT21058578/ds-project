@@ -37,6 +37,16 @@ All the individual services have identical Dockerfiles in their directories. You
 
 After that you can manage this using docker desktop. It will build and start the services as well, but you can disable those. Just active the 3 required containers (Mongo, Redis, RabbitMQ) when working.
 
+### Problems encountered while using Docker Swarm
+
+1. Envrionment variables (MONGO_URI) is undefined in the swarm services but defined in containers.
+   `docker-network inspect <network_name>` can be used to find details of a network. This was useful for me to verify that my services were actually connected to the docker network.
+
+   `set -a && . .env && set +a && docker stack deploy -c docker-compose.yml ds-project` Can be used to circumvent the above problem. It basically sets the env variables before calling the stack deploy.
+   The next problem is that inter-service communication is not happening properly.
+
+   `docker compose build && docker compose push && set -a && . .env && set +a && docker stack deploy -c docker-compose.yml ds-project` We can use this for convinience so that all steps are automated
+
 ## Maintaining the Tooling
 
 Please make sure to modify the corresponding commands in the backend package.json aswell as the docker-compose.yml as new services are added or as services are removed. Otherwise it may cause issues.

@@ -1,7 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IAuthState, IUser } from "../../types";
 
-const initialState: IAuthState = {};
+const initialState: IAuthState = {
+	user: {
+		firstName: "",
+		lastName: "",
+		email: "",
+		id: "",
+		isAuthorized: true,
+		isSubscribed: true,
+		mobile: "",
+		roles: ["ADMIN"],
+	},
+};
 
 const authSlice = createSlice({
 	name: "auth",
@@ -12,9 +23,9 @@ const authSlice = createSlice({
 			{
 				payload,
 			}: PayloadAction<{
-				user: IUser;
 				accessToken: string;
 				refreshToken: string;
+				user: IUser;
 			}>
 		) => {
 			auth.accessToken = payload.accessToken;
@@ -30,7 +41,6 @@ const authSlice = createSlice({
 });
 
 // Exporting action creators
-export const { setAuth, removeAuth } = authSlice.actions;
-
+export const { removeAuth, setAuth } = authSlice.actions;
 //Exporting reducer
 export const authReducer = authSlice.reducer;

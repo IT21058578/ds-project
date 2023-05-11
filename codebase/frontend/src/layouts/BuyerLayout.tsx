@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 
 import BuyerFooter from "./BuyerLayout/BuyerFooter";
 import BuyerNavBar from "./BuyerLayout/BuyerNavBar";
+import { Style } from "@mui/icons-material";
 
 type Props = { children?: React.ReactNode };
 
@@ -13,9 +14,15 @@ const BuyerLayout = ({ children }: Props) => {
 			direction="column"
 			alignItems="center"
 			sx={{ height: "100vh" }}
+			style={{backgroundColor:'rgb(244 244 245)'}}
 		>
-			<BuyerNavBar />
 			<Box
+			sx={{ height: "auto" }}
+			style={{backgroundColor:'rgb(244 244 245)'}}
+		    >
+			<BuyerNavBar />
+			<Box 
+
 				sx={{
 					display: "flex",
 					justifyContent: "center",
@@ -26,9 +33,11 @@ const BuyerLayout = ({ children }: Props) => {
 				{children}
 				<Outlet />
 			</Box>
+			</Box>
 			<BuyerFooter />
 		</Stack>
 	);
+	
 };
 
 export default BuyerLayout;

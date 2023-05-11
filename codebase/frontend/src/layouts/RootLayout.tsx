@@ -10,13 +10,32 @@ import ErrorPage from "../pages/ErrorPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
+import Checkout from "../pages/OrderPage/Checkout";
 import { useAppSelector } from "../store/hooks";
 import BuyerLayout from "./BuyerLayout";
+import ProductHome from "../pages/ProductPage/product";
 import SellerLayout from "./SellerLayout";
 import UserLayout from "./UserLayout";
+import ProductView from "../pages/ProductPage/DetailViewer";
+import Cart from "../pages/CartPage/CartView";
+import AntDesignGrid from "../pages/OrderPage/OderDetail";
+import ProfilePage from "../pages/ProfilePage/profile";
+import Order from "../pages/OrderPage/OderDetail";
+import ReviewTable from "../pages/ReviewPage/UserReviewDetails";
+
+import OrdersListPage from "../pages/OrdersListPage";
+import ReviewsListPage from "../pages/ReviewsListPage";
+import CustomersListPage from "../pages/CustomersListPage";
+import SellersListPage from "../pages/SellersListPage";
+import ProductsListPage from "../pages/ProductsListPage";
+import AdminCustomerPage from "../pages/AdminCustomerPage";
+import AdminReviewPage from "../pages/AdminReviewPage";
+import AdminOrderPage from "../pages/AdminOrderPage";
+import AdminSellerPage from "../pages/AdminSellerPage";
+import AdminProductPage from "../pages/AdminProductPage";
 
 /**
- * Root layout resonsible for rendering all other layouts.
+ * Root layout responsible for rendering all other layouts.
  */
 const RootLayout = () => {
 	const user = useAppSelector((state) => state.auth.user);
@@ -28,6 +47,7 @@ const RootLayout = () => {
 				return setIsUserSellerAdmin(true);
 			}
 		}
+		// FIXME: Changed for testing
 		return setIsUserSellerAdmin(false);
 	}, [user]);
 
@@ -40,6 +60,13 @@ const RootLayout = () => {
 			<Route path="/login" element={<LoginPage />} />
 			<Route path="/register" element={<RegisterPage />} />
 			<Route path="/forgot-password" element={<ForgotPasswordPage />} />
+			<Route path="/cart" element={<Cart />} />
+			<Route path="/placeOrder" element={<Checkout />} />
+			<Route path="/" element={<ProductHome />} />
+			<Route path="/product/:productId" element={<ProductView />} />
+			<Route path="/order" element={<Order />} />
+			<Route path="/reviewtable" element={<ReviewTable />} />
+			<Route path="/profilepage" element={<ProfilePage />} />
 			<Route path="/*" element={<ErrorPage />} />
 		</Route>
 	);
@@ -49,7 +76,17 @@ const RootLayout = () => {
 	 */
 	const sellerRouteConfiguration = (
 		<Route path="/" element={<SellerLayout />}>
+			<Route path="/reviews" element={<ReviewsListPage />} />
+			<Route path="/reviews/:reviewId" element={<AdminReviewPage />} />
+			<Route path="/products" element={<ProductsListPage />} />
+			<Route path="/products/:productId" element={<AdminProductPage />} />
 			<Route path="/*" element={<ErrorPage />} />
+			<Route path="/orders" element={<OrdersListPage />} />
+			<Route path="/orders/:orderId" element={<AdminOrderPage />} />
+			<Route path="/sellers" element={<SellersListPage />} />
+			<Route path="/sellers/:brandId" element={<AdminSellerPage />} />
+			<Route path="/customers" element={<CustomersListPage />} />
+			<Route path="/customers/:customerId" element={<AdminCustomerPage />} />
 		</Route>
 	);
 

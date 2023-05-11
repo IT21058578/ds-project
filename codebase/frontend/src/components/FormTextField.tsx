@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { forwardRef } from "react";
+import { HTMLInputTypeAttribute, forwardRef } from "react";
 import {
 	ChangeHandler,
 	FieldError,
@@ -16,14 +16,30 @@ type Props = {
 	onChange: ChangeHandler;
 	onBlur: ChangeHandler;
 	name: string;
+	multiline?: boolean;
+	type?: HTMLInputTypeAttribute;
 };
 
 // TODO: Write comment
 
 const FormTextField = forwardRef<HTMLDivElement, Props>(
-	({ label, isLoading, error, name, onChange, onBlur }: Props, ref) => {
+	(
+		{
+			label,
+			isLoading,
+			error,
+			name,
+			onChange,
+			onBlur,
+			multiline = false,
+			type = "text",
+		}: Props,
+		ref
+	) => {
 		return (
 			<TextField
+				multiline={multiline}
+				type={type}
 				onChange={onChange}
 				onBlur={onBlur}
 				ref={ref}
