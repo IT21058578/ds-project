@@ -36,8 +36,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import Badge, { BadgeProps } from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
@@ -46,7 +44,6 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 	"& .MuiBadge-badge": {
 		right: -3,
 		top: 13,
-		//   border: `2px solid ${theme.palette.background.paper}`,
 		padding: "0 4px",
 	},
 }));
@@ -89,7 +86,6 @@ const BuyerNavBar = () => {
 		palette: { grey },
 	} = useTheme();
 	const theme = useTheme();
-
 	const [open, setOpen] = React.useState(false);
 
 	const handleDrawerOpen = () => {
@@ -100,29 +96,25 @@ const BuyerNavBar = () => {
 		setOpen(false);
 	};
 
-	const [hoveredNavItem, setHoveredNavItem] = useState<string | undefined>();
 	const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState<boolean>(false);
 
 	const user = useAppSelector((state) => state.auth.user);
-
-	const drawerItems: (NavLinkItem & { content?: React.ReactNode })[] = [
-		{ label: "Products", content: "Products bruh moment" },
-		{ label: "Brands", content: "Brands bruh moment" },
-	];
 
 	return (
 		<>
 			<AppBar position="fixed" open={open} elevation={2} sx={{ zIndex: 3000 }}>
 				<Toolbar>
-					<IconButton
-						color="inherit"
-						aria-label="open drawer"
-						onClick={handleDrawerOpen}
-						edge="start"
-						sx={{ mr: 2, ...(open && { display: "none" }) }}
-					>
-						<MenuIcon />
-					</IconButton>
+					{user !== undefined && (
+						<IconButton
+							color="inherit"
+							aria-label="open drawer"
+							onClick={handleDrawerOpen}
+							edge="start"
+							sx={{ mr: 2, ...(open && { display: "none" }) }}
+						>
+							<MenuIcon />
+						</IconButton>
+					)}
 					<Button onClick={() => navigate("/")}>
 						<Typography
 							sx={{
@@ -137,7 +129,7 @@ const BuyerNavBar = () => {
 					</Button>
 					<Box sx={{ flexGrow: 1, textAlign: "center" }} />
 					<Box sx={{ textAlign: "end" }}>
-						{!user ? (
+						{user !== undefined ? (
 							<>
 								<IconButton
 									size="large"
@@ -146,14 +138,6 @@ const BuyerNavBar = () => {
 								>
 									<ShoppingCart />
 								</IconButton>
-								{/* <IconButton
-									size="large"
-									sx={{ color: grey[900] }}
-									onClick={() => navigate("/user")}
-								>
-									<AccountCircle />
-								</IconButton> */}
-
 								<Chip
 									onClick={() => navigate("/profilepage")}
 									avatar={
@@ -162,7 +146,7 @@ const BuyerNavBar = () => {
 											src="https://www.pngmart.com/files/22/User-Avatar-Profile-PNG.png"
 										/>
 									}
-									label="Hi!.. Nilan"
+									label={`Hi ${user.lastName}!`}
 									variant="outlined"
 									sx={{
 										background: "white",
@@ -195,8 +179,6 @@ const BuyerNavBar = () => {
 					</Box>
 				</Toolbar>
 			</AppBar>
-
-			{/* new drawer */}
 			<Drawer
 				sx={{
 					width: drawerWidth,
@@ -260,20 +242,6 @@ const BuyerNavBar = () => {
 						</ListItem>
 					))}
 				</List>
-			</Drawer>
-
-			<Drawer anchor="top" open={!!hoveredNavItem} disableScrollLock>
-				<div style={{ height: "4rem" }} />
-				<Paper
-					color={grey[100]}
-					sx={{ width: "100%", height: "60vh" }}
-					onMouseEnter={() => setHoveredNavItem(hoveredNavItem)}
-					onMouseLeave={() => setHoveredNavItem(undefined)}
-				>
-					<Box sx={{ padding: "2rem" }}>
-						{drawerItems.find((item) => item.label === hoveredNavItem)?.content}
-					</Box>
-				</Paper>
 			</Drawer>
 			<LogoutDialog
 				open={isLogoutDialogOpen}
