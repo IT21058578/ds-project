@@ -10,7 +10,7 @@ const initialState: IAuthState = {
 		isAuthorized: true,
 		isSubscribed: true,
 		mobile: "",
-		roles: ["ADMIN"],
+		roles: [],
 	},
 };
 

@@ -1,6 +1,6 @@
 import ProductViewer from "./productDetails";
 import { Iproduct } from "../../types";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import { useGetProductQuery } from "../../store/apis/products-api-slice";
 
 // const product: Iproduct = {
@@ -20,7 +20,7 @@ import { useGetProductQuery } from "../../store/apis/products-api-slice";
 // };
 
 type ProductParamsId = {
-  id: string;
+	id: string;
 };
 
 const handleAddToCart = () => {
@@ -28,16 +28,16 @@ const handleAddToCart = () => {
 };
 
 const ProductView = () => {
-  const { id } = useParams() as ProductParamsId;
-  const { data: product } = useGetProductQuery({ id });
+	const { id } = useParams() as ProductParamsId;
+	const { data: product } = useGetProductQuery({ productId: id });
 
-  if (!product) return <p>Product not found</p>;
+	if (!product) return <p>Product not found</p>;
 
-  return (
-    <div className="App">
-      <ProductViewer product={product} onAddToCart={handleAddToCart} />
-    </div>
-  );
+	return (
+		<div className="App">
+			<ProductViewer product={product} onAddToCart={handleAddToCart} />
+		</div>
+	);
 };
 
 export default ProductView;

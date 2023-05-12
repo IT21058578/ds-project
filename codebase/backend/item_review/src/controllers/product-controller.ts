@@ -47,7 +47,9 @@ const searchProducts = async (req: Request, res: Response) => {
 	try {
 		console.log("Attempting to search product");
 		const productSearchOptions = req.body as IProductPageRequest;
-		const productPage = ProductService.searchProducts(productSearchOptions);
+		const productPage = await ProductService.searchProducts(
+			productSearchOptions
+		);
 		return res.status(HttpStatusCode.Ok).send(productPage);
 	} catch (error) {
 		console.log("An error occured: ", error);

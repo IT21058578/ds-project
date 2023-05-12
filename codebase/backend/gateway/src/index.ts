@@ -7,6 +7,7 @@ import { PORT, SERVICE } from "./constants";
 import initializeLogger from "./logger";
 import { configureProxy } from "./configure-proxy";
 import path from "path";
+import cors from "cors";
 
 const log = initializeLogger(__filename.split("\\").pop() || "");
 
@@ -15,6 +16,7 @@ dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 const app = express();
 
 //Confguring express erver
+app.use(cors());
 app.use(helmet());
 app.use(json());
 app.use(urlencoded());

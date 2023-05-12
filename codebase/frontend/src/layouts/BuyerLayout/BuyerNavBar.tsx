@@ -39,8 +39,8 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import Badge, { BadgeProps } from "@mui/material/Badge";
-import Avatar from '@mui/material/Avatar';
-import Chip from '@mui/material/Chip';
+import Avatar from "@mui/material/Avatar";
+import Chip from "@mui/material/Chip";
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 	"& .MuiBadge-badge": {
@@ -114,15 +114,15 @@ const BuyerNavBar = () => {
 		<>
 			<AppBar position="fixed" open={open} elevation={2} sx={{ zIndex: 3000 }}>
 				<Toolbar>
-				<IconButton
-					color="inherit"
-					aria-label="open drawer"
-					onClick={handleDrawerOpen}
-					edge="start"
-					sx={{ mr: 2, ...(open && { display: 'none' }) }}
-				>
-					<MenuIcon />
-				</IconButton>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						onClick={handleDrawerOpen}
+						edge="start"
+						sx={{ mr: 2, ...(open && { display: "none" }) }}
+					>
+						<MenuIcon />
+					</IconButton>
 					<Button onClick={() => navigate("/")}>
 						<Typography
 							sx={{
@@ -135,24 +135,7 @@ const BuyerNavBar = () => {
 							Sages
 						</Typography>
 					</Button>
-					<Box sx={{ flexGrow: 1, textAlign: "center" }}>
-						{drawerItems.map(({ link, label }, idx) => (
-							<Button
-								key={idx}
-								sx={{
-									color: grey[900],
-									fontSize: "1rem",
-									fontWeight: "600",
-									height: "4rem",
-									paddingX: "1rem",
-								}}
-								onMouseEnter={() => setHoveredNavItem(label)}
-								onMouseLeave={() => setHoveredNavItem(undefined)}
-							>
-								{label}
-							</Button>
-						))}
-					</Box>
+					<Box sx={{ flexGrow: 1, textAlign: "center" }} />
 					<Box sx={{ textAlign: "end" }}>
 						{!user ? (
 							<>
@@ -161,9 +144,7 @@ const BuyerNavBar = () => {
 									sx={{ color: grey[900] }}
 									onClick={() => navigate("/cart")}
 								>
-
-									   <ShoppingCart />
-
+									<ShoppingCart />
 								</IconButton>
 								{/* <IconButton
 									size="large"
@@ -175,10 +156,19 @@ const BuyerNavBar = () => {
 
 								<Chip
 									onClick={() => navigate("/profilepage")}
-									avatar={<Avatar alt="Natacha" src="https://www.pngmart.com/files/22/User-Avatar-Profile-PNG.png" />}
+									avatar={
+										<Avatar
+											alt="Natacha"
+											src="https://www.pngmart.com/files/22/User-Avatar-Profile-PNG.png"
+										/>
+									}
 									label="Hi!.. Nilan"
 									variant="outlined"
-									sx={{background:"white" , color:"green" , marginLeft:'10px'}}
+									sx={{
+										background: "white",
+										color: "green",
+										marginLeft: "10px",
+									}}
 								/>
 								<IconButton
 									size="large"
@@ -209,65 +199,66 @@ const BuyerNavBar = () => {
 			{/* new drawer */}
 			<Drawer
 				sx={{
-				width: drawerWidth,
-				flexShrink: 0,
-				'& .MuiDrawer-paper': {
 					width: drawerWidth,
-					boxSizing: 'border-box',
-					backgroundColor: 'rgba(246, 246, 246, 0.85)',
-				},
+					flexShrink: 0,
+					"& .MuiDrawer-paper": {
+						width: drawerWidth,
+						boxSizing: "border-box",
+						backgroundColor: "rgba(246, 246, 246, 0.85)",
+					},
 				}}
 				variant="persistent"
 				anchor="left"
 				open={open}
 			>
 				<DrawerHeader>
-				<IconButton onClick={handleDrawerClose}>
-					{theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-				</IconButton>
+					<IconButton onClick={handleDrawerClose}>
+						{theme.direction === "ltr" ? (
+							<ChevronLeftIcon />
+						) : (
+							<ChevronRightIcon />
+						)}
+					</IconButton>
 				</DrawerHeader>
 
 				<Divider />
 				<List>
-				{['Profile'].map((text) => (
-					<ListItem key={text} disablePadding>
-					<ListItemButton
-					onClick={() => navigate("/ProfilePage")}>
-						<ListItemIcon>
-							<People/>
-						</ListItemIcon>
-						<ListItemText primary={text} />
-					</ListItemButton>
-					</ListItem>
-				))}
+					{["Profile"].map((text) => (
+						<ListItem key={text} disablePadding>
+							<ListItemButton onClick={() => navigate("/ProfilePage")}>
+								<ListItemIcon>
+									<People />
+								</ListItemIcon>
+								<ListItemText primary={text} />
+							</ListItemButton>
+						</ListItem>
+					))}
 				</List>
 				<Divider />
 				<List>
-				{['Orders'].map((text) => (
-					<ListItem key={text} disablePadding>
-					<ListItemButton
-					onClick={() => navigate("/order")}>
-						<ListItemIcon>
-							<LocalShipping/>
-						</ListItemIcon>
-						<ListItemText primary={text} />
-					</ListItemButton>
-					</ListItem>
-				))}
+					{["Orders"].map((text) => (
+						<ListItem key={text} disablePadding>
+							<ListItemButton onClick={() => navigate("/order")}>
+								<ListItemIcon>
+									<LocalShipping />
+								</ListItemIcon>
+								<ListItemText primary={text} />
+							</ListItemButton>
+						</ListItem>
+					))}
 				</List>
 				<Divider />
 				<List>
-				{['Reviews'].map((text) => (
-					<ListItem key={text} disablePadding>
-					<ListItemButton
-					onClick={() => navigate("/reviewtable")}>
-						<ListItemIcon>
-							<Reviews/>
-						</ListItemIcon>
-						<ListItemText primary={text} />
-					</ListItemButton>
-					</ListItem>
-				))}
+					{["Reviews"].map((text) => (
+						<ListItem key={text} disablePadding>
+							<ListItemButton onClick={() => navigate("/reviewtable")}>
+								<ListItemIcon>
+									<Reviews />
+								</ListItemIcon>
+								<ListItemText primary={text} />
+							</ListItemButton>
+						</ListItem>
+					))}
 				</List>
 			</Drawer>
 

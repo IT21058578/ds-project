@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCardList from "./productCard";
-import {ButtonCategory} from "./catogary";
-import ImageSlider from "./ImageSlider"
+import { ButtonCategory } from "./catogary";
+import ImageSlider from "./ImageSlider";
 import { Iproduct } from "../../types";
 import { Box } from "@mui/material";
-import { useGetProductsQuery } from "../../store/apis/products-api-slice";
-
+import { useSearchProductsMutation } from "../../store/apis/products-api-slice";
 
 // const products: Iproduct[] = [
 //   {
@@ -17,10 +16,10 @@ import { useGetProductsQuery } from "../../store/apis/products-api-slice";
 //     countInStock: 2,
 //     brandId: 'link',
 // 	  category: 'Oils',
-//     createdOn: 12/12/2023 , 
+//     createdOn: 12/12/2023 ,
 //     lastEditedOn : '2000.12.26'
 //   },
-  
+
 //   {
 //     id: "1",
 //     name: "Liya Face",
@@ -43,7 +42,7 @@ import { useGetProductsQuery } from "../../store/apis/products-api-slice";
 //     brand: 'link',
 // 	  categery: 'Colons',
 //   },
-  
+
 //   {
 //     productID: "1",
 //     productName: "Fastem",
@@ -68,7 +67,7 @@ import { useGetProductsQuery } from "../../store/apis/products-api-slice";
 //     brand: 'link',
 // 	  categery: 'Oils',
 //   },
-  
+
 //   {
 //     productID: "1",
 //     productName: "Navarathna",
@@ -93,7 +92,7 @@ import { useGetProductsQuery } from "../../store/apis/products-api-slice";
 //     brand: 'link',
 // 	  categery: 'Sprays',
 //   },
-  
+
 //   {
 //     productID: "1",
 //     productName: "Siddhalepa",
@@ -118,7 +117,7 @@ import { useGetProductsQuery } from "../../store/apis/products-api-slice";
 //     brand: 'link',
 // 	  categery: 'Sprays',
 //   },
-  
+
 //   {
 //     productID: "1",
 //     productName: "Bettle oil",
@@ -130,40 +129,50 @@ import { useGetProductsQuery } from "../../store/apis/products-api-slice";
 //     review: 'good',
 //     brand: 'link',
 // 	  categery: 'Colons',
-//   }, 
+//   },
 // ];
 
-
 const ProductHome: React.FC = () => {
+	// const [selectedCategory, setSelectedCategory] = useState<string>("all");
+	const [selectedCategory, setSelectedCategory] = useState("");
 
-  // const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedCategory, setSelectedCategory] = useState("");
+	const [searchProducts, { data: productsRawData }] =
+		useSearchProductsMutation();
 
-  const {data: products} = useGetProductsQuery();
+	useEffect(() => {
+		searchProducts({});
+	}, [searchProducts]);
 
+	const handleAddToCart = (product: Iproduct) => {
+		console.log(`Added ${product.name} to cart!`);
+	};
 
-  const handleAddToCart = (product: Iproduct) => {
-    console.log(`Added ${product.name} to cart!`);
-  };
+	const handleCategorySelect = (category: string) => {
+		setSelectedCategory(category);
+	};
 
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category);
-  };
+	const filteredProducts = selectedCategory
+		? productsRawData?.content.filter(
+				(product) => product.category === selectedCategory
+		  )
+		: productsRawData?.content;
 
-
-  const filteredProducts = selectedCategory
-    ? products?.filter((product) => product.category === selectedCategory)
-    : products;
-
-  return (
-    <div>
-      <ImageSlider/>
-      <Box sx={{marginLeft:'50px'}}>
-      <ButtonCategory categories={["Sprays", "Colons","Oils", "Creams"]} onCategorySelect={handleCategorySelect} selectedCategory={selectedCategory} />
-      </Box>
-      <ProductCardList products={filteredProducts || []} onAddToCart={handleAddToCart} />
-    </div>
-  );
+	return (
+		<div>
+			<ImageSlider />
+			<Box sx={{ marginLeft: "50px" }}>
+				<ButtonCategory
+					categories={["Sprays", "Cologne", "Oils", "Creams"]}
+					onCategorySelect={handleCategorySelect}
+					selectedCategory={selectedCategory}
+				/>
+			</Box>
+			<ProductCardList
+				products={filteredProducts || []}
+				onAddToCart={handleAddToCart}
+			/>
+		</div>
+	);
 };
 
 export default ProductHome;
