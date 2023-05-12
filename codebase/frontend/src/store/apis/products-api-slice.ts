@@ -1,4 +1,5 @@
 import { API_URI } from "../../constants/constants";
+import { Iproduct } from "../../types";
 import { baseApi } from "./base-api";
 import { TPageRequest } from "./types/request-types";
 import { IPageDTO, IProductDTO } from "./types/response-types";

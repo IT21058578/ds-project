@@ -16,6 +16,8 @@ import AddShoppingCartTwoToneIcon from "@mui/icons-material/AddShoppingCartTwoTo
 import { useNavigate } from "react-router-dom";
 import { Iproduct } from "../../types";
 import { IProductDTO } from "../../store/apis/types/response-types";
+import AlertDialogSlide from "../../components/Alert/alert";
+import { Link } from "react-router-dom";
 
 interface ProductCardListProps {
 	products: IProductDTO[];
@@ -83,59 +85,34 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
 								{product.name}
 							</Typography>
 
-							<Rating
-								name="product-rating"
-								value={2.5}
-								precision={0.5}
-								readOnly
-							/>
+                <CardBorder>
+                <Stack spacing={1} direction="row">
+                  {/* <Button
+                  onClick={() => handleAddToCart(product)}
+                  sx={{
+                    color: 'red', 
+                  }}
+                  >
+                    <AddShoppingCartTwoToneIcon/>
+                 </Button> */}
+                  <AlertDialogSlide></AlertDialogSlide>
 
-							<div>
-								<Typography
-									variant="h6"
-									color="primary"
-									align="center"
-									marginTop="1rem"
-								>
-									Rs. {product.price}
-								</Typography>
-								<Typography
-									variant="body2"
-									color="text.secondary"
-									align="center"
-									sx={{ color: product.countInStock > 0 ? "green" : "red" }}
-								>
-									{product.countInStock > 0
-										? `In Stock: ${product.countInStock}`
-										: "Out of Stock"}
-								</Typography>
-							</div>
-							<CardBorder>
-								<Stack spacing={1} direction="row">
-									<Button
-										onClick={() => handleAddToCart(product)}
-										sx={{
-											color: "red",
-										}}
-									>
-										<AddShoppingCartTwoToneIcon />
-									</Button>
-									<Button>
-										<BookTwoToneIcon
-											onClick={() => navigate(`/product/${product.id}`)}
-											sx={{
-												color: "rgb(12,33,55)",
-											}}
-										/>
-									</Button>
-								</Stack>
-							</CardBorder>
-						</Box>
-					</CardContent>
-				</AnimatedCard>
-			))}
-		</Box>
-	);
+                 <Button>
+                  <BookTwoToneIcon 
+                  sx={{
+                      color: 'rgb(12,33,55)', 
+                    }}/>
+                    <Link to={`/productsx/${product.id}`}></Link>
+                 </Button>
+                </Stack>
+                </CardBorder>
+
+              </Box>
+          </CardContent>
+        </AnimatedCard>
+      ))}
+    </Box>
+  );
 };
 
 export default ProductCardList;

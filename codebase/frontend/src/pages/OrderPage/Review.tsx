@@ -7,33 +7,23 @@ import Grid from '@mui/material/Grid';
 
 const products = [
   {
-    name: 'Product 1',
-    desc: 'A nice thing',
-    price: 'LKR.150.00',
+    name: 'Fenugeek Oil',
+    desc: 'Link',
+    price: 'LKR.500.00',
   },
   {
-    name: 'Product 2',
-    desc: 'Another thing',
-    price: 'LKR.250.00',
-  },
-  {
-    name: 'Product 3',
-    desc: 'Something else',
-    price: 'LKR.350.00',
-  },
-  {
-    name: 'Product 4',
-    desc: 'Best thing of all',
-    price: 'LKR.550.00',
+    name: 'Liya Face',
+    desc: 'Liya',
+    price: 'LKR.400.00',
   },
   { name: 'Shipping', desc: '', price: 'Free' },
 ];
-const addresses = ['131/8', 'Delgahawatta road', 'Hokandara South', '99999', 'SL'];
+const addresses = ['131/8', 'Kibulawala', 'Kalalgoda', '10118', 'SL'];
 const payments = [
   { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr Tharidu Sampath' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
+  { name: 'Card holder', detail: 'Mr Nilan Malathunga' },
+  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-4242' },
+  { name: 'Expiry date', detail: '12/2034' },
 ];
 
 export default function Review() {
@@ -52,7 +42,7 @@ export default function Review() {
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-            LKR.750
+            LKR.900
           </Typography>
         </ListItem>
       </List>
@@ -61,7 +51,7 @@ export default function Review() {
           <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
             Shipping
           </Typography>
-          <Typography gutterBottom>Tharidu Sampath</Typography>
+          <Typography gutterBottom>Nilan Malathunga</Typography>
           <Typography gutterBottom>{addresses.join(', ')}</Typography>
         </Grid>
         <Grid item container direction="column" xs={12} sm={6}>

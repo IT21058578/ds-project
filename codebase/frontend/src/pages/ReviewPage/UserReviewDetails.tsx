@@ -46,7 +46,7 @@ function createData(
 }
 
 const rows = [
-  createData('user1','Kottamalli', 'Good product to use daily and good for our health !.....', 4.5),
+  createData('user1','Fenugeek Oil', 'Good product.', 5),
 
 ];
 
@@ -66,7 +66,7 @@ export default function ReviewTable() {
   };
 
   return (
-    <Box sx={{ minWidth: 275 , border: '1px solid green' , padding: '70px' , borderRadius:'30px' , backgroundColor: 'rgba(234, 234, 234, 0.1)' ,marginTop:'100px' ,marginBottom:'20px', boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.25)',}} >
+    <Box sx={{ minWidth: 775 , border: '1px solid green' , padding: '70px' , borderRadius:'30px' , backgroundColor: 'rgba(234, 234, 234, 0.1)' ,marginTop:'100px' ,marginBottom:'20px', boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.25)',}} >
     <div style={{ display: "flex", justifyContent: "center" ,color:'gray'}}>
      <Typography variant="h4" gutterBottom>
          {/* <LocalShipping /> */}

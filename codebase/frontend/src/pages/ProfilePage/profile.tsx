@@ -257,17 +257,17 @@ const Profile: React.FC<ProfilePageProps> = ({ firstName, lastName, email, addre
 
 // Example usage
 const dummyData = {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'johndoe@example.com',
-    address1: '123 Main St',
-    address2: 'Anytown USA',
-    avatarUrl: 'https://via.placeholder.com/150',
+    firstName: 'Nilan',
+    lastName: 'Malathunga',
+    email: 'nilan@gmail.com',
+    address1: '131/8,kibulawala',
+    address2: 'Kalalgoda',
+    avatarUrl: 'https://www.pngmart.com/files/22/User-Avatar-Profile-PNG.png',
   };
   
   function ProfilePage() {
     return (
-      <Box sx={{ minWidth: 775 , border: '1px solid green' , padding: '70px' , borderRadius:'30px' , backgroundColor: 'rgba(234, 234, 234, 0.1)' ,marginTop:'100px' ,marginBottom:'20px', boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.25)',}} >
+      <Box sx={{ minWidth: 975 , border: '1px solid green' , padding: '70px' , borderRadius:'30px' , backgroundColor: 'rgba(234, 234, 234, 0.1)' ,marginTop:'100px' ,marginBottom:'20px', boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.25)',}} >
       <div style={{ display: "flex", justifyContent: "center" ,color:'gray'}}>
        <Typography variant="h4" sx={{color:'green'}} gutterBottom>
            <AccountCircleOutlinedIcon /> 

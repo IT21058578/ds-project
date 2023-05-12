@@ -62,19 +62,45 @@ export interface ILoginRequest {
 	password: string;
 }
 
-//products types
 export interface Iproduct {
-	productID: string;
-	productName: string;
-	productDescription: string;
-	image: string[];
+	id: string;
+	brandId: string;
+	name: string;
 	price: number;
-	rating: number;
-	review: string;
+	imageUrl: string[];
+	description: string;
 	countInStock: number;
-	brand: string;
-	categery: string;
-  }
+	category: string;
+	createdOn: Date;
+	lastEditedOn: Date;
+}
+
+/**
+ * Represents a product review
+ */
+export interface IReview {
+	id: string;
+	userId: string;
+	productId: string;
+	createdOn: Date;
+	comment: string;
+	lastEditedOn: Date;
+	rating: number;
+}
+
+// //products types
+// export interface Iproduct {
+// 	productID: string;
+// 	productName: string;
+// 	productDescription: string;
+// 	image: string[];
+// 	price: number;
+// 	rating: number;
+// 	review: string;
+// 	countInStock: number;
+// 	brand: string;
+// 	categery: string;
+//   }
 
 //product initial state
 export interface productState {
@@ -101,14 +127,14 @@ export interface INoResultsImg {
 	title: string;
   }
 
-//reviews
+// //reviews
 
-export interface IReview {
-	userID:string;
-	productName: string;
-	review: string;
-	rating: number;
-  }
+// export interface IReview {
+// 	userID:string;
+// 	productName: string;
+// 	review: string;
+// 	rating: number;
+//   }
 
 export interface IShippingAddress {
 	firstName: string;

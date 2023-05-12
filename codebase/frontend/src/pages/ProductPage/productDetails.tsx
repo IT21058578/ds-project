@@ -24,9 +24,7 @@ interface Props {
 }
 
 const Product: React.FC<Props> = ({ product, onAddToCart }) => {
-	const [selectedImage, setSelectedImage] = useState(
-		product?.imageUrl[0] || ""
-	);
+	const [selectedImage, setSelectedImage] = useState(product.imageUrl[0]);
 
 	const handleImageClick = (image: string) => {
 		setSelectedImage(image);
@@ -129,7 +127,7 @@ const Product: React.FC<Props> = ({ product, onAddToCart }) => {
 							marginTop: 2,
 						}}
 					>
-						{product?.imageUrl?.map((image) => (
+						{product.imageUrl.map((image) => (
 							<ListItem
 								button
 								key={image}
@@ -164,58 +162,58 @@ const Product: React.FC<Props> = ({ product, onAddToCart }) => {
 						))}
 					</List>
 				</Grid>
+			</Grid>
 
-				<Grid item xs={12} sm={6}>
-					<Box
-						sx={{
-							maxWidth: "420px",
-							border: "1px solid green",
-							padding: "70px",
-							borderRadius: "30px",
-							backgroundColor: "rgba(234, 234, 234, 0.1)",
-							marginTop: "50px",
-							marginBottom: "20px",
-							boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.25)",
-						}}
-					>
-						<Typography variant="h4" gutterBottom>
-							{product.name}
-						</Typography>
-						<Typography variant="body1" gutterBottom>
-							{product.description}
-						</Typography>
-						<Typography variant="h6" gutterBottom>
-							Price: ${product.price}
-						</Typography>
-						<Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
-							<Typography variant="subtitle1">Stock:</Typography>
-							<Box
-								component="span"
-								sx={{
-									marginLeft: 1,
-									padding: "2px 8px",
-									borderRadius: 16,
-									backgroundColor:
-										product.countInStock > 0 ? "success.light" : "error.light",
-									color: "white",
-									fontWeight: "bold",
-									textTransform: "uppercase",
-								}}
-							>
-								{product.countInStock > 0 ? "In Stock" : "Out of Stock"}
-							</Box>
-						</Box>
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={handleAddToCartClick}
-							disabled={product.countInStock <= 0}
-							sx={{ marginTop: 2 }}
+			<Grid item xs={12} sm={6}>
+				<Box
+					sx={{
+						maxWidth: "420px",
+						border: "1px solid green",
+						padding: "70px",
+						borderRadius: "30px",
+						backgroundColor: "rgba(234, 234, 234, 0.1)",
+						marginTop: "50px",
+						marginBottom: "20px",
+						boxShadow: "0px 3px 5px rgba(0, 0, 0, 0.25)",
+					}}
+				>
+					<Typography variant="h4" gutterBottom>
+						{product.name}
+					</Typography>
+					<Typography variant="body1" gutterBottom>
+						{product.description}
+					</Typography>
+					<Typography variant="h6" gutterBottom>
+						Price: Rs.{product.price}
+					</Typography>
+					<Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
+						<Typography variant="subtitle1">Stock:</Typography>
+						<Box
+							component="span"
+							sx={{
+								marginLeft: 1,
+								padding: "2px 8px",
+								borderRadius: 16,
+								backgroundColor:
+									product.countInStock > 0 ? "success.light" : "error.light",
+								color: "white",
+								fontWeight: "bold",
+								textTransform: "uppercase",
+							}}
 						>
-							Add to Cart
-						</Button>
+							{product.countInStock > 0 ? "In Stock" : "Out of Stock"}
+						</Box>
 					</Box>
-				</Grid>
+					<Button
+						variant="contained"
+						color="primary"
+						onClick={handleAddToCartClick}
+						disabled={product.countInStock <= 0}
+						sx={{ marginTop: 2 }}
+					>
+						Add to Cart
+					</Button>
+				</Box>
 			</Grid>
 		</Box>
 	);

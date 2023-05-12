@@ -51,25 +51,25 @@ const RootLayout = () => {
 		return setIsUserSellerAdmin(false);
 	}, [user]);
 
-	/**
-	 * Variable for defining all routing relevant to buyers and guests
-	 */
-	const buyerRouteConfiguration = (
-		<Route path="/" element={<BuyerLayout />}>
-			<Route path="/user" element={<UserLayout />}></Route>
-			<Route path="/login" element={<LoginPage />} />
-			<Route path="/register" element={<RegisterPage />} />
-			<Route path="/forgot-password" element={<ForgotPasswordPage />} />
-			<Route path="/cart" element={<Cart />} />
-			<Route path="/placeOrder" element={<Checkout />} />
-			<Route path="/" element={<ProductHome />} />
-			<Route path="/product/:productId" element={<ProductView />} />
-			<Route path="/order" element={<Order />} />
-			<Route path="/reviewtable" element={<ReviewTable />} />
-			<Route path="/profilepage" element={<ProfilePage />} />
-			<Route path="/*" element={<ErrorPage />} />
-		</Route>
-	);
+  /**
+   * Variable for defining all routing relevant to buyers and guests
+   */
+  const buyerRouteConfiguration = (
+    <Route path="/" element={<BuyerLayout />}>
+      <Route path="/user" element={<UserLayout />}></Route>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+			<Route path="/cart" element={<Cart/>}/>
+			<Route path="/placeOrder" element={<Checkout/>} />
+			<Route path="/" element={<ProductHome/>} />
+			<Route path="/products/:id" element={<ProductView/>} />
+			<Route path="/order" element={<Order/>} />
+			<Route path="/reviewtable" element={<ReviewTable/>} />
+			<Route path="/profilepage" element={<ProfilePage/>} />
+      <Route path="/*" element={<ErrorPage />} />
+    </Route>
+  );
 
 	/**
 	 * Variable for defining all the routing relevant to admins and seller

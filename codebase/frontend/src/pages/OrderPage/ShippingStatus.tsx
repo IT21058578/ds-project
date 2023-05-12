@@ -140,7 +140,7 @@ const steps = ['In progress', 'Dispatched', 'Shipped'];
 export default function ShippingStatusStepper() {
   return (
     <Stack sx={{ width: '100%' }} spacing={4}>
-      <Stepper alternativeLabel activeStep={2} connector={<ColorlibConnector />}>
+      <Stepper alternativeLabel activeStep={0} connector={<ColorlibConnector />}>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>

@@ -14,7 +14,7 @@ import CardMedia from '@mui/material/CardMedia';
 import {  CardActionArea, CardActions } from '@mui/material';
 import RatingBar from './RatingBar';
 import { IReview } from '../../types';
-
+import AlertDialogSlideReview from '../../components/Alert/reviewAlert';
 
  export const Review: React.FC<IReview> =({review,rating}) =>{
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -31,7 +31,9 @@ import { IReview } from '../../types';
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setTimeout(() => {
+      setAnchorEl(null);
+    }, 2000); // 2000 milliseconds = 2 seconds
   };
 
   const open = Boolean(anchorEl);
@@ -58,7 +60,7 @@ import { IReview } from '../../types';
               <CardMedia
                 component="img"
                 height="140"
-                image="https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png"
+                image="https://cdn.shopify.com/s/files/1/0036/5245/2397/products/fenugreekoil_740x.png?v=1676350286"
                 alt="green iguana"
               />
               <CardContent>
@@ -80,8 +82,8 @@ import { IReview } from '../../types';
                   <Button color="secondary" variant="text" onClick={handleClose}>
                       Cancel
                   </Button>
-                  <Button color="primary" variant="contained" onClick={handleEditName} sx={{ ml:2 }}>
-                      Save
+                  <Button color="primary" variant="contained" onClick={handleClose} sx={{ ml:2 }}>
+                      <AlertDialogSlideReview/>
                   </Button>
                 </Box>
               </CardContent>

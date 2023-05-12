@@ -39,6 +39,8 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import Badge, { BadgeProps } from "@mui/material/Badge";
+import Avatar from '@mui/material/Avatar';
+import Chip from '@mui/material/Chip';
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 	"& .MuiBadge-badge": {
@@ -159,9 +161,9 @@ const BuyerNavBar = () => {
 									sx={{ color: grey[900] }}
 									onClick={() => navigate("/cart")}
 								>
-									<StyledBadge badgeContent={4} color="warning">
+
 									   <ShoppingCart />
-									</StyledBadge>
+
 								</IconButton>
 								{/* <IconButton
 									size="large"
@@ -170,6 +172,14 @@ const BuyerNavBar = () => {
 								>
 									<AccountCircle />
 								</IconButton> */}
+
+								<Chip
+									onClick={() => navigate("/profilepage")}
+									avatar={<Avatar alt="Natacha" src="https://www.pngmart.com/files/22/User-Avatar-Profile-PNG.png" />}
+									label="Hi!.. Nilan"
+									variant="outlined"
+									sx={{background:"white" , color:"green" , marginLeft:'10px'}}
+								/>
 								<IconButton
 									size="large"
 									sx={{ color: grey[900] }}
