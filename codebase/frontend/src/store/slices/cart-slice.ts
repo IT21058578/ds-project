@@ -14,7 +14,7 @@ export const cartSlice = createSlice({
     addItem: (state, action: PayloadAction<CartItem>) => {
       const itemIndex = state.items.findIndex(
         (item) =>
-          item.productID === action.payload.productID
+          item.id === action.payload.id
       );
       itemIndex >= 0
         ? (state.items[itemIndex].quantity += 1)
@@ -24,7 +24,7 @@ export const cartSlice = createSlice({
     minusItem: (state, action: PayloadAction<CartItem>) => {
       const itemIndex = state.items.findIndex(
         (item) =>
-          item.productID === action.payload.productID
+          item.id === action.payload.id
       );
       state.items[itemIndex].quantity > 1
         ? (state.items[itemIndex].quantity -= 1)
@@ -35,7 +35,7 @@ export const cartSlice = createSlice({
       state.items = state.items.filter(
         (item) =>
           !(
-            item.productID === action.payload.productID
+            item.id === action.payload.id
           )
       );
       cartSlice.caseReducers.calculateCountAndPrice(state);

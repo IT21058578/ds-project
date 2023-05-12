@@ -23,7 +23,7 @@ interface Props {
 }
 
 const Product: React.FC<Props> = ({ product, onAddToCart }) => {
-  const [selectedImage, setSelectedImage] = useState(product.image[0]);
+  const [selectedImage, setSelectedImage] = useState(product.imageUrl[0]);
 
   const handleImageClick = (image: string) => {
     setSelectedImage(image);
@@ -59,7 +59,7 @@ const Product: React.FC<Props> = ({ product, onAddToCart }) => {
         >
           <img
             src={selectedImage}
-            alt={product.productName}
+            alt={product.name}
             style={{
               position: "absolute",
               top: 0,
@@ -74,7 +74,7 @@ const Product: React.FC<Props> = ({ product, onAddToCart }) => {
             <Box
               component="img"
               src={selectedImage}
-              alt={product.productName}
+              alt={product.name}
               sx={{
                 position: "absolute",
                 top: 0,
@@ -92,7 +92,7 @@ const Product: React.FC<Props> = ({ product, onAddToCart }) => {
             <Box
               component="img"
               src={selectedImage}
-              alt={product.productName}
+              alt={product.name}
               sx={{
                 position: "absolute",
                 top: 0,
@@ -113,7 +113,7 @@ const Product: React.FC<Props> = ({ product, onAddToCart }) => {
           overflowX: "scroll",
           marginTop: 2
         }}>
-          {product.image.map((image) => (
+          {product.imageUrl.map((image) => (
             <ListItem
               button
               key={image}
@@ -150,10 +150,10 @@ const Product: React.FC<Props> = ({ product, onAddToCart }) => {
       <Grid item xs={12} sm={6}>
       <Box sx={{ maxWidth:'420px' , border: '1px solid green' , padding: '70px' , borderRadius:'30px' , backgroundColor: 'rgba(234, 234, 234, 0.1)' ,marginTop:'50px' ,marginBottom:'20px', boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.25)'}} >
         <Typography variant="h4" gutterBottom>
-          {product.productName}
+          {product.name}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          {product.productDescription}
+          {product.description}
         </Typography>
         <Typography variant="h6" gutterBottom>
           Price: Rs.{product.price}

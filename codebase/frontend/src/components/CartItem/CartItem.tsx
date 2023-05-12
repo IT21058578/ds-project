@@ -14,18 +14,18 @@ import { CartItem } from "../../types";
 
 
 const CartItems: FC<CartItem> = memo(
-  ({ image, productName, quantity, price, productID , productDescription, rating , review , countInStock , brand , categery}) => {
+  ({ imageUrl, name, quantity, price, id , description,countInStock , brandId , category , createdOn ,lastEditedOn}) => {
     const dispatch = useAppDispatch();
     
-    const data = { image, productName, quantity, price, productID , productDescription, rating , review , countInStock , brand , categery };
+    const data = { imageUrl, name, quantity, price, id , description,countInStock , brandId , category , createdOn , lastEditedOn};
     return (
       <div className={styles.cartItem}>
         <div className={styles.img}>
-          <img src={image[0] || placeholder} alt="Product Image" style={{maxWidth:'150px' , maxHeight:'150px' , borderRadius:'20%', padding:'20px'}}/>
+          <img src={imageUrl[0] || placeholder} alt="Product Image" style={{maxWidth:'150px' , maxHeight:'150px' , borderRadius:'20%', padding:'20px'}}/>
         </div>
         <div className={styles.titles}>
-          <Link to={`${productID}`}>
-            <div className={styles.title}>{productName}</div>
+          <Link to={`${id}`}>
+            <div className={styles.title}>{name}</div>
           </Link>
         </div>
 

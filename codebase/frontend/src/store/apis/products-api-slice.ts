@@ -1,4 +1,5 @@
 import { API_URI } from "../../constants/constants";
+import { Iproduct } from "../../types";
 import { baseApi } from "./base-api";
 import {
   ICreateProductRequestData,
@@ -27,8 +28,14 @@ export const productApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    getProduct: build.query<IGetProductResponseData, IGetProductRequestData>({
-      query: ({ productId }) => `${API_URI}/products/${productId}`,
+    // getProduct: build.query<IGetProductResponseData, IGetProductRequestData>({
+    //   query: ({ productId }) => `${API_URI}/products/${productId}`,
+    // }),
+    getProduct: build.query<Iproduct, { id: string }>({
+      query: ({ id }) => `${API_URI}/products/${id}`,
+    }),
+    getProducts: build.query<Iproduct[], void>({
+      query: () => `${API_URI}/products}`,
     }),
     deleteProducts: build.mutation<
       IDeleteProductResponseData,
@@ -64,8 +71,9 @@ export const productApi = baseApi.injectEndpoints({
 
 export const {
   useSearchProductsMutation,
-  useLazyGetProductQuery,
+  useGetProductQuery,
   useDeleteProductsMutation,
   useCreateProductMutation,
   useEditProductMutation,
+  useGetProductsQuery
 } = productApi;
