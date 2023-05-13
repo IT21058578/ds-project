@@ -1,18 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IAuthState, IUser } from "../../types";
 
-const initialState: IAuthState = {
-	user: {
-		firstName: "",
-		lastName: "",
-		email: "",
-		id: "",
-		isAuthorized: true,
-		isSubscribed: true,
-		mobile: "",
-		roles: [],
-	},
-};
+const initialState: IAuthState = {};
 
 const authSlice = createSlice({
 	name: "auth",
