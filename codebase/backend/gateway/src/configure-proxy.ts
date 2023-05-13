@@ -34,7 +34,15 @@ export const configureProxy = (app: ReturnType<typeof express>) => {
 					const proxyPath = `${host}${path}`;
 
 					log.info(`Attempting to forward request to ${proxyPath}'`);
-					if (proxyPath.startsWith(toPath) && method === req.method && roles) {
+					// console.log({
+					// 	toPath,
+					// 	proxyPath,
+					// 	method,
+					// 	reqMethod: req.method,
+					// 	roles,
+					// 	proxyPathStartsWith: proxyPath.startsWith(toPath),
+					// });
+					if (toPath.startsWith(proxyPath) && method === req.method && roles) {
 						log.info("Trying to access a protected route");
 						const [isAuthorized, userId, userRoles] = await isRequestAuthorized(
 							roles,

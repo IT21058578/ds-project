@@ -16,7 +16,7 @@ export const routesConfig: IRouteConfig[] = [
 				"POST",
 				[Role.ADMIN, Role.BUYER, Role.SELLER],
 			],
-			["/api/users/", "PUT", [Role.ADMIN, Role.BUYER, Role.ADMIN]],
+			["/api/users", "PUT", [Role.ADMIN, Role.BUYER, Role.SELLER]],
 			["/api/auth"],
 			["/api/users"],
 		],

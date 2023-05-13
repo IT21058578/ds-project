@@ -149,9 +149,9 @@ const refreshTokens = async (req: Request, res: Response) => {
 	try {
 		log.info("Attempting to refresh user tokens");
 		const { refreshToken } = req.body;
-		await AuthService.refreshTokens(refreshToken);
+		const tokens = await AuthService.refreshTokens(refreshToken);
 		log.info("Refresh succesful");
-		return res.status(HttpStatusCode.Ok).send();
+		return res.status(HttpStatusCode.Ok).send(tokens);
 	} catch (error) {
 		log.info("Failed to refresh", error);
 		if (error instanceof Error) {

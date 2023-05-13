@@ -14,19 +14,19 @@ import Stack from '@mui/material/Stack';
 import BookTwoToneIcon from '@mui/icons-material/BookTwoTone';
 import AddShoppingCartTwoToneIcon from '@mui/icons-material/AddShoppingCartTwoTone';
 import { useNavigate } from "react-router-dom";
-import { Iproduct } from "../../types";
+import { IProduct } from "../../types";
 import AlertDialogSlide from "../../components/Alert/alert";
 
 interface ProductCardListProps {
-  products: Iproduct[];
-  onAddToCart: (product: Iproduct) => void;
+  products: IProduct[];
+  onAddToCart: (product: IProduct) => void;
 }
 
 const ProductCardList: React.FC<ProductCardListProps> = ({
   products,
   onAddToCart,
 }) => {
-  const handleAddToCart = (product: Iproduct) => {
+  const handleAddToCart = (product: IProduct) => {
     onAddToCart(product);
   };
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
       }}
     >
       {products.map((product) => (
-        <AnimatedCard key={product.productID} sx={{ minWidth: 180, margin: "1rem" }}>
+        <AnimatedCard key={product.productId} sx={{ minWidth: 180, margin: "1rem" }}>
           <CardMedia
             component="img"
             height="100"
@@ -125,7 +125,7 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
 
                  <Button>
                   <BookTwoToneIcon 
-                  onClick={() => navigate("/productdetails")}
+                  onClick={() => navigate("/productDetails")}
                   sx={{
                       color: 'rgb(12,33,55)', 
                     }}/>

@@ -13,12 +13,12 @@ import {
 } from "@mui/material";
 import { AddShoppingCart, Image } from "@mui/icons-material";
 
-import { Iproduct } from "../../types";
+import { IProduct } from "../../types";
 import Avatar from '@mui/material/Avatar';
 
 
 interface Props {
-  product: Iproduct;
+  product: IProduct;
   onAddToCart: () => void;
 }
 
