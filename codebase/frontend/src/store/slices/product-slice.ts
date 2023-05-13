@@ -25,7 +25,7 @@ const productSlice = createSlice({
                  product:Iproduct;
             }>
         ) =>{ 
-            product.products?.findIndex(product => product.id === payload.product.id);
+            product.products?.findIndex(product => product.productID === payload.product.productID);
         },
     },
  });

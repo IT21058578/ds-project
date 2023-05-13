@@ -61,7 +61,7 @@ const RootLayout = () => {
 			<Route path="/cart" element={<Cart/>}/>
 			<Route path="/placeOrder" element={<Checkout/>} />
 			<Route path="/" element={<ProductHome/>} />
-			<Route path="/products/:id" element={<ProductView/>} />
+			<Route path="/productdetails" element={<ProductView/>} />
 			<Route path="/order" element={<Order/>} />
 			<Route path="/reviewtable" element={<ReviewTable/>} />
 			<Route path="/profilepage" element={<ProfilePage/>} />

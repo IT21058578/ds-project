@@ -16,7 +16,6 @@ import AddShoppingCartTwoToneIcon from '@mui/icons-material/AddShoppingCartTwoTo
 import { useNavigate } from "react-router-dom";
 import { Iproduct } from "../../types";
 import AlertDialogSlide from "../../components/Alert/alert";
-import { Link } from "react-router-dom";
 
 interface ProductCardListProps {
   products: Iproduct[];
@@ -61,12 +60,12 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
       }}
     >
       {products.map((product) => (
-        <AnimatedCard key={product.id} sx={{ minWidth: 180, margin: "1rem" }}>
+        <AnimatedCard key={product.productID} sx={{ minWidth: 180, margin: "1rem" }}>
           <CardMedia
             component="img"
             height="100"
-            image={product.imageUrl[0]}
-            alt={product.name}
+            image={product.image[0]}
+            alt={product.productName}
           />
           <CardContent>
               <Box
@@ -81,12 +80,12 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
                   component="div"
                   align="center"
                 >
-                  {product.name}
+                  {product.productName}
                 </Typography>
                 
                 <Rating
                   name="product-rating"
-                  value={4}
+                  value={product.rating}
                   precision={0.5}
                   readOnly
                 />
@@ -126,10 +125,10 @@ const ProductCardList: React.FC<ProductCardListProps> = ({
 
                  <Button>
                   <BookTwoToneIcon 
+                  onClick={() => navigate("/productdetails")}
                   sx={{
                       color: 'rgb(12,33,55)', 
                     }}/>
-                    <Link to={`/productsx/${product.id}`}></Link>
                  </Button>
                 </Stack>
                 </CardBorder>

@@ -12,48 +12,43 @@ import CartItem from "../../components/CartItem/CartItem";
 import NoResultsImg from "../../components/NoResultsImg/NoResultsImg";
 import CartItems from "../../components/CartItem/CartItem";
 import { Box } from "@mui/material";
-import { useGetCartQuery } from "../../store/apis/cart-api-slice";
 
 
 
 const Cart: FC = () => {
 
-  // const items = [
-  //   {
-  //     imageU: ["https://cdn.shopify.com/s/files/1/0036/5245/2397/products/fenugreekoil_740x.png?v=1676350286"],
-  //     productName: "Fenugeek Oil",
-  //     quantity: 1,
-  //     price: 500.00,
-  //     productID: "1",
-  //     productDescription: "This is a description of product 1.",
-  //     review: "good",
-  //     countInStock: 10,
-  //     categery: "Oils",
-  //     brand: "Brand 1",
-  //     rating: 4.5,
-  //   },
-  //   {
-  //     image: ["https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png"],
-  //     productName: "Liya Face",
-  //     quantity: 1,
-  //     price: 400.00,
-  //     productID: "2",
-  //     productDescription: "This is a description of product 2.",
-  //     review: "good",
-  //     countInStock: 5,
-  //     categery: "Creams",
-  //     brand: "Brand 2",
-  //     rating: 4.0,
-  //   },
-  // ];
+  const items = [
+    {
+      image: ["https://cdn.shopify.com/s/files/1/0036/5245/2397/products/fenugreekoil_740x.png?v=1676350286"],
+      productName: "Fenugeek Oil",
+      quantity: 1,
+      price: 500.00,
+      productID: "1",
+      productDescription: "This is a description of product 1.",
+      review: "good",
+      countInStock: 10,
+      categery: "Oils",
+      brand: "Brand 1",
+      rating: 4.5,
+    },
+    {
+      image: ["https://www.pngitem.com/pimgs/m/43-434027_product-beauty-skin-care-personal-care-liquid-tree.png"],
+      productName: "Liya Face",
+      quantity: 1,
+      price: 400.00,
+      productID: "2",
+      productDescription: "This is a description of product 2.",
+      review: "good",
+      countInStock: 5,
+      categery: "Creams",
+      brand: "Brand 2",
+      rating: 4.0,
+    },
+  ];
   // const { items } = useAppSelector((state) => state.cart);
   const { totalPrice, totalCount } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  let id;
-  const { data: items } = useGetCartQuery(id);
-
   return (
 
     <Box sx={{marginTop:'55px'}}>
@@ -72,21 +67,21 @@ const Cart: FC = () => {
           </div>
         )}
       </div>
-      {items && items.length ?(
-        items.map((item:any) => (
+      {items.length ? (
+        items.map((item) => (
           <CartItem
-            imageUrl={item.imageUrl}
-            name={item.name}
+            image={item.image}
+            productName={item.productName}
             quantity={item.quantity}
             price={item.price}
-            key={item.id}
-            id={item.id}
-            description = {item.description}
+            key={+("" + item.productID)}
+            productID={item.productID}
+            productDescription = {item.productDescription}
+            review = {item.review}
             countInStock = {item.countInStock}
-            category = {item.category}
-            brandId = {item.brandId}
-            createdOn={new Date()} // Add the createdOn property here with a suitable value
-            lastEditedOn={new Date()}
+            categery = {item.categery}
+            brand = {item.brand}
+            rating = {item.rating}
           />
         ))
       ) : (
